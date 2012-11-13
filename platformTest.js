@@ -61,7 +61,13 @@ window.onload = function() {
 			Crafty.e("springType")
 				.setSpring(550, 200, 20, 5, "purple");
 			Crafty.e("waterType")
-				.setWater(100, 100, 64, 16)
+				.setWater(100, 100, 80, 16)
+			// Place water all across the bottom of the screen
+			for (xWaterLocation = 0; xWaterLocation < width*2; xWaterLocation+= 64)
+			{
+				Crafty.e("waterType")
+					.setWater(xWaterLocation, GROUNDLEVEL+16, 64, 16)
+			}
 			
 			for(i = 0; i < 3; i++) {
 				Crafty.e("pitType")

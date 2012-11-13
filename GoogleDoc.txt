@@ -1,0 +1,79 @@
+Sidescroller: Pineapple Sunrise
+Figure this stuff out:
+	Implement repeating sprites, so you can have a larger platform
+	Image skips when jumping up through non-solid platform
+	Moving platforms
+	Title Screen
+	Animate Player
+Tasks:
+	Levels
+Logic
+Sprites
+Title Screen
+Level select, etc.
+Scene transitions
+	Loading, level select, download sprites, etc.
+Maybe later:
+	Score
+	High scores
+
+Class Tree
+Classes:
+Entity (can collide)
+Creature
+Player
+
+* Attributes: Lives, Coins
+Enemy
+Collectible
+Coins
+Power-ups
+Chili pepper of fire
+Avocado of speed
+Ice cream of ice
+Coconut shell of shielding
+Blocks
+different kinds
+Spikes
+Ice
+Lava
+Moving platforms
+Springs
+Level
+Layout
+
+* Holes and blocks
+* Coin placement
+* enemy placement
+* kinds of enemies
+* Fall counters
+* initial position of Entities
+Background
+Floor
+
+abstract class Entity
+* attribute: position
+class Creature
+* methods:
+o collide(Entity)
+o move()
+o jump(double height)
+o attack(Entity) // can be overridden
+
+* attributes:
+o position
+o vertical speed
+o horizontal speed
+class Player
+* attributes:
+o current PowerUp
+o int points // coins
+o int lives
+class PowerUp
+* attributes:
+o type
+o duration
+
+* subclasses have different ones
+
+16-bit graphicss
