@@ -156,6 +156,10 @@ Crafty.c("playerType", {
 			Crafty.viewport.x = 0;
 			Crafty.scene("game");		//starts over
 		});
+		this.onHit("enemy", function(hit) {
+			Crafty.viewport.x = 0;
+			Crafty.scene("game");		//starts over
+		});
 		this.onHit("spring", function(hit) {
 			if(this._falling) {
 				if(!this._up) {
@@ -177,6 +181,20 @@ Crafty.c("playerType", {
 				Crafty.viewport.x = -vpx;
 			}
 		});
+	}
+});
+Crafty.c("fatsoType", { 
+	init: function() {
+		this.requires("2D, DOM, enemy, Color");
+	},
+	setFatso: function(inputX, inputY, bSize, color) {
+		this.attr({ 
+			x: inputX,
+			y: inputY,
+			w: 2 * bSize,
+			h: 2 * bSize 
+		});
+		this.color(color);
 	}
 });
 

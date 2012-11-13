@@ -1,5 +1,4 @@
 //platformTest.js
-// Austin Almond was here
 window.onload = function() {
 		var width = 700;
 		var height = 270;
@@ -60,6 +59,7 @@ window.onload = function() {
 				.setPlatform(300, 200, 50, 5);
 			Crafty.e("springType")
 				.setSpring(550, 200, 20, 5, "purple");
+
 			// Place water all across the bottom of the screen
 			for (xWaterLocation = 0; xWaterLocation < width*2; xWaterLocation+= 64)
 			{
@@ -67,11 +67,13 @@ window.onload = function() {
 					.setWater(xWaterLocation, GROUNDLEVEL+16, 64, 16)
 			}
 			
-			for(i = 0; i < 3; i++) {
+			for(i = 0; i < 3; i++) { //initializes the pits according to pits[]
 				Crafty.e("pitType")
 					.setPit(pits[i][0], GROUNDLEVEL, pits[i][1], "blue", i, fallAmounts[i]);
 			}
-
+			
+			Crafty.e("fatsoType")
+				.setFatso(640, GROUNDLEVEL - 32, BLOCKSIZE, "indigo");  
 			Crafty.e("playerType")
 				.setPlayer(0, 240, BLOCKSIZE, MOVESPEED, JUMPSPEED, fallAmounts)
         });
