@@ -60,8 +60,6 @@ window.onload = function() {
 				.setPlatform(300, 200, 50, 5);
 			Crafty.e("springType")
 				.setSpring(550, 200, 20, 5, "purple");
-			Crafty.e("waterType")
-				.setWater(100, 100, 80, 16)
 			// Place water all across the bottom of the screen
 			for (xWaterLocation = 0; xWaterLocation < width*2; xWaterLocation+= 64)
 			{
@@ -74,45 +72,8 @@ window.onload = function() {
 					.setPit(pits[i][0], GROUNDLEVEL, pits[i][1], "blue", i, fallAmounts[i]);
 			}
 
-			Crafty.e("2D, DOM, player, Gravity, Controls, Twoway, Collision")
-				.attr({ x: 0, y: 240, w: 16, h: 16 })
-				.gravity('platform')
-				.gravityConst(.3)
-				.collision()
-				.twoway(MOVESPEED, JUMPSPEED)
-				.onHit("solid", function (hit) {
-					if(this._up) {
-						this.y += hit[0].obj.h / 2;
-						this._falling = true;
-						this._up = false;
-					}
-				})
-				.onHit("pit", function(hit) {
-					fallAmounts[hit[0].obj.pitNumber] = fallAmounts[hit[0].obj.pitNumber] + 1;
-					Crafty.viewport.x = 0;
-					Crafty.scene("game");		//starts over
-				}) 
-				.onHit("spring", function(hit) {
-					if(this._falling) {
-						if(!this._up) {
-							this.y -= 2 * (hit[0].obj.h);
-							this._falling = false;
-							this._up = true;
-						}
-						else {
-							this.y += hit[0].obj.h / 2;
-							this._falling = true;
-							this._up = false;
-						}
-					}
-				}) 
-				.bind("EnterFrame", function() {
-					//position of the viewport
-					var vpx = this._x - 350;
-					if(vpx > 0 && vpx < 1000) {
-						Crafty.viewport.x = -vpx;
-					}
-				});
+			Crafty.e("playerType")
+				.setPlayer(0, 240, BLOCKSIZE, MOVESPEED, JUMPSPEED, fallAmounts)
         });
  
         Crafty.scene("loading", function() {

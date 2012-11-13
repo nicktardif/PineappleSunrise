@@ -128,6 +128,57 @@ Crafty.c("waterType", { //water, float in it, drown if you stay in too long
 
 	}
 });
+Crafty.c("playerType", {
+	init: function() {
+		this.requires("2D, DOM, player, Gravity, Controls, Twoway, Collision");
+		this.gravity('platform');
+		this.gravityConst(.3);
+		this.collision();
+		
+	},
+	setPlayer: function(inputX, inputY, bsize, mspeed, jspeed, fallAmounts) {
+		this.attr({ 
+			x: inputX,
+			y: inputY,
+			w: bsize,
+			h: bsize
+		});
+		this.twoway(mspeed, jspeed); 
+		this.onHit("solid", function (hit) {
+			if(this._up) {
+				this.y += hit[0].obj.h / 2;
+				this._falling = true;
+				this._up = false;
+			}
+		});
+		this.onHit("pit", function(hit) {
+			fallAmounts[hit[0].obj.pitNumber] = fallAmounts[hit[0].obj.pitNumber] + 1;
+			Crafty.viewport.x = 0;
+			Crafty.scene("game");		//starts over
+		});
+		this.onHit("spring", function(hit) {
+			if(this._falling) {
+				if(!this._up) {
+					this.y -= 2 * (hit[0].obj.h);
+					this._falling = false;
+					this._up = true;
+				}
+				else {
+					this.y += hit[0].obj.h / 2;
+					this._falling = true;
+					this._up = false;
+				}
+			}
+		}); 
+		this.bind("EnterFrame", function() {
+			//position of the viewport
+			var vpx = this._x - 350;
+			if(vpx > 0 && vpx < 1000) {
+				Crafty.viewport.x = -vpx;
+			}
+		});
+	}
+});
 
 //make lava (special type of pit, insta death)
 //make water (special type of pit, limited jumping, breath counter timer)
