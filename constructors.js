@@ -115,7 +115,7 @@ Crafty.c("pitType", { //hit this and the level restarts, also has a fallCounter 
 Crafty.c("waterType", { //water, float in it, drown if you stay in too long
 	init: function() {
 		this.requires("2D, DOM, water, SpriteAnimation");
-		this.animate('waterMoving', 7, 11, 0);
+		this.animate('waterMoving', 0, 11, 3);
 		this.animate('waterMoving', 100, -1);
 	},
 	setWater: function(inputX, inputY, inputW, inputH) {
