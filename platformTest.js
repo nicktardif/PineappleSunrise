@@ -1,5 +1,4 @@
 //platformTest.js
-//Andres was here
 window.onload = function() {
 		var width = 700;
 		var height = 270;
