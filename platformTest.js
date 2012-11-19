@@ -45,20 +45,24 @@ window.onload = function() {
 			
 			//Entity Creation
 			Crafty.e("groundType")
-				.setGround("black", 0, GROUNDLEVEL, 200, 10);
+				.setGround("black", 0, GROUNDLEVEL, 208, 8);
 			Crafty.e("groundType")
-				.setGround("black", 300, GROUNDLEVEL, 150, 10);
+				.setGround("black", 304, GROUNDLEVEL, 144, 8);
 			Crafty.e("groundType")
-				.setGround("black", 550, GROUNDLEVEL, 150, 10);
+				.setGround("black", 544, GROUNDLEVEL, 144, 8);
 
 			Crafty.e("platformType")
-				.setPlatform(100, 200, 50, 10);
+				.setPlatform(112, 208, 48, 8);
 			Crafty.e("platformType")
-				.setPlatform(150, 150, 50, 10);
+				.setPlatform(160, GROUNDLEVEL - (5 * 16), 48, 8);
 			Crafty.e("thinPlatformType")
-				.setPlatform(300, 200, 50, 5);
+				.setPlatform(304, GROUNDLEVEL - (3 * 16), 48, 4);
+			Crafty.e("movingPlatformType")
+				.setMovingPlatform(352, GROUNDLEVEL - (3 * 16), 48, 4, 352, 352 + 64, GROUNDLEVEL - (3*16), GROUNDLEVEL - (3* 16) - 64, 0.3, 0.3);
+			Crafty.e("movingPlatformType")
+				.setMovingPlatform(208, GROUNDLEVEL - (6 * 16), 48, 4, 208, 208 + (16 * 5), GROUNDLEVEL - (6*16), 0, 0.3, 0);
 			Crafty.e("springType")
-				.setSpring(550, 200, 20, 5, "purple");
+				.setSpring(544, GROUNDLEVEL - (4 * 16), 16, 8, "purple");
 
 			// Place water all across the bottom of the screen
 			for (xWaterLocation = 0; xWaterLocation < width*2; xWaterLocation+= 64)
@@ -66,14 +70,13 @@ window.onload = function() {
 				Crafty.e("waterType")
 					.setWater(xWaterLocation, GROUNDLEVEL+16, 64, 16)
 			}
-			
 			for(i = 0; i < 3; i++) { //initializes the pits according to pits[]
 				Crafty.e("pitType")
 					.setPit(pits[i][0], GROUNDLEVEL, pits[i][1], "blue", i, fallAmounts[i]);
 			}
 			
 			Crafty.e("fatsoType")
-				.setFatso(640, GROUNDLEVEL - 32, BLOCKSIZE, "indigo");  
+				.setFatso(640, GROUNDLEVEL - 32, BLOCKSIZE, "indigo", 544, 656, 0.5);
 			Crafty.e("playerType")
 				.setPlayer(0, 240, BLOCKSIZE, MOVESPEED, JUMPSPEED, fallAmounts)
         });

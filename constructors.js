@@ -27,34 +27,43 @@ Crafty.c("thinPlatformType", { //platform that you can jump through
 });
 Crafty.c("movingPlatformType", { //platform that you can't jump up through
 	init: function() {
-		this.requires("2D, DOM, platform, solid, moving");
-		var forward = true;
-		var initialX;
-		var initialY;
-		var xDisp;
-		var yDisp;
-		var frameTime;
+		this.requires("2D, DOM, platform, solid, movingPlatform");
 	},
-	setMovingPlatform: function(inputX, inputY, inputW, inputH, xd, yd, ft) {
-		this.initialX = inputX;
-		this.initialY = inputY;
-		this.xDisp = inputX + xd;
-		this.yDisp = inputY + yd;
-		this.frameTime = ft;	
+	setMovingPlatform: function(inputX, inputY, inputW, inputH, minX, maxX, minY, maxY, xvel, yvel) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
 			w: inputW,
-			h: inputH
+			h: inputH,
+			minXBound: minX,
+			maxXBound: maxX,
+			minYBound: minY,
+			maxYBound: maxY,
+			xSpeed: xvel,
+			ySpeed: yvel,
+			yForward: 1,
+			xForward: 1
 		});
 		this.bind("EnterFrame", function() {
-			if(this.x > initialX + xDisp) forward = false;
-			else if(this.x < initialX) forward = true;
-			if(forward) {
-				this.x = this.x + (xDisp / frameTime);
+			if(this.yForward === 1) {
+				this._y -= this.ySpeed;
+				this.y -= this.ySpeed;
+				if(this.y <= this.maxYBound) this.yForward = 0;	
 			}
 			else {
-				this.x = this.x - (xDisp / frameTime);
+				this._y += this.ySpeed;
+				this.y += this.ySpeed;
+				if(this.y >= this.minYBound) this.yForward = 1;	
+			} 
+			if(this.xForward === 1) {
+				this._x += this.xSpeed;
+				this.x += this.xSpeed;
+				if(this.x >= this.maxXBound) this.xForward = 0;	
+			}
+			else {
+				this._x -= this.xSpeed;
+				this.x -= this.xSpeed;
+				if(this.x <= this.minXBound) this.xForward = 1;	
 			} 
 		});
 	}
@@ -75,7 +84,7 @@ Crafty.c("springType", { //sends you high in the air
 });
 Crafty.c("groundType", {  //platform that has a solid color (for now)
 	init: function() {
-		this.requires("2D, DOM, platform, solid, Color");
+		this.requires("2D, DOM, solid, platform, Color");
 	},
 	setGround: function(color, inputX, GROUNDLEVEL, inputW, inputH) {
 		this.attr({
@@ -114,7 +123,7 @@ Crafty.c("pitType", { //hit this and the level restarts, also has a fallCounter 
 });
 Crafty.c("waterType", { //water, float in it, drown if you stay in too long
 	init: function() {
-		this.requires("2D, DOM, water, SpriteAnimation");
+		this.requires("2D, DOM, water, pit, SpriteAnimation");
 		this.animate('waterMoving', 0, 11, 3); // works for widths up to 80 pixels (5 blocks)
 		this.animate('waterMoving', 100, -1);
 	},
@@ -162,18 +171,21 @@ Crafty.c("playerType", {
 		});
 		this.onHit("spring", function(hit) {
 			if(this._falling) {
-				if(!this._up) {
+				if(!this._up) { 		//coming from the top
 					this.y -= 2 * (hit[0].obj.h);
 					this._falling = false;
 					this._up = true;
 				}
-				else {
+				else {					//coming from the bottom
 					this.y += hit[0].obj.h / 2;
 					this._falling = true;
 					this._up = false;
 				}
 			}
 		}); 
+		this.onHit("movingPlatform", function() {
+
+		});
 		this.bind("EnterFrame", function() {
 			//position of the viewport
 			var vpx = this._x - 350;
@@ -186,15 +198,32 @@ Crafty.c("playerType", {
 Crafty.c("fatsoType", { 
 	init: function() {
 		this.requires("2D, DOM, enemy, Color");
+		var leftBound;
+		var rightBound;
 	},
-	setFatso: function(inputX, inputY, bSize, color) {
+	setFatso: function(inputX, inputY, bSize, color, lb, rb, speed) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
 			w: 2 * bSize,
-			h: 2 * bSize 
+			h: 2 * bSize,
+			movingLeft : 1,
+			leftBound: lb,
+			rightBound: rb
 		});
 		this.color(color);
+		this.bind("EnterFrame", function() {
+			if(this.movingLeft === 1) {
+				this._x -= speed; 
+				this.x -= speed;
+				if(this.x === this.leftBound) this.movingLeft = 0;
+			}
+			else { 
+				this._x += speed;
+				this.x += speed;
+				if(this.x === this.rightBound) this.movingLeft = 1;
+			}
+		});
 	}
 });
 
