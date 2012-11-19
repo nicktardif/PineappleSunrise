@@ -10,8 +10,6 @@ Our plan:
 Figure this stuff out:
 	Implement repeating sprites, so you can have a larger platform
 	Image skips when jumping up through non-solid platform
-	Moving platforms
-		-make player move with platform
 	Title Screen
 	Animate Player
 	HUD interface

@@ -60,7 +60,7 @@ window.onload = function() {
 			Crafty.e("movingPlatformType")
 				.setMovingPlatform(352, GROUNDLEVEL - (3 * 16), 48, 4, 352, 352 + 64, GROUNDLEVEL - (3*16), GROUNDLEVEL - (3* 16) - 64, 0.3, 0.3);
 			Crafty.e("movingPlatformType")
-				.setMovingPlatform(208, GROUNDLEVEL - (6 * 16), 48, 4, 208, 208 + (16 * 5), GROUNDLEVEL - (6*16), 0, 0.3, 0);
+				.setMovingPlatform(208, GROUNDLEVEL - (6 * 16), 48, 4, 208, 208 + (16 * 5), GROUNDLEVEL - (6*16), GROUNDLEVEL - (6*16) - 1, 0.3, 0.00000001);
 			Crafty.e("springType")
 				.setSpring(544, GROUNDLEVEL - (4 * 16), 16, 8, "purple");
 

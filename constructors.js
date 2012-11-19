@@ -123,7 +123,7 @@ Crafty.c("pitType", { //hit this and the level restarts, also has a fallCounter 
 });
 Crafty.c("waterType", { //water, float in it, drown if you stay in too long
 	init: function() {
-		this.requires("2D, DOM, water, pit, SpriteAnimation");
+		this.requires("2D, DOM, water, SpriteAnimation");
 		this.animate('waterMoving', 0, 11, 3); // works for widths up to 80 pixels (5 blocks)
 		this.animate('waterMoving', 100, -1);
 	},
@@ -183,7 +183,23 @@ Crafty.c("playerType", {
 				}
 			}
 		}); 
-		this.onHit("movingPlatform", function() {
+		this.onHit("movingPlatform", function(hit) {
+			if(hit[0].obj.yForward === 1) {		//platform is moving up
+				this.y -= hit[0].obj.ySpeed;
+				this._y -= hit[0].obj.ySpeed;
+			}
+			else {								//platform is moving down
+				this.y += hit[0].obj.ySpeed;
+				this._y += hit[0].obj.ySpeed;
+			}
+			if(hit[0].obj.xForward === 1) { 	//platform is moving right
+				this.x += hit[0].obj.xSpeed;
+				this._x += hit[0].obj.xSpeed;
+			}
+			else {								//platform is moving left
+				this.x -= hit[0].obj.xSpeed;
+				this._x -= hit[0].obj.xSpeed;
+			}
 
 		});
 		this.bind("EnterFrame", function() {
