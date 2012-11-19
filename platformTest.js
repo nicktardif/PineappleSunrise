@@ -1,4 +1,3 @@
-//platformTest.js
 window.onload = function() {
 		var width = 700;
 		var height = 270;
@@ -10,7 +9,6 @@ window.onload = function() {
             var BLOCKSIZE = 16;
 			var GROUNDLEVEL = 240;
 			var pits = [ 
-					[-100, 100],
 					[200, 100],
 					[450, 100]	 ];
  
@@ -51,6 +49,8 @@ window.onload = function() {
 			Crafty.e("groundType")
 				.setGround("black", 544, GROUNDLEVEL, 144, 8);
 
+			Crafty.e("wallType")
+				.setWall(-8, 0, 8, height, 1, "black"); 
 			Crafty.e("platformType")
 				.setPlatform(112, 208, 48, 8);
 			Crafty.e("platformType")
@@ -70,7 +70,7 @@ window.onload = function() {
 				Crafty.e("waterType")
 					.setWater(xWaterLocation, GROUNDLEVEL+16, 64, 16)
 			}
-			for(i = 0; i < 3; i++) { //initializes the pits according to pits[]
+			for(i = 0; i < 2; i++) { //initializes the pits according to pits[]
 				Crafty.e("pitType")
 					.setPit(pits[i][0], GROUNDLEVEL, pits[i][1], "blue", i, fallAmounts[i]);
 			}

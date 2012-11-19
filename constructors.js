@@ -1,4 +1,8 @@
-//Component Constructors
+////////////////////////////
+//		Constructors
+//			for
+//		Level Structure	objects
+
 Crafty.c("platformType", { //platform that you can't jump up through
 	init: function() {
 		this.requires("2D, DOM, platform, solid");
@@ -25,7 +29,7 @@ Crafty.c("thinPlatformType", { //platform that you can jump through
 		});
 	}
 });
-Crafty.c("movingPlatformType", { //platform that you can't jump up through
+Crafty.c("movingPlatformType", { //solid platform that can move in the x and y directions
 	init: function() {
 		this.requires("2D, DOM, platform, solid, movingPlatform");
 	},
@@ -68,20 +72,6 @@ Crafty.c("movingPlatformType", { //platform that you can't jump up through
 		});
 	}
 });
-Crafty.c("springType", { //sends you high in the air
-	init: function() {
-		this.requires("2D, DOM, spring, Color");
-	},
-	setSpring: function(inputX, inputY, inputW, inputH, color) {
-		this.attr({ 
-			x: inputX,
-			y: inputY,
-			w: inputW,
-			h: inputH
-		})
-		this.color(color);
-	}
-});
 Crafty.c("groundType", {  //platform that has a solid color (for now)
 	init: function() {
 		this.requires("2D, DOM, solid, platform, Color");
@@ -96,7 +86,42 @@ Crafty.c("groundType", {  //platform that has a solid color (for now)
 		this.color(color);
 	}
 });
+Crafty.c("wallType", { //barrier to going horizontally, is either leftWall or
+					   //rightWall
+	init: function() {
+		this.requires("2D, DOM, wall, Color");
+	},
+	setWall: function(inputX, inputY, inputW, inputH, wallType, color) {
+		this.attr({ 
+			x: inputX,
+			y: inputY,
+			w: inputW,
+			h: inputH,
+			isLeft: wallType
+		});
+		this.color(color);
+	}
+});
 
+////////////////////////////
+//		Constructors
+//			for
+//		Obstacles
+
+Crafty.c("springType", { //sends you high in the air
+	init: function() {
+		this.requires("2D, DOM, spring, Color");
+	},
+	setSpring: function(inputX, inputY, inputW, inputH, color) {
+		this.attr({ 
+			x: inputX,
+			y: inputY,
+			w: inputW,
+			h: inputH
+		})
+		this.color(color);
+	}
+});
 Crafty.c("pitType", { //hit this and the level restarts, also has a fallCounter sign
 	init: function() {
 		this.requires("2D, DOM, pit, Color, Sprite");	
@@ -137,6 +162,12 @@ Crafty.c("waterType", { //water, float in it, drown if you stay in too long
 
 	}
 });
+
+////////////////////////////
+//		Constructors
+//			for
+//		Creatures
+
 Crafty.c("playerType", {
 	init: function() {
 		this.requires("2D, DOM, player, Gravity, Controls, Twoway, Collision");
@@ -202,6 +233,16 @@ Crafty.c("playerType", {
 			}
 
 		});
+		this.onHit("wallType", function(hit) {
+			if(hit[0].obj.isLeft === 1) { 
+				this.x += hit[0].obj.w / 4;
+				this._x += hit[0].obj.w / 4;
+			}
+			else {
+				this.x -= hit[0].obj.w / 4;
+				this._x -= hit[0].obj.w / 4;
+			}
+		});
 		this.bind("EnterFrame", function() {
 			//position of the viewport
 			var vpx = this._x - 350;
@@ -211,7 +252,7 @@ Crafty.c("playerType", {
 		});
 	}
 });
-Crafty.c("fatsoType", { 
+Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 	init: function() {
 		this.requires("2D, DOM, enemy, Color");
 		var leftBound;
@@ -245,4 +286,3 @@ Crafty.c("fatsoType", {
 
 //make lava (special type of pit, insta death)
 //make water (special type of pit, limited jumping, breath counter timer)
-//make a basic enemy (have to avoid it, not able to kill yet)
