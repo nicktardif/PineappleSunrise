@@ -7,6 +7,7 @@ window.onload = function() {
             var MOVESPEED = 3;
             var JUMPSPEED = 6;
             var BLOCKSIZE = 16;
+			var LARGEBLOCKSIZE = 2 * BLOCKSIZE;
 			var GROUNDLEVEL = 240;
 			var pits = [ 
 					[200, 100],
@@ -38,9 +39,12 @@ window.onload = function() {
 				sign80: [0,8], sign81: [1,8], sign82: [2,8], sign83: [3,8], sign84: [4,8],
 				sign85: [5,8], sign86: [6,8], sign87: [7,8], sign88: [8,8], sign89: [9,8],
 				sign90: [0,9], sign91: [1,9], sign92: [2,9], sign93: [3,9], sign94: [4,9],
-				sign95: [5,9], sign96: [6,9], sign97: [7,9], sign98: [8,9], sign99: [9,9]
+				sign95: [5,9], sign96: [6,9], sign97: [7,9], sign98: [8,9], sign99: [9,9],
+				springSprite: [2,12]
 			});
-			
+			Crafty.sprite(LARGEBLOCKSIZE, "sprites/largesprites.png", {
+				fatsoSprite: [0,0]
+			});
 			//Entity Creation
 			Crafty.e("groundType")
 				.setGround("black", 0, GROUNDLEVEL, 208, 8);
@@ -62,7 +66,7 @@ window.onload = function() {
 			Crafty.e("movingPlatformType")
 				.setMovingPlatform(208, GROUNDLEVEL - (6 * 16), 48, 4, 208, 208 + (16 * 5), GROUNDLEVEL - (6*16), GROUNDLEVEL - (6*16) - 1, 0.3, 0.00000001);
 			Crafty.e("springType")
-				.setSpring(544, GROUNDLEVEL - (4 * 16), 16, 8, "purple");
+				.setSpring(544, GROUNDLEVEL - (4 * 16), 16, 8);
 
 			// Place water all across the bottom of the screen
 			for (xWaterLocation = 0; xWaterLocation < width*2; xWaterLocation+= 64)
@@ -76,13 +80,16 @@ window.onload = function() {
 			}
 			
 			Crafty.e("fatsoType")
-				.setFatso(640, GROUNDLEVEL - 32, BLOCKSIZE, "indigo", 544, 656, 0.5);
+				.setFatso(640, GROUNDLEVEL - 32, BLOCKSIZE, 544, 656, 0.5);
 			Crafty.e("playerType")
 				.setPlayer(0, 240, BLOCKSIZE, MOVESPEED, JUMPSPEED, fallAmounts)
         });
  
         Crafty.scene("loading", function() {
 			Crafty.load(["sprites/sprites.png"], function() {
+					Crafty.scene("game");
+			});
+			Crafty.load(["sprites/largesprites.png"], function() {
 					Crafty.scene("game");
 			});
 			Crafty.background("black");

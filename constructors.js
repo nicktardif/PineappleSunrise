@@ -110,16 +110,15 @@ Crafty.c("wallType", { //barrier to going horizontally, is either leftWall or
 
 Crafty.c("springType", { //sends you high in the air
 	init: function() {
-		this.requires("2D, DOM, spring, Color");
+		this.requires("2D, DOM, spring, springSprite");
 	},
-	setSpring: function(inputX, inputY, inputW, inputH, color) {
+	setSpring: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
 			w: inputW,
 			h: inputH
 		})
-		this.color(color);
 	}
 });
 Crafty.c("pitType", { //hit this and the level restarts, also has a fallCounter sign
@@ -254,11 +253,13 @@ Crafty.c("playerType", {
 });
 Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 	init: function() {
-		this.requires("2D, DOM, enemy, Color");
+		this.requires("2D, DOM, fatsoSprite, enemy, SpriteAnimation");
+		this.animate("faceLeft", 1, 0, -1);
+		this.animate("faceRight", 0, 0, 1);
 		var leftBound;
 		var rightBound;
 	},
-	setFatso: function(inputX, inputY, bSize, color, lb, rb, speed) {
+	setFatso: function(inputX, inputY, bSize, lb, rb, speed) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
@@ -268,17 +269,22 @@ Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 			leftBound: lb,
 			rightBound: rb
 		});
-		this.color(color);
 		this.bind("EnterFrame", function() {
 			if(this.movingLeft === 1) {
 				this._x -= speed; 
 				this.x -= speed;
-				if(this.x === this.leftBound) this.movingLeft = 0;
+				if(this.x === this.leftBound){
+					this.movingLeft = 0;
+					this.animate("faceRight", 0, 0);
+				}
 			}
 			else { 
 				this._x += speed;
 				this.x += speed;
-				if(this.x === this.rightBound) this.movingLeft = 1;
+				if(this.x === this.rightBound){
+					this.movingLeft = 1;
+					this.animate("faceLeft", 0, 0);
+				}
 			}
 		});
 	}
