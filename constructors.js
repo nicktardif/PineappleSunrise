@@ -297,17 +297,19 @@ Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 			if(this.movingLeft === 1) {
 				this._x -= speed; 
 				this.x -= speed;
-				if(this.x === this.leftBound){
+				if(this.x <= this.leftBound){
 					this.movingLeft = 0;
-					this.animate("faceRight", 0, 0);
+					this.stop();
+					this.animate("faceLeft", 100000, 0);
 				}
 			}
 			else { 
 				this._x += speed;
 				this.x += speed;
-				if(this.x === this.rightBound){
+				if(this.x >= this.rightBound){
 					this.movingLeft = 1;
-					this.animate("faceLeft", 0, 0);
+					this.stop();
+					this.animate("faceRight", 100000, 0);
 				}
 			}
 		});
