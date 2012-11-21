@@ -102,6 +102,30 @@ Crafty.c("wallType", { //barrier to going horizontally, is either leftWall or
 		this.color(color);
 	}
 });
+Crafty.c("disappearingType", { 	//block dissappears after a set amount of time
+	init: function() {
+		this.requires("2D, DOM, disappearing, Color, Collision");
+	},
+	setDisappearing: function(inputX, inputY, inputW, inputH, deleteTime, color) {
+		this.attr({
+			x: inputX,
+			y: inputY,
+			w: inputW,
+			h: inputH,
+			disappearTime: deleteTime
+		});
+		this.collision();
+		this.color(color);
+		var cd = Crafty.e("2D, DOM, platform, disappearing") 
+			.attr({ x: inputX, y: inputY + 1, h: inputH - 1, w: inputW });
+		this.onHit("playerType", function() {
+			this.timeout(function() {
+				cd.destroy();
+				this.destroy();
+			}, this.disappearTime);
+		});
+	}
+});
 
 ////////////////////////////
 //		Constructors

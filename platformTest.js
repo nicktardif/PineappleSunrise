@@ -67,6 +67,8 @@ window.onload = function() {
 				.setMovingPlatform(208, GROUNDLEVEL - (6 * 16), 48, 4, 208, 208 + (16 * 5), GROUNDLEVEL - (6*16), GROUNDLEVEL - (6*16) - 1, 0.3, 0.00000001);
 			Crafty.e("springType")
 				.setSpring(544, GROUNDLEVEL - (4 * 16), 16, 8);
+			Crafty.e("disappearingType")
+				.setDisappearing(288, GROUNDLEVEL - (9 * 16), 16, 8, 300, "orange");
 
 			// Place water all across the bottom of the screen
 			for (xWaterLocation = 0; xWaterLocation < width*2; xWaterLocation+= 64)
@@ -86,10 +88,7 @@ window.onload = function() {
         });
  
         Crafty.scene("loading", function() {
-			Crafty.load(["sprites/sprites.png"], function() {
-					Crafty.scene("game");
-			});
-			Crafty.load(["sprites/largesprites.png"], function() {
+			Crafty.load(["sprites/sprites.png", "sprites/largesprites.png"], function() {
 					Crafty.scene("game");
 			});
 			Crafty.background("black");
