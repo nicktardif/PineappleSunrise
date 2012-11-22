@@ -77,7 +77,7 @@ Crafty.c("movingPlatformType", { //solid platform that can move in the x and y d
 });
 Crafty.c("groundType", {  //platform that has a solid color (for now)
 	init: function() {
-		this.requires("2D, DOM, solid, platform, Color");
+		this.requires("2D, DOM, solid, platform, ground");
 	},
 	setGround: function(inputX, GROUNDLEVEL, inputW, inputH) {
 		this.attr({
@@ -86,7 +86,7 @@ Crafty.c("groundType", {  //platform that has a solid color (for now)
 			w: inputW,
 			h: inputH
 		});
-		this.color("black");
+		//this.color("black");
 	}
 });
 Crafty.c("wallType", { //barrier to going horizontally, is either leftWall or
@@ -195,10 +195,14 @@ Crafty.c("waterType", { //water, float in it, drown if you stay in too long
 
 Crafty.c("playerType", {
 	init: function() {
-		this.requires("2D, DOM, player, Gravity, Controls, Twoway, Collision");
+		this.requires("2D, DOM, player, Gravity, Controls, Twoway, Collision, SpriteAnimation");
 		this.gravity('platform');
 		this.gravityConst(.3);
 		this.collision();
+		this.animate("down-right", 5, 10, 1);
+		this.animate("up-right", 6, 10, -1);
+		this.animate("down-left", 7, 10, 1);
+		this.animate("up-left", 8, 10, -1);
 		
 	},
 	setPlayer: function(inputX, inputY, bsize, mspeed, jspeed, fallAmounts) {
@@ -274,6 +278,7 @@ Crafty.c("playerType", {
 			if(vpx > 0 && vpx < 1000) {
 				Crafty.viewport.x = -vpx;
 			}
+			//animate walking
 		});
 	}
 });

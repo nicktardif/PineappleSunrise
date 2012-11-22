@@ -1,6 +1,6 @@
 window.onload = function() {
 		var width = 700;
-		var height = 256;
+		var height = 272;
         Crafty.init(width, height);
 		var fallAmounts = [0, 0, 0];
         Crafty.scene("game", function () {
@@ -8,19 +8,19 @@ window.onload = function() {
             var JUMPSPEED = 6;
             var BLOCKSIZE = 16;
 			var LARGEBLOCKSIZE = 2 * BLOCKSIZE;
-			var GROUNDLEVEL = height-8;
+			var GROUNDLEVEL = height-24;
  
 			//Crafty.background('pink');
 
 			// Draw background
 				Crafty.e("2D, DOM, Image")
-			.attr({w: Crafty.viewport.width, h: Crafty.viewport.height})
-			.image("sprites/cloudswithskyandhorizon.png", "repeat");
+					.attr({w: Crafty.viewport.width*2, h: Crafty.viewport.height})
+					.image("sprites/cloudswithskyandhorizon.png", "repeat");
 			
 			//set the images for the sprites
 			Crafty.sprite(BLOCKSIZE, "sprites/sprites.png", {
 				player: [4,10],
-				normalPlatform: [0,16], thinPlatform: [0,17], movingPlatform: [0,15], disappearing: [0,14],
+				normalPlatform: [0,16], thinPlatform: [0,17], movingPlatform: [0,15], disappearing: [0,14], ground: [0,13],
 				water: [0,11],
 				sign0: [0,0], sign1: [1,0], sign2: [2,0], sign3: [3,0], sign4: [4,0],
 				sign5: [5,0], sign6: [6,0], sign7: [7,0], sign8: [8,0], sign9: [9,0],
@@ -42,14 +42,15 @@ window.onload = function() {
 				sign85: [5,8], sign86: [6,8], sign87: [7,8], sign88: [8,8], sign89: [9,8],
 				sign90: [0,9], sign91: [1,9], sign92: [2,9], sign93: [3,9], sign94: [4,9],
 				sign95: [5,9], sign96: [6,9], sign97: [7,9], sign98: [8,9], sign99: [9,9],
-				springSprite: [2,12]
+				springSprite: [2,10]
 			});
 			Crafty.sprite(LARGEBLOCKSIZE, "sprites/largesprites.png", {
 				fatsoSprite: [0,0]
 			});
 			//Entity Creation
 			var levelArray =[
-				[1, 0, 208, 8], 
+				[1, 0, 120, 8], 
+				[1, 120, 88, 8],
 				[1, 304, 144, 8],
 				[1, 544, 144, 8],
 				[5, -8, 0, 8, height, 1, "black"],
@@ -126,7 +127,7 @@ window.onload = function() {
 			// Place water all across the bottom of the screen
 			for (xWaterLocation = 0; xWaterLocation < width*2; xWaterLocation+= 64) {
 				Crafty.e("waterType")
-					.setWater(xWaterLocation, GROUNDLEVEL+16, 64, 16)
+					.setWater(xWaterLocation, GROUNDLEVEL+8, 64, 16)
 			}
 			
         });
