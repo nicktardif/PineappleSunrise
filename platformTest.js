@@ -9,16 +9,13 @@ window.onload = function() {
             var BLOCKSIZE = 16;
 			var LARGEBLOCKSIZE = 2 * BLOCKSIZE;
 			var GROUNDLEVEL = 240;
-			var pits = [ 
-					[200, 100],
-					[450, 100]	 ];
  
 			Crafty.background('pink');
 
 			//set the images for the sprites
 			Crafty.sprite(BLOCKSIZE, "sprites/sprites.png", {
 				player: [4,10],
-				platform: [0,10,8,1],
+				//platform: [0,10],
 				water: [0,11],
 				sign0: [0,0], sign1: [1,0], sign2: [2,0], sign3: [3,0], sign4: [4,0],
 				sign5: [5,0], sign6: [6,0], sign7: [7,0], sign8: [8,0], sign9: [9,0],
@@ -46,45 +43,86 @@ window.onload = function() {
 				fatsoSprite: [0,0]
 			});
 			//Entity Creation
-			Crafty.e("groundType")
-				.setGround("black", 0, GROUNDLEVEL, 208, 8);
-			Crafty.e("groundType")
-				.setGround("black", 304, GROUNDLEVEL, 144, 8);
-			Crafty.e("groundType")
-				.setGround("black", 544, GROUNDLEVEL, 144, 8);
+			var levelArray =[	
+				[1, 0, 208, 8], 
+				[1, 304, 144, 8],
+				[1, 544, 144, 8],
+				[5, -8, 0, 8, height, 1, "black"],
+				[2, 112, GROUNDLEVEL - 2 * 16, 48, 8],
+				[2, 160, GROUNDLEVEL - 5 * 16, 48, 8],
+				[3, 304, GROUNDLEVEL - 3 * 16, 48, 4],
+				[4, 352, GROUNDLEVEL - 3 * 16, 48, 4, 352, 352 + 16 * 4, GROUNDLEVEL - 3 * 16, GROUNDLEVEL - (3 * 16) - 64, 0.3, 0.3],
+				[4, 208, GROUNDLEVEL - 6 * 16, 48, 4, 208, 208 + 16 * 5, GROUNDLEVEL - 6 * 16, GROUNDLEVEL - (6 * 16) - 1, 0.3, 0.00000001],
+				[6, 544, GROUNDLEVEL - 4 * 16, 16, 8],
+				[7, 288, GROUNDLEVEL - 9 * 16, 16, 8, 300],				
+				[7, 288 + 16, GROUNDLEVEL - 9 * 16, 16, 8, 300],				
+				[7, 288 + 32, GROUNDLEVEL - 9 * 16, 16, 8, 300],				
+				[7, 288 + 48, GROUNDLEVEL - 9 * 16, 16, 8, 300],				
+				[7, 288 + 64, GROUNDLEVEL - 9 * 16, 16, 8, 300],				
+				[7, 288 + 80, GROUNDLEVEL - 9 * 16, 16, 8, 300],				
+				[9, 208, 96, 0],
+				[9, 448, 96, 1],
+				[21, 640, GROUNDLEVEL - 2 * 16, 544, 656, 0.5],
 
-			Crafty.e("wallType")
-				.setWall(-8, 0, 8, height, 1, "black"); 
-			Crafty.e("platformType")
-				.setPlatform(112, 208, 48, 8);
-			Crafty.e("platformType")
-				.setPlatform(160, GROUNDLEVEL - (5 * 16), 48, 8);
-			Crafty.e("thinPlatformType")
-				.setPlatform(304, GROUNDLEVEL - (3 * 16), 48, 4);
-			Crafty.e("movingPlatformType")
-				.setMovingPlatform(352, GROUNDLEVEL - (3 * 16), 48, 4, 352, 352 + 64, GROUNDLEVEL - (3*16), GROUNDLEVEL - (3* 16) - 64, 0.3, 0.3);
-			Crafty.e("movingPlatformType")
-				.setMovingPlatform(208, GROUNDLEVEL - (6 * 16), 48, 4, 208, 208 + (16 * 5), GROUNDLEVEL - (6*16), GROUNDLEVEL - (6*16) - 1, 0.3, 0.00000001);
-			Crafty.e("springType")
-				.setSpring(544, GROUNDLEVEL - (4 * 16), 16, 8);
-			Crafty.e("disappearingType")
-				.setDisappearing(288, GROUNDLEVEL - (9 * 16), 16, 8, 300, "orange");
+				[20, 0, 240]
+								];
+			for(var i = 0; i < levelArray.length; i++) {
+				switch (levelArray[i][0]) {
+					case 1: //ground
+						Crafty.e("groundType")
+						.setGround(levelArray[i][1], GROUNDLEVEL, levelArray[i][2], levelArray[i][3]);
+						break;
+					case 2: //platform
+						Crafty.e("platformType")
+						.setPlatform(levelArray[i][1], levelArray[i][2], levelArray[i][3], levelArray[i][4]);
+						break;
+					case 3: //thinPlatform
+						Crafty.e("thinPlatformType")
+						.setPlatform(levelArray[i][1], levelArray[i][2], levelArray[i][3], levelArray[i][4]);
+						break;
+					case 4: //movingPlatform
+						Crafty.e("movingPlatformType")
+						.setMovingPlatform(levelArray[i][1], levelArray[i][2], levelArray[i][3], levelArray[i][4], levelArray[i][5], levelArray[i][6], levelArray[i][7], levelArray[i][8], levelArray[i][9], levelArray[i][10]);
+						break;
+					case 5: //wall
+						Crafty.e("wallType")
+						.setWall(levelArray[i][1], levelArray[i][2], levelArray[i][3], levelArray[i][4], levelArray[i][5], levelArray[i][6]);
+						break;
+					case 6: //spring
+						Crafty.e("springType")
+						.setSpring(levelArray[i][1], levelArray[i][2], levelArray[i][3], levelArray[i][4]);
+						break;
+					case 7: //disappearing
+						Crafty.e("disappearingType")
+						.setDisappearing(levelArray[i][1], levelArray[i][2], levelArray[i][3], levelArray[i][4], levelArray[i][5]);
+						break;
+					case 8: //water
+						Crafty.e("waterType")
+						.setWater(levelArray[i][1], levelArray[i][2], levelArray[i][3], levelArray[i][4]);
+						break;
+					case 9: //pit
+						Crafty.e("pitType")
+						.setPit(levelArray[i][1], GROUNDLEVEL, levelArray[i][2], levelArray[i][3], fallAmounts[levelArray[i][3]]);
+						break;
+					case 20: //player
+						Crafty.e("playerType")
+						.setPlayer(levelArray[i][1], levelArray[i][2], BLOCKSIZE, MOVESPEED, JUMPSPEED, fallAmounts);
+						break;
+					case 21: //fatso
+						Crafty.e("fatsoType")
+						.setFatso(levelArray[i][1], levelArray[i][2], BLOCKSIZE, levelArray[i][3], levelArray[i][4], levelArray[i][5]);
+						break;
+					default:
+						break;
+				}
+			}
 
 			// Place water all across the bottom of the screen
-			for (xWaterLocation = 0; xWaterLocation < width*2; xWaterLocation+= 64)
-			{
+			for (xWaterLocation = 0; xWaterLocation < width*2; xWaterLocation+= 64) {
 				Crafty.e("waterType")
 					.setWater(xWaterLocation, GROUNDLEVEL+16, 64, 16)
 			}
-			for(i = 0; i < 2; i++) { //initializes the pits according to pits[]
-				Crafty.e("pitType")
-					.setPit(pits[i][0], GROUNDLEVEL, pits[i][1], "blue", i, fallAmounts[i]);
-			}
 			
-			Crafty.e("fatsoType")
-				.setFatso(640, GROUNDLEVEL - 32, BLOCKSIZE, 544, 656, 0.5);
-			Crafty.e("playerType")
-				.setPlayer(0, 240, BLOCKSIZE, MOVESPEED, JUMPSPEED, fallAmounts)
         });
  
         Crafty.scene("loading", function() {

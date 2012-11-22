@@ -5,7 +5,7 @@
 
 Crafty.c("platformType", { //platform that you can't jump up through
 	init: function() {
-		this.requires("2D, DOM, platform, solid");
+		this.requires("2D, DOM, platform, solid, normalPlatform, Color");
 	},
 	setPlatform: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
@@ -14,11 +14,12 @@ Crafty.c("platformType", { //platform that you can't jump up through
 			w: inputW,
 			h: inputH
 		});
+		this.color("dodgerblue");
 	}
 });
 Crafty.c("thinPlatformType", { //platform that you can jump through
 	init: function() {
-		this.requires("2D, DOM, platform");
+		this.requires("2D, DOM, platform, thinPlatform, Color");
 	},
 	setPlatform: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
@@ -27,11 +28,12 @@ Crafty.c("thinPlatformType", { //platform that you can jump through
 			w: inputW,
 			h: inputH
 		});
+		this.color("mediumpurple");
 	}
 });
 Crafty.c("movingPlatformType", { //solid platform that can move in the x and y directions
 	init: function() {
-		this.requires("2D, DOM, platform, solid, movingPlatform");
+		this.requires("2D, DOM, platform, solid, movingPlatform, Color");
 	},
 	setMovingPlatform: function(inputX, inputY, inputW, inputH, minX, maxX, minY, maxY, xvel, yvel) {
 		this.attr({ 
@@ -48,6 +50,7 @@ Crafty.c("movingPlatformType", { //solid platform that can move in the x and y d
 			yForward: 1,
 			xForward: 1
 		});
+		this.color("tomato");
 		this.bind("EnterFrame", function() {
 			if(this.yForward === 1) {
 				this._y -= this.ySpeed;
@@ -76,14 +79,14 @@ Crafty.c("groundType", {  //platform that has a solid color (for now)
 	init: function() {
 		this.requires("2D, DOM, solid, platform, Color");
 	},
-	setGround: function(color, inputX, GROUNDLEVEL, inputW, inputH) {
+	setGround: function(inputX, GROUNDLEVEL, inputW, inputH) {
 		this.attr({
 			x: inputX,
 			y: GROUNDLEVEL,
 			w: inputW,
 			h: inputH
 		});
-		this.color(color);
+		this.color("black");
 	}
 });
 Crafty.c("wallType", { //barrier to going horizontally, is either leftWall or
@@ -106,7 +109,7 @@ Crafty.c("disappearingType", { 	//block dissappears after a set amount of time
 	init: function() {
 		this.requires("2D, DOM, disappearing, Color, Collision");
 	},
-	setDisappearing: function(inputX, inputY, inputW, inputH, deleteTime, color) {
+	setDisappearing: function(inputX, inputY, inputW, inputH, deleteTime) {
 		this.attr({
 			x: inputX,
 			y: inputY,
@@ -115,9 +118,9 @@ Crafty.c("disappearingType", { 	//block dissappears after a set amount of time
 			disappearTime: deleteTime
 		});
 		this.collision();
-		this.color(color);
-		var cd = Crafty.e("2D, DOM, platform, disappearing") 
-			.attr({ x: inputX, y: inputY + 1, h: inputH - 1, w: inputW });
+		this.color("seagreen");
+		var cd = Crafty.e("2D, DOM, platform, solid, disappearing") 
+			.attr({ x: inputX, y: inputY + 1, h: inputH - 2, w: inputW, visible: false });
 		this.onHit("playerType", function() {
 			this.timeout(function() {
 				cd.destroy();
@@ -147,9 +150,9 @@ Crafty.c("springType", { //sends you high in the air
 });
 Crafty.c("pitType", { //hit this and the level restarts, also has a fallCounter sign
 	init: function() {
-		this.requires("2D, DOM, pit, Color, Sprite");	
+		this.requires("2D, DOM, pit");	
 	},
-	setPit: function(startX, GROUNDLEVEL, width, color, pitNumber, fallNumber) {
+	setPit: function(startX, GROUNDLEVEL, width, pitNumber, fallNumber) {
 		this.attr({ 
 			x: startX - (width/2),
 			y: GROUNDLEVEL + 20,
@@ -166,7 +169,6 @@ Crafty.c("pitType", { //hit this and the level restarts, also has a fallCounter 
 					w: 16,
 					h: 16
 			});	
-		this.color(color);
 	}
 });
 Crafty.c("waterType", { //water, float in it, drown if you stay in too long
