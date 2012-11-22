@@ -1,6 +1,6 @@
 window.onload = function() {
 		var width = 700;
-		var height = 270;
+		var height = 256;
         Crafty.init(width, height);
 		var fallAmounts = [0, 0, 0];
         Crafty.scene("game", function () {
@@ -8,14 +8,19 @@ window.onload = function() {
             var JUMPSPEED = 6;
             var BLOCKSIZE = 16;
 			var LARGEBLOCKSIZE = 2 * BLOCKSIZE;
-			var GROUNDLEVEL = 240;
+			var GROUNDLEVEL = height-8;
  
-			Crafty.background('pink');
+			//Crafty.background('pink');
 
+			// Draw background
+				Crafty.e("2D, DOM, Image")
+			.attr({w: Crafty.viewport.width, h: Crafty.viewport.height})
+			.image("sprites/cloudswithskyandhorizon.png", "repeat");
+			
 			//set the images for the sprites
 			Crafty.sprite(BLOCKSIZE, "sprites/sprites.png", {
 				player: [4,10],
-				//platform: [0,10],
+				normalPlatform: [0,16], thinPlatform: [0,17], movingPlatform: [0,15], disappearing: [0,14],
 				water: [0,11],
 				sign0: [0,0], sign1: [1,0], sign2: [2,0], sign3: [3,0], sign4: [4,0],
 				sign5: [5,0], sign6: [6,0], sign7: [7,0], sign8: [8,0], sign9: [9,0],
@@ -43,7 +48,7 @@ window.onload = function() {
 				fatsoSprite: [0,0]
 			});
 			//Entity Creation
-			var levelArray =[	
+			var levelArray =[
 				[1, 0, 208, 8], 
 				[1, 304, 144, 8],
 				[1, 544, 144, 8],
@@ -66,6 +71,7 @@ window.onload = function() {
 
 				[20, 0, 240]
 								];
+					
 			for(var i = 0; i < levelArray.length; i++) {
 				switch (levelArray[i][0]) {
 					case 1: //ground
@@ -126,10 +132,10 @@ window.onload = function() {
         });
  
         Crafty.scene("loading", function() {
-			Crafty.load(["sprites/sprites.png", "sprites/largesprites.png"], function() {
+			Crafty.load(["sprites/sprites.png", "sprites/largesprites.png", "sprites/cloudswithskyandhorizon.png"], function() {
 					Crafty.scene("game");
 			});
-			Crafty.background("black");
+			//Crafty.background("black");
 			Crafty.e("2D, DOM, Text") .text("Loading") .css({
 					"text-align": "center",
 					"color": "white"

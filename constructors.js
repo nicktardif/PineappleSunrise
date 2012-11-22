@@ -5,7 +5,7 @@
 
 Crafty.c("platformType", { //platform that you can't jump up through
 	init: function() {
-		this.requires("2D, DOM, platform, solid, normalPlatform, Color");
+		this.requires("2D, DOM, platform, solid, normalPlatform");
 	},
 	setPlatform: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
@@ -14,12 +14,12 @@ Crafty.c("platformType", { //platform that you can't jump up through
 			w: inputW,
 			h: inputH
 		});
-		this.color("dodgerblue");
+		//this.color("dodgerblue");
 	}
 });
 Crafty.c("thinPlatformType", { //platform that you can jump through
 	init: function() {
-		this.requires("2D, DOM, platform, thinPlatform, Color");
+		this.requires("2D, DOM, platform, thinPlatform");
 	},
 	setPlatform: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
@@ -28,12 +28,12 @@ Crafty.c("thinPlatformType", { //platform that you can jump through
 			w: inputW,
 			h: inputH
 		});
-		this.color("mediumpurple");
+		//this.color("mediumpurple");
 	}
 });
 Crafty.c("movingPlatformType", { //solid platform that can move in the x and y directions
 	init: function() {
-		this.requires("2D, DOM, platform, solid, movingPlatform, Color");
+		this.requires("2D, DOM, platform, solid, movingPlatform");
 	},
 	setMovingPlatform: function(inputX, inputY, inputW, inputH, minX, maxX, minY, maxY, xvel, yvel) {
 		this.attr({ 
@@ -50,7 +50,7 @@ Crafty.c("movingPlatformType", { //solid platform that can move in the x and y d
 			yForward: 1,
 			xForward: 1
 		});
-		this.color("tomato");
+		//this.color("tomato");
 		this.bind("EnterFrame", function() {
 			if(this.yForward === 1) {
 				this._y -= this.ySpeed;
@@ -107,7 +107,7 @@ Crafty.c("wallType", { //barrier to going horizontally, is either leftWall or
 });
 Crafty.c("disappearingType", { 	//block dissappears after a set amount of time
 	init: function() {
-		this.requires("2D, DOM, disappearing, Color, Collision");
+		this.requires("2D, DOM, disappearing, Collision");
 	},
 	setDisappearing: function(inputX, inputY, inputW, inputH, deleteTime) {
 		this.attr({
@@ -118,7 +118,7 @@ Crafty.c("disappearingType", { 	//block dissappears after a set amount of time
 			disappearTime: deleteTime
 		});
 		this.collision();
-		this.color("seagreen");
+		//this.color("seagreen");
 		var cd = Crafty.e("2D, DOM, platform, solid, disappearing") 
 			.attr({ x: inputX, y: inputY + 1, h: inputH - 2, w: inputW, visible: false });
 		this.onHit("playerType", function() {
