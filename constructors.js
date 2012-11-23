@@ -5,7 +5,7 @@
 
 Crafty.c("platformType", { //platform that you can't jump up through
 	init: function() {
-		this.requires("2D, DOM, platform, solid, normalPlatform");
+		this.requires("2D, DOM, platform, solid, normalPlatform, noHorizontal");
 	},
 	setPlatform: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
@@ -33,7 +33,7 @@ Crafty.c("thinPlatformType", { //platform that you can jump through
 });
 Crafty.c("movingPlatformType", { //solid platform that can move in the x and y directions
 	init: function() {
-		this.requires("2D, DOM, platform, solid, movingPlatform");
+		this.requires("2D, DOM, platform, solid, movingPlatform, noHorizontal");
 	},
 	setMovingPlatform: function(inputX, inputY, inputW, inputH, minX, maxX, minY, maxY, xvel, yvel) {
 		this.attr({ 
@@ -77,7 +77,7 @@ Crafty.c("movingPlatformType", { //solid platform that can move in the x and y d
 });
 Crafty.c("groundType", {  //platform that has a solid color (for now)
 	init: function() {
-		this.requires("2D, DOM, solid, platform, ground");
+		this.requires("2D, DOM, solid, platform, ground, noHorizontal");
 	},
 	setGround: function(inputX, GROUNDLEVEL, inputW, inputH) {
 		this.attr({
@@ -120,7 +120,7 @@ Crafty.c("disappearingType", { 	//block dissappears after a set amount of time
 		this.collision();
 		//this.color("seagreen");
 		var cd = Crafty.e("2D, DOM, platform, solid, disappearing") 
-			.attr({ x: inputX, y: inputY + 1, h: inputH - 2, w: inputW, visible: false });
+			.attr({ x: inputX + 1, y: inputY + 1, h: 1, w: inputW - 2, visible: false });
 		this.onHit("playerType", function() {
 			this.timeout(function() {
 				cd.destroy();
@@ -213,6 +213,21 @@ Crafty.c("playerType", {
 			h: bsize
 		});
 		this.twoway(mspeed, jspeed); 
+		this.onHit("noHorizontal", function (hit) {
+			if(this.x < hit[0].obj.x) {
+				this.x -= 4;
+				this._x -= 4;
+			}
+			if(this.x > hit[0].obj.x + hit[0].obj.w - 16) {
+				this.x += 4;
+				this._x += 4;
+			}
+			if(this._up) {
+				this.y += hit[0].obj.h / 2;
+				this._falling = true;
+				this._up = false;
+			}
+		});
 		this.onHit("solid", function (hit) {
 			if(this._up) {
 				this.y += hit[0].obj.h / 2;
@@ -275,7 +290,7 @@ Crafty.c("playerType", {
 		this.bind("EnterFrame", function() {
 			//position of the viewport
 			var vpx = this._x - 350;
-			if(vpx > 0 && vpx < 1000) {
+			if(vpx > 0 && vpx < 1500) {
 				Crafty.viewport.x = -vpx;
 			}
 			//animate walking

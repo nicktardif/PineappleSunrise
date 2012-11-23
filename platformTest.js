@@ -14,7 +14,8 @@ window.onload = function() {
 
 			// Draw background
 				Crafty.e("2D, DOM, Image")
-					.attr({w: Crafty.viewport.width*2, h: Crafty.viewport.height})
+					.attr({w: 2100, h: Crafty.viewport.height})
+					//.attr({w: Crafty.viewport.width*2, h: Crafty.viewport.height})
 					.image("sprites/cloudswithskyandhorizon.png", "repeat");
 			
 			//set the images for the sprites
@@ -49,26 +50,104 @@ window.onload = function() {
 			});
 			//Entity Creation
 			var levelArray =[
-				[1, 0, 120, 8], 
-				[1, 120, 88, 8],
-				[1, 304, 144, 8],
-				[1, 544, 144, 8],
+				//leftwall
 				[5, -8, 0, 8, height, 1, "black"],
-				[2, 112, GROUNDLEVEL - 2 * 16, 48, 8],
-				[2, 160, GROUNDLEVEL - 5 * 16, 48, 8],
-				[3, 304, GROUNDLEVEL - 3 * 16, 48, 4],
-				[4, 352, GROUNDLEVEL - 3 * 16, 48, 4, 352, 352 + 16 * 4, GROUNDLEVEL - 3 * 16, GROUNDLEVEL - (3 * 16) - 64, 0.3, 0.3],
-				[4, 208, GROUNDLEVEL - 6 * 16, 48, 4, 208, 208 + 16 * 5, GROUNDLEVEL - 6 * 16, GROUNDLEVEL - (6 * 16) - 1, 0.3, 0.00000001],
-				[6, 544, GROUNDLEVEL - 4 * 16, 16, 8],
-				[7, 288, GROUNDLEVEL - 9 * 16, 16, 8, 300],				
-				[7, 288 + 16, GROUNDLEVEL - 9 * 16, 16, 8, 300],				
-				[7, 288 + 32, GROUNDLEVEL - 9 * 16, 16, 8, 300],				
-				[7, 288 + 48, GROUNDLEVEL - 9 * 16, 16, 8, 300],				
-				[7, 288 + 64, GROUNDLEVEL - 9 * 16, 16, 8, 300],				
-				[7, 288 + 80, GROUNDLEVEL - 9 * 16, 16, 8, 300],				
-				[9, 208, 96, 0],
-				[9, 448, 96, 1],
-				[21, 640, GROUNDLEVEL - 2 * 16, 544, 656, 0.5],
+
+				//ground
+				[1, 0, 128, 8], 
+				[1, 400, 160, 8],
+				[1, 560, 128, 8],
+				[1, 848, 160, 8],
+
+				[1, 1696, 120, 8],
+
+				//platforms
+				[2, 720, GROUNDLEVEL - 4 * 16, 96, 8],
+				[2, 704, GROUNDLEVEL - 7.5 * 16, 16, 8],
+				[2, 816, GROUNDLEVEL - 7.5 * 16, 16, 8],
+
+				[2, 1040, GROUNDLEVEL - 2 * 16, 16, 8],
+				[2, 1104, GROUNDLEVEL - 2 * 16, 16, 8],
+				[2, 1072, GROUNDLEVEL - 5 * 16, 16, 8],
+				[2, 1136, GROUNDLEVEL - 5 * 16, 16, 8],
+
+				[2, 1264, GROUNDLEVEL - 5 * 16, 64, 8],
+
+
+				//thin platforms
+				[3, 1040, GROUNDLEVEL - 5 * 16, 32, 8],
+				[3, 1088, GROUNDLEVEL - 5 * 16, 48, 8],
+				[3, 1056, GROUNDLEVEL - 2 * 16, 48, 8],
+				[3, 1120, GROUNDLEVEL - 2 * 16, 32, 8],
+
+
+				//stairs
+				[2, 80, GROUNDLEVEL - 1 * 16, 48, 16],
+				[2, 96, GROUNDLEVEL - 2 * 16, 32, 16],
+				[2, 112, GROUNDLEVEL - 3 * 16, 16, 16],
+
+				[2, 640, GROUNDLEVEL - 1 * 16, 48, 16],
+				[2, 656, GROUNDLEVEL - 2 * 16, 32, 16],
+				[2, 672, GROUNDLEVEL - 3 * 16, 16, 16],
+
+				[2, 848, GROUNDLEVEL - 3 * 16, 16, 16],
+				[2, 848, GROUNDLEVEL - 2 * 16, 32, 16],
+				[2, 848, GROUNDLEVEL - 1 * 16, 48, 16],
+
+				//moving platforms
+				[4, 160, GROUNDLEVEL - 3 * 16, 48, 4, 160, 160, GROUNDLEVEL - 3 * 16, GROUNDLEVEL - (3 * 16) - 64, 0, 0.3],
+				[4, 320, GROUNDLEVEL - 3 * 16, 48, 4, 320, 320, GROUNDLEVEL - 3 * 16, GROUNDLEVEL - (3 * 16) - 64, 0, 0.3],
+				
+				[4, 1488, GROUNDLEVEL - 2 * 16, 48, 4, 1488, 1648, GROUNDLEVEL - 2 * 16, GROUNDLEVEL - (2 * 16) - 64, 0.5, 0.000000001],
+
+				//spring
+				[6, 256, GROUNDLEVEL - 4 * 16, 16, 8],
+
+				//pits
+				[9, 128, 272, 0],
+				[9, 688, 144, 1],
+				[9, 1008, 700, 1],
+
+				//disappearing
+				[7, 720, GROUNDLEVEL - 7.5 * 16, 16, 8, 300],
+				[7, 736, GROUNDLEVEL - 7.5 * 16, 16, 8, 300],
+				[7, 752, GROUNDLEVEL - 7.5 * 16, 16, 8, 300],
+				[7, 768, GROUNDLEVEL - 7.5 * 16, 16, 8, 300],
+				[7, 784, GROUNDLEVEL - 7.5 * 16, 16, 8, 300],
+				[7, 800, GROUNDLEVEL - 7.5 * 16, 16, 8, 300],
+
+				[7, 1392, GROUNDLEVEL - 5 * 16, 16, 16, 200],
+				[7, 1408, GROUNDLEVEL - 5 * 16, 16, 16, 200],
+				[7, 1424, GROUNDLEVEL - 5 * 16, 16, 16, 200],
+				[7, 1440, GROUNDLEVEL - 5 * 16, 16, 16, 200],
+				[7, 1456, GROUNDLEVEL - 5 * 16, 16, 16, 200],
+				[7, 1392, GROUNDLEVEL - 4 * 16, 16, 16, 200],
+				[7, 1408, GROUNDLEVEL - 4 * 16, 16, 16, 200],
+				[7, 1424, GROUNDLEVEL - 4 * 16, 16, 16, 200],
+				[7, 1440, GROUNDLEVEL - 4 * 16, 16, 16, 200],
+				[7, 1456, GROUNDLEVEL - 4 * 16, 16, 16, 200],
+				[7, 1392, GROUNDLEVEL - 3 * 16, 16, 16, 200],
+				[7, 1408, GROUNDLEVEL - 3 * 16, 16, 16, 200],
+				[7, 1424, GROUNDLEVEL - 3 * 16, 16, 16, 200],
+				[7, 1440, GROUNDLEVEL - 3 * 16, 16, 16, 200],
+				[7, 1456, GROUNDLEVEL - 3 * 16, 16, 16, 200],
+				[7, 1392, GROUNDLEVEL - 2 * 16, 16, 16, 200],
+				[7, 1408, GROUNDLEVEL - 2 * 16, 16, 16, 200],
+				[7, 1424, GROUNDLEVEL - 2 * 16, 16, 16, 200],
+				[7, 1440, GROUNDLEVEL - 2 * 16, 16, 16, 200],
+				[7, 1456, GROUNDLEVEL - 2 * 16, 16, 16, 200],
+				[7, 1392, GROUNDLEVEL - 1 * 16, 16, 16, 200],
+				[7, 1408, GROUNDLEVEL - 1 * 16, 16, 16, 200],
+				[7, 1424, GROUNDLEVEL - 1 * 16, 16, 16, 200],
+				[7, 1440, GROUNDLEVEL - 1 * 16, 16, 16, 200],
+				[7, 1456, GROUNDLEVEL - 1 * 16, 16, 16, 200],
+
+				//[5, 48, GROUNDLEVEL - 16, 16, 16, 0, "red"],
+
+				//fatso
+				[21, 608, GROUNDLEVEL - 2 * 16, 440, 608, 0.5],
+				[21, 720, GROUNDLEVEL - 6 * 16, 720, 784, 0.2],
+				[21, 1040, GROUNDLEVEL - 7 * 16, 1040, 1120, 0.3],
 
 				[20, 0, 240]
 								];
@@ -125,7 +204,7 @@ window.onload = function() {
 			}
 
 			// Place water all across the bottom of the screen
-			for (xWaterLocation = 0; xWaterLocation < width*2; xWaterLocation+= 64) {
+			for (xWaterLocation = 0; xWaterLocation < 2100; xWaterLocation+= 64) {
 				Crafty.e("waterType")
 					.setWater(xWaterLocation, GROUNDLEVEL+8, 64, 16)
 			}
