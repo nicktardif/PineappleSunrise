@@ -199,10 +199,9 @@ Crafty.c("playerType", {
 		this.gravity('platform');
 		this.gravityConst(.3);
 		this.collision();
-		this.animate("down-right", 5, 10, 1);
-		this.animate("up-right", 6, 10, -1);
-		this.animate("down-left", 7, 10, 1);
-		this.animate("up-left", 8, 10, -1);
+		this.animate("walk_right", 4, 18, 6);
+		this.animate("walk_left", 1, 18, 3);
+		this.animate("stopped", 0, 18, 0);
 		
 	},
 	setPlayer: function(inputX, inputY, bsize, mspeed, jspeed, fallAmounts) {
@@ -293,8 +292,22 @@ Crafty.c("playerType", {
 			if(vpx > 0 && vpx < 1500) {
 				Crafty.viewport.x = -vpx;
 			}
-			//animate walking
 		});
+		// animate walking
+		this.bind("NewDirection",
+			function (direction) {
+				if (direction.x < 0) {
+					if (!this.isPlaying("walk_left"))
+						this.stop().animate("walk_left", 5, -1);
+				}
+				if (direction.x > 0) {
+					if (!this.isPlaying("walk_right"))
+						this.stop().animate("walk_right", 5, -1);
+				}
+				if(!direction.x ) {
+					this.stop().animate("stopped", 10, 1);
+				}
+		})
 	}
 });
 Crafty.c("fatsoType", { 	//large enemy that walks back and forth

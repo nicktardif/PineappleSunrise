@@ -20,7 +20,7 @@ window.onload = function() {
 			
 			//set the images for the sprites
 			Crafty.sprite(BLOCKSIZE, "sprites/sprites.png", {
-				player: [4,10],
+				player: [0,18],
 				normalPlatform: [0,16], thinPlatform: [0,17], movingPlatform: [0,15], disappearing: [0,14], ground: [0,13],
 				water: [0,11],
 				sign0: [0,0], sign1: [1,0], sign2: [2,0], sign3: [3,0], sign4: [4,0],
