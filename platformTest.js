@@ -208,6 +208,8 @@ window.onload = function() {
 				Crafty.e("waterType")
 					.setWater(xWaterLocation, GROUNDLEVEL+8, 64, 16)
 			}
+			Crafty.audio.add({ backgroundMusic: ["audio/bgmusic.ogg"] });
+			Crafty.audio.play("backgroundMusic", -1);
 			
         });
  
