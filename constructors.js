@@ -195,7 +195,7 @@ Crafty.c("waterType", { //water, float in it, drown if you stay in too long
 
 Crafty.c("playerType", {
 	init: function() {
-		this.requires("2D, DOM, player, Gravity, Controls, Twoway2, Collision, SpriteAnimation");
+		this.requires("2D, DOM, player, Gravity, Controls, Twoway, Collision, SpriteAnimation");
 		this.gravity('platform');
 		this.gravityConst(.3);
 		this.collision();
@@ -348,50 +348,6 @@ Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 				}
 			}
 		});
-	}
-});
-
-// override twoway
-/**@
-* #Twoway
-* @category Input
-* Move an entity left or right using the arrow keys or `D` and `A` and jump using up arrow or `W`.
-*
-* When direction changes a NewDirection event is triggered with an object detailing the new direction: {x: x_movement, y: y_movement}. This is consistent with Fourway and Multiway components.
-* When entity has moved on x-axis a Moved event is triggered with an object specifying the old position {x: old_x, y: old_y}
-*/
-Crafty.c("Twoway2", {
-	_speed: 3,
-	_up: false,
-
-	init: function () {
-		this.requires("Fourway, Keyboard");
-	},
-
-	twoway: function (speed, jump) {
-
-		this.multiway(speed, {
-			RIGHT_ARROW: 0,
-			LEFT_ARROW: 180,
-			D: 0,
-			A: 180,
-			Q: 180
-		});
-
-		if (speed) this._speed = speed;
-		jump = jump || this._speed * 2;
-
-		this.bind("EnterFrame", function () {
-			if (this.disableControls) return;
-			if (this._up) {
-				this.y -= 1.2*jump;
-				this._falling = true;
-			}
-		}).bind("KeyDown", function () {
-			if (this.isDown("UP_ARROW") || this.isDown("W") || this.isDown("Z")) this._up = true;
-		});
-
-		return this;
 	}
 });
 
