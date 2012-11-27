@@ -225,6 +225,6 @@ window.onload = function() {
         });
         Crafty.scene("loading");
 		
-		Crafty.audio.add({ backgroundMusic: ["audio/bgmusic.ogg"] });
+		Crafty.audio.add({ backgroundMusic: ["audio/bgmusic.ogg"], jumpSound: ["audio/jump.ogg"] });
 		Crafty.audio.play("backgroundMusic", -1, .75);
 };

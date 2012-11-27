@@ -233,7 +233,7 @@ Crafty.c("playerType", {
 			}
 		});
 		this.onHit("solid", function (hit) {
-			if(this._up) {
+		    if (this._up) {
 				this.y += hit[0].obj.h / 2;
 				this._falling = true;
 				this._up = false;
@@ -248,12 +248,13 @@ Crafty.c("playerType", {
 			Crafty.viewport.x = 0;
 			Crafty.scene("game");		//starts over
 		});
-		this.onHit("spring", function(hit) {
+		this.onHit("spring", function (hit) {
 			if(this._falling) {
 				if(!this._up) { 		//coming from the top
 					this.y -= 2 * (hit[0].obj.h);
 					this._falling = false;
 					this._up = true;
+					Crafty.audio.play("jumpSound", 1, .5);
 				}
 				else {					//coming from the bottom
 					this.y += hit[0].obj.h / 2;
@@ -281,7 +282,7 @@ Crafty.c("playerType", {
 			}
 
 		});
-		this.onHit("wallType", function(hit) {
+		this.onHit("wallType", function (hit) {
 			if(hit[0].obj.isLeft === 1) { 
 				this.x += hit[0].obj.w / 4;
 				this._x += hit[0].obj.w / 4;
@@ -301,18 +302,18 @@ Crafty.c("playerType", {
 		// animate walking
 		this.bind("NewDirection",
 			function (direction) {
-				if (direction.x < 0) {
-					if (!this.isPlaying("walk_left"))
-						this.stop().animate("walk_left", 5, -1);
-				}
-				if (direction.x > 0) {
-					if (!this.isPlaying("walk_right"))
-						this.stop().animate("walk_right", 5, -1);
-				}
-				if(!direction.x ) {
-					this.stop().animate("stopped", 10, 1);
-				}
-		})
+			    if (direction.x < 0) {
+			        if (!this.isPlaying("walk_left"))
+			            this.stop().animate("walk_left", 5, -1);
+			    }
+			    if (direction.x > 0) {
+			        if (!this.isPlaying("walk_right"))
+			            this.stop().animate("walk_right", 5, -1);
+			    }
+			    if (!direction.x) {
+			        this.stop().animate("stopped", 10, 1);
+			    }
+			});
 	}
 });
 Crafty.c("fatsoType", { 	//large enemy that walks back and forth
