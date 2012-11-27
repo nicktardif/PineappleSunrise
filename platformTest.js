@@ -144,8 +144,6 @@ window.onload = function() {
 
 					//[5, 48, GROUNDLEVEL - 16, 16, 16, 0, "red"],
 
-				[10, 1768, GROUNDLEVEL - 2 * 16, 32, 32], 
-
 				//fatso
 				[21, 608, GROUNDLEVEL - 2 * 16, 440, 608, 0.5],
 				[21, 720, GROUNDLEVEL - 6 * 16, 720, 784, 0.2],
@@ -193,10 +191,6 @@ window.onload = function() {
 						Crafty.e("pitType")
 						.setPit(levelArray[i][1], GROUNDLEVEL, levelArray[i][2], levelArray[i][3], fallAmounts[levelArray[i][3]]);
 						break;
-					case 10: //finish
-						Crafty.e("finishType")
-						.setFinish(levelArray[i][1], levelArray[i][2], levelArray[i][3], levelArray[i][4]);
-						break;
 					case 20: //player
 						Crafty.e("playerType")
 						.setPlayer(levelArray[i][1], levelArray[i][2], BLOCKSIZE, MOVESPEED, JUMPSPEED, fallAmounts);
@@ -215,8 +209,6 @@ window.onload = function() {
 				Crafty.e("waterType")
 					.setWater(xWaterLocation, GROUNDLEVEL+8, 64, 16)
 			}
-			//Crafty.e("2D, DOM, Text") .attr({ x: 50, y: 10, w: 100, h: 50 }) .text("Level 1") .textColor('000000');
-			Crafty.e("textType") .setText(50, 10, 100, 50, "Level 1");
 			
 			
         });
@@ -230,14 +222,9 @@ window.onload = function() {
 					"text-align": "center",
 					"color": "white"
 			});
-			Crafty.audio.add({ backgroundMusic: ["audio/bgmusic.ogg"], jumpSound: ["audio/jump.ogg"] });
-			Crafty.audio.play("backgroundMusic", -1, .75);
         });
-
-		Crafty.scene("levelComplete", function() {
-			Crafty.e("textType") .setText(100, 0, 150, 200, "some text goes here");
-		});
-
         Crafty.scene("loading");
 		
+		Crafty.audio.add({ backgroundMusic: ["audio/bgmusic.ogg"], jumpSound: ["audio/jump.ogg"] });
+		Crafty.audio.play("backgroundMusic", -1, .75);
 };
