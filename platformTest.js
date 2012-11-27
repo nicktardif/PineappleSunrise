@@ -218,6 +218,8 @@ window.onload = function() {
 				Crafty.e("waterType")
 					.setWater(xWaterLocation, GROUNDLEVEL+8, 64, 16)
 			}
+
+			Crafty.e("textType") .setText(50, 10, 100, 50, "Level 1");
 			
 			
         });
@@ -231,14 +233,15 @@ window.onload = function() {
 					"text-align": "center",
 					"color": "white"
 			});
+			Crafty.audio.add({ 
+				backgroundMusic: ["audio/bgmusic.ogg"],
+				jumpSound: ["audio/jump.ogg"],
+				platformBreak: ["audio/break.ogg"],
+				winner: ["audio/winner.ogg"] 
+			});
+			Crafty.audio.play("backgroundMusic", -1, .75);
         });
+		
         Crafty.scene("loading");
 		
-		Crafty.audio.add({ 
-			backgroundMusic: ["audio/bgmusic.ogg"],
-			jumpSound: ["audio/jump.ogg"],
-			platformBreak: ["audio/break.ogg"],
-			winner: ["audio/winner.ogg"] 
-		});
-		Crafty.audio.play("backgroundMusic", -1, .75);
 };

@@ -190,7 +190,7 @@ Crafty.c("waterType", { //water, float in it, drown if you stay in too long
 });
 Crafty.c("endType", { // run into this and you win
 	init: function() {
-		this.requires("2D, DOM, end, endSprite");
+		this.requires("2D, DOM, endSprite");
 	},
 	setEnd: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
@@ -201,6 +201,22 @@ Crafty.c("endType", { // run into this and you win
 		});
 	}
 });
+
+Crafty.c("textType", {
+	init: function() {
+		this.requires("2D, DOM, Text");
+	},
+	setText: function(inputX, inputY, inputW, inputH, text) {
+		this.attr({
+			x: inputX, 
+			y: inputY,
+			w: inputW,
+			h: inputH
+		});
+		this.text(text);
+	}
+});
+
 
 ////////////////////////////
 //		Constructors
@@ -306,9 +322,11 @@ Crafty.c("playerType", {
 				this._x -= hit[0].obj.w / 4;
 			}
 		});
-		this.onHit("end", function(hit) {
+		this.onHit("endType", function(hit) {
 			Crafty.audio.stop("backgroundMusic");
 			Crafty.audio.play("winner");
+			Crafty.viewport.x = 0;
+			Crafty.scene("game");
 		});
 		this.bind("EnterFrame", function() {
 			//position of the viewport
