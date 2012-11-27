@@ -2,7 +2,7 @@ window.onload = function() {
 		var width = 700;
 		var height = 272;
         Crafty.init(width, height);
-		var fallAmounts = [0, 0, 0];
+		var fallAmounts = [0, 0, 0, 0];
         Crafty.scene("game", function () {
             var MOVESPEED = 3;
             var JUMPSPEED = 6;
@@ -106,7 +106,7 @@ window.onload = function() {
 				//pits
 				[9, 128, 272, 0],
 				[9, 688, 144, 1],
-				[9, 1008, 700, 1],
+				[9, 1008, 700, 2],
 
 				//disappearing
 				[7, 720, GROUNDLEVEL - 7.5 * 16, 16, 8, 300],
@@ -142,14 +142,15 @@ window.onload = function() {
 				[7, 1440, GROUNDLEVEL - 1 * 16, 16, 16, 200],
 				[7, 1456, GROUNDLEVEL - 1 * 16, 16, 16, 200],
 
-				//[5, 48, GROUNDLEVEL - 16, 16, 16, 0, "red"],
+					//[5, 48, GROUNDLEVEL - 16, 16, 16, 0, "red"],
 
 				//fatso
 				[21, 608, GROUNDLEVEL - 2 * 16, 440, 608, 0.5],
 				[21, 720, GROUNDLEVEL - 6 * 16, 720, 784, 0.2],
 				[21, 1040, GROUNDLEVEL - 7 * 16, 1040, 1120, 0.3],
 
-				[20, 0, 240]
+				//player
+				[20, 0, GROUNDLEVEL]
 								];
 					
 			for(var i = 0; i < levelArray.length; i++) {

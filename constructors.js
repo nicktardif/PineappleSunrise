@@ -213,18 +213,23 @@ Crafty.c("playerType", {
 		});
 		this.twoway(mspeed, jspeed); 
 		this.onHit("noHorizontal", function (hit) {
-			if(this.x < hit[0].obj.x) {
-				this.x -= 4;
-				this._x -= 4;
+			if(this.y < hit[0].obj.y) {
+
 			}
-			if(this.x > hit[0].obj.x + hit[0].obj.w - 16) {
-				this.x += 4;
-				this._x += 4;
-			}
-			if(this._up) {
-				this.y += hit[0].obj.h / 2;
-				this._falling = true;
-				this._up = false;
+			else {
+				if(this.x < hit[0].obj.x) {
+					this.x = hit[0].obj.x - 16;
+					this._x = hit[0].obj.x - 16;
+				}
+				if(this.x >= (hit[0].obj.x) ) {
+					this.x = (hit[0].obj.x + hit[0].obj.w); 
+					this._x = (hit[0].obj.x + hit[0].obj.w); 
+				}
+				if(this._up) {
+					this.y += hit[0].obj.h / 2;
+					this._falling = true;
+					this._up = false;
+				}
 			}
 		});
 		this.onHit("solid", function (hit) {
