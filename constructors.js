@@ -125,6 +125,7 @@ Crafty.c("disappearingType", { 	//block dissappears after a set amount of time
 			this.timeout(function() {
 				cd.destroy();
 				this.destroy();
+				Crafty.audio.play('platformBreak', 1, .5);
 			}, this.disappearTime);
 		});
 	}
@@ -187,6 +188,35 @@ Crafty.c("waterType", { //water, float in it, drown if you stay in too long
 
 	}
 });
+Crafty.c("endType", { // run into this and you win
+	init: function() {
+		this.requires("2D, DOM, endSprite");
+	},
+	setEnd: function(inputX, inputY, inputW, inputH) {
+		this.attr({ 
+			x: inputX,
+			y: inputY,
+			w: inputW,
+			h: inputH
+		});
+	}
+});
+
+Crafty.c("textType", {
+	init: function() {
+		this.requires("2D, DOM, Text");
+	},
+	setText: function(inputX, inputY, inputW, inputH, text) {
+		this.attr({
+			x: inputX, 
+			y: inputY,
+			w: inputW,
+			h: inputH
+		});
+		this.text(text);
+	}
+});
+
 
 ////////////////////////////
 //		Constructors
@@ -292,6 +322,12 @@ Crafty.c("playerType", {
 				this._x -= hit[0].obj.w / 4;
 			}
 		});
+		this.onHit("endType", function(hit) {
+			Crafty.audio.stop("backgroundMusic");
+			Crafty.audio.play("winner");
+			Crafty.viewport.x = 0;
+			Crafty.scene("game");
+		});
 		this.bind("EnterFrame", function() {
 			//position of the viewport
 			var vpx = this._x - 350;
@@ -314,6 +350,24 @@ Crafty.c("playerType", {
 			        this.stop().animate("stopped", 10, 1);
 			    }
 			});
+		this.attr("triggers", 0); //set a trigger count
+		this.bind("myevent", function() {
+			this.triggers++; //whenever myevent is triggered, increment
+			//document.getElementById("debug").innerHTML = this.triggers;
+		});
+		this.bind("KeyDown", function(e) {
+			if (e.key == Crafty.keys['M']) {
+				Crafty.audio.toggleMute();
+			}
+			if (e.key == Crafty.keys['P']) {
+				Crafty.pause();
+				Crafty.audio.toggleMute('backgroundMusic');
+			}
+			if (e.key == Crafty.keys['B'] || e.key == Crafty.keys['P']) {
+				Crafty.audio.togglePause('backgroundMusic');
+			}
+			Crafty.trigger("myevent");
+		});
 	}
 });
 Crafty.c("fatsoType", { 	//large enemy that walks back and forth

@@ -1,4 +1,5 @@
 window.onload = function() {
+		document.body.innerHTML += "<div id='debug'></div><div id='instructions'>Press <strong>P</strong> to pause, <strong>B</strong> to toggle background music, <strong>M</strong> to mute all sounds</div>";
 		var width = 700;
 		var height = 272;
         Crafty.init(width, height);
@@ -22,7 +23,7 @@ window.onload = function() {
 			Crafty.sprite(BLOCKSIZE, "sprites/sprites.png", {
 				player: [0,18],
 				normalPlatform: [0,16], thinPlatform: [0,17], movingPlatform: [0,15], disappearing: [0,14], ground: [0,13],
-				water: [0,11],
+				water: [0,11], endSprite: [9,10],
 				sign0: [0,0], sign1: [1,0], sign2: [2,0], sign3: [3,0], sign4: [4,0],
 				sign5: [5,0], sign6: [6,0], sign7: [7,0], sign8: [8,0], sign9: [9,0],
 				sign10: [0,1], sign11: [1,1], sign12: [2,1], sign13: [3,1], sign14: [4,1],
@@ -143,6 +144,10 @@ window.onload = function() {
 				[7, 1456, GROUNDLEVEL - 1 * 16, 16, 16, 200],
 
 					//[5, 48, GROUNDLEVEL - 16, 16, 16, 0, "red"],
+					
+								
+				// end
+				[10, 1744, GROUNDLEVEL - 2 * 16, 16, 16],
 
 				//fatso
 				[21, 608, GROUNDLEVEL - 2 * 16, 440, 608, 0.5],
@@ -150,7 +155,7 @@ window.onload = function() {
 				[21, 1040, GROUNDLEVEL - 7 * 16, 1040, 1120, 0.3],
 
 				//player
-				[20, 0, GROUNDLEVEL]
+				[20, 0, GROUNDLEVEL-16]
 								];
 					
 			for(var i = 0; i < levelArray.length; i++) {
@@ -191,6 +196,10 @@ window.onload = function() {
 						Crafty.e("pitType")
 						.setPit(levelArray[i][1], GROUNDLEVEL, levelArray[i][2], levelArray[i][3], fallAmounts[levelArray[i][3]]);
 						break;
+					case 10: //end
+						Crafty.e("endType")
+						.setEnd(levelArray[i][1], levelArray[i][2], levelArray[i][3], levelArray[i][4]);
+						break;
 					case 20: //player
 						Crafty.e("playerType")
 						.setPlayer(levelArray[i][1], levelArray[i][2], BLOCKSIZE, MOVESPEED, JUMPSPEED, fallAmounts);
@@ -209,6 +218,8 @@ window.onload = function() {
 				Crafty.e("waterType")
 					.setWater(xWaterLocation, GROUNDLEVEL+8, 64, 16)
 			}
+
+			Crafty.e("textType") .setText(50, 10, 100, 50, "Level 1");
 			
 			
         });
@@ -222,9 +233,15 @@ window.onload = function() {
 					"text-align": "center",
 					"color": "white"
 			});
+			Crafty.audio.add({ 
+				backgroundMusic: ["audio/bgmusic.ogg"],
+				jumpSound: ["audio/jump.ogg"],
+				platformBreak: ["audio/break.ogg"],
+				winner: ["audio/winner.ogg"] 
+			});
+			Crafty.audio.play("backgroundMusic", -1, .75);
         });
+		
         Crafty.scene("loading");
 		
-		Crafty.audio.add({ backgroundMusic: ["audio/bgmusic.ogg"], jumpSound: ["audio/jump.ogg"] });
-		Crafty.audio.play("backgroundMusic", -1, .75);
 };
