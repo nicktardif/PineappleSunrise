@@ -130,6 +130,22 @@ Crafty.c("disappearingType", { 	//block dissappears after a set amount of time
 	}
 });
 
+
+Crafty.c("finishType", { //end of level object
+	init: function() {
+		this.requires("2D, DOM, finish, Color");
+	},
+	setFinish: function(inputX, inputY, inputW, inputH) {
+		this.attr({ 
+			x: inputX,
+			y: inputY,
+			w: inputW,
+			h: inputH
+		});
+		this.color("indigo");
+	}
+});
+
 ////////////////////////////
 //		Constructors
 //			for
@@ -185,6 +201,20 @@ Crafty.c("waterType", { //water, float in it, drown if you stay in too long
 			h: inputH
 		});
 
+	}
+});
+Crafty.c("textType", {
+	init: function() {
+		this.requires("2D, DOM, Text");
+	},
+	setText: function(inputX, inputY, inputW, inputH, text) {
+		this.attr({
+			x: inputX, 
+			y: inputY,
+			w: inputW,
+			h: inputH
+		});
+		this.text(text);
 	}
 });
 
@@ -291,6 +321,10 @@ Crafty.c("playerType", {
 				this.x -= hit[0].obj.w / 4;
 				this._x -= hit[0].obj.w / 4;
 			}
+		});
+		this.onHit("finishType", function() {
+			Crafty.viewport.x = 0;
+			Crafty.scene("game");	
 		});
 		this.bind("EnterFrame", function() {
 			//position of the viewport
