@@ -270,29 +270,35 @@ Crafty.c("playerType", {
 			}
 		});
 		this.onHit("pit", function(hit) {
+			this.death(this.x);
 			fallAmounts[hit[0].obj.pitNumber] = fallAmounts[hit[0].obj.pitNumber] + 1;
-			Crafty.viewport.x = 0;
-			Crafty.scene("game");		//starts over
 		});
 		this.onHit("enemy", function(hit) {
-			Crafty.viewport.x = 0;
-			Crafty.scene("game");		//starts over
+			this.death(this.x);
 		});
-		this.onHit("spring", function (hit) {
-			if(this._falling) {
-				if(!this._up) { 		//coming from the top
-					this.y -= 2 * (hit[0].obj.h);
-					this._falling = false;
-					this._up = true;
-					Crafty.audio.play("jumpSound", 1, .5);
+		this.onHit("spring", 
+			function (hit) {
+				if(this._falling) {
+					if(!this._up) { 		//coming from the top
+						this.y = hit[0].obj.y - 2 * hit[0].obj.h;
+						this._falling = false;
+						this._up = true;
+						Crafty.audio.play("jumpSound", 1, .5);
+					}
+					else {					//coming from the bottom
+						this.y += hit[0].obj.h / 2;
+						this._falling = true;
+						this._up = false;
+					}
 				}
-				else {					//coming from the bottom
-					this.y += hit[0].obj.h / 2;
-					this._falling = true;
-					this._up = false;
-				}
+			},
+			function() {
+				this.twoway(3.0, 3.0);
+				this.timeout(function() {
+					this.twoway(3.0, -3.0);	
+				}, 500);
 			}
-		}); 
+		); 
 		this.onHit("movingPlatform", function(hit) {
 			if(hit[0].obj.yForward === 1) {		//platform is moving up
 				this.y -= hit[0].obj.ySpeed;
@@ -368,6 +374,16 @@ Crafty.c("playerType", {
 			}
 			Crafty.trigger("myevent");
 		});
+	},
+	death: function(inputX) {
+		this.y = 500;
+		this._y = 500;
+		this.disableControl();
+		var deathText = Crafty.e("textType") .setText(inputX, 125, 100, 20, "You died");
+		this.timeout( function() {
+			Crafty.viewport.x = 0;
+			Crafty.scene("game");
+		}, 500);
 	}
 });
 Crafty.c("fatsoType", { 	//large enemy that walks back and forth

@@ -1,20 +1,24 @@
 Sidescroller: Pineapple Sunrise
 
 Our plan:
-	Andre:
-
 	Austin:
-
 	Nick: HUD, Enemies
 
-Figure this stuff out:
+Goals:
 	Implement repeating sprites, so you can have a larger platform
-	Image skips when jumping up through non-solid platform
 	Title Screen
-	Animate Player
 	HUD interface
+	Create new player sprite
+	Move level layout to external file
 	Sun move across level (timer maybe)
 	Enemies
+	Smoother movement
+	Weapons and attacks
+
+Bugs:
+	Jump through the springs and stuff
+	Disappearing blocks don't always trigger
+	Image skips when jumping up through non-solid platform
 
 Tasks:
 	Levels
@@ -24,9 +28,7 @@ Tasks:
 	Level select, etc.
 	Scene transitions
 	Loading, level select, download sprites, etc.
-Maybe later:
-	Score
-	High scores
+
 
 Class Tree
 Classes:

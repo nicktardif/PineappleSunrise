@@ -241,7 +241,9 @@ window.onload = function() {
 				winner: ["audio/winner.ogg"] 
 			});
 			Crafty.audio.play("backgroundMusic", -1, .75);
+	
         });
+
 		
         Crafty.scene("loading");
 		
