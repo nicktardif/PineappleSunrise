@@ -1,5 +1,5 @@
 window.onload = function() {
-		document.body.innerHTML += "<div id='debug'></div><div id='instructions'>Press <strong>P</strong> to pause, <strong>B</strong> to toggle background music, <strong>M</strong> to mute all sounds</div>";
+		//document.body.innerHTML += "<div id='debug'></div><div id='instructions'>Press <strong>P</strong> to pause, <strong>B</strong> to toggle background music, <strong>M</strong> to mute all sounds</div>";
 		var width = 700;
 		var height = 272;
         Crafty.init(width, height);
@@ -150,6 +150,12 @@ window.onload = function() {
 				// end
 				[10, 1744, GROUNDLEVEL - 2 * 16, 16, 16],
 
+				//text
+				//[11, 50, 10, 100, 50, "Level 1", "#ffffff", "10pt Palatino"],
+
+				//dialogue
+				[12, 100, 50, 300, 100, "lightbrown", "Level 1. Press 'P' to pause the game, press 'M' to mute all sounds, press 'B' to mute the background music, press 'SPACEBAR' to start the game", "#e2671f", "10pt Palatino"],
+
 				//fatso
 				[21, 608, GROUNDLEVEL - 2 * 16, 440, 608, 0.5],
 				[21, 720, GROUNDLEVEL - 6 * 16, 720, 784, 0.2],
@@ -201,6 +207,14 @@ window.onload = function() {
 						Crafty.e("endType")
 						.setEnd(levelArray[i][1], levelArray[i][2], levelArray[i][3], levelArray[i][4]);
 						break;
+					case 11: //text
+						Crafty.e("textType")
+						.setText(levelArray[i][1], levelArray[i][2], levelArray[i][3], levelArray[i][4], levelArray[i][5], levelArray[i][6], levelArray[i][7]);
+						break;
+					case 12: //dialogue box
+						Crafty.e("dialogueType")
+						.setDialogue(levelArray[i][1], levelArray[i][2], levelArray[i][3], levelArray[i][4], levelArray[i][5], levelArray[i][6], levelArray[i][7], levelArray[i][8]);
+						break;
 					case 20: //player
 						Crafty.e("playerType")
 						.setPlayer(levelArray[i][1], levelArray[i][2], BLOCKSIZE, MOVESPEED, JUMPSPEED, fallAmounts);
@@ -220,8 +234,7 @@ window.onload = function() {
 					.setWater(xWaterLocation, GROUNDLEVEL+8, 64, 16)
 			}
 
-			Crafty.e("textType") .setText(50, 10, 100, 50, "Level 1");
-			
+			Crafty.pause();	// pauses the game while the info box is open
 			
         });
  
@@ -240,11 +253,53 @@ window.onload = function() {
 				platformBreak: ["audio/break.ogg"],
 				winner: ["audio/winner.ogg"] 
 			});
-			Crafty.audio.play("backgroundMusic", -1, .75);
-	
+			//Crafty.audio.play("backgroundMusic", -1, .75); turned off during development 
         });
+		
+		Crafty.scene("titleScreen", function() {
+			Crafty.background("#ffcd75");
+			Crafty.e("2D, DOM, Image") .attr({x: 0, y: 0, w: 700, h: 130}) .image("sprites/psunrisebanner.png");
+			Crafty.e("2D, DOM, Text") .attr({x: 610, y: 5, w: 100, h: 20}) .text("Options") .css({"font": "10pt Arial"});
+			Crafty.e("2D, DOM, Text") .attr({x: 30, y: 132, w: 60, h: 60}) .text("Level 1");
+			Crafty.e("2D, DOM, Text") .attr({x: 200, y: 132, w: 60, h: 60}) .text("Level 2");
+			Crafty.e("2D, DOM, Text") .attr({x: 370, y: 132, w: 60, h: 60}) .text("Level 3");
+			Crafty.e("2D, DOM, Text") .attr({x: 540, y: 132, w: 60, h: 60}) .text("Level 4");
+			Crafty.e("2D, DOM, Text") .attr({x: 30, y: 202, w: 60, h: 60}) .text("Level 5");
+			Crafty.e("2D, DOM, Text") .attr({x: 200, y: 202, w: 60, h: 60}) .text("Level 6");
+			Crafty.e("2D, DOM, Text") .attr({x: 370, y: 202, w: 60, h: 60}) .text("Level 7");
+			Crafty.e("2D, DOM, Text") .attr({x: 540, y: 202, w: 60, h: 60}) .text("Level 8");
+
+			
+			this.bind("KeyDown", function(e) {
+				if (e.key == Crafty.keys['1']) {
+					Crafty.scene("loading");
+				}
+				if (e.key == Crafty.keys['2']) {
+					Crafty.scene("loading");
+				}
+				if (e.key == Crafty.keys['3']) {
+					Crafty.scene("loading");
+				}
+				if (e.key == Crafty.keys['4']) {
+					Crafty.scene("loading");
+				}
+				if (e.key == Crafty.keys['5']) {
+					Crafty.scene("loading");
+				}
+				if (e.key == Crafty.keys['6']) {
+					Crafty.scene("loading");
+				}
+				if (e.key == Crafty.keys['7']) {
+					Crafty.scene("loading");
+				}
+				if (e.key == Crafty.keys['8']) {
+					Crafty.scene("loading");
+				}
+			});
+
+		});
 
 		
-        Crafty.scene("loading");
+        Crafty.scene("titleScreen");
 		
 };

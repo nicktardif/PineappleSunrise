@@ -131,6 +131,64 @@ Crafty.c("disappearingType", { 	//block dissappears after a set amount of time
 	}
 });
 
+Crafty.c("textType", {
+	init: function() {
+		this.requires("2D, DOM, Text");
+	},
+	setText: function(inputX, inputY, inputW, inputH, text, fontColor, fontAndSize) {
+		this.attr({
+			x: inputX, 
+			y: inputY,
+			w: inputW,
+			h: inputH
+		});
+		this.text(text);
+		this.css({"color": fontColor, "font": fontAndSize});
+	}
+
+	/*setText: function(inputX, inputY, inputW, inputH, text, font, fontColor, fontSize) {
+		this.attr({
+			x: inputX, 
+			y: inputY,
+			w: inputW,
+			h: inputH
+		});
+		this.text(text);
+		this.textColor(fontColor);
+		this.textFont({ size: fontSize, family: font});
+	}, */
+
+
+});
+
+Crafty.c("dialogueType", {
+	init: function() {
+		//going to eventually have different size sprites according to which size is needed
+		this.requires("2D, DOM, Color");
+	},
+	setDialogue: function(inputX, inputY, inputW, inputH, color, text, fontColor, fontAndSize) {
+	//text array[0] is a number of how many "blurbs" are in the dialogue box
+	//iterate through each of those, making a new text type in the box
+		this.attr({
+			x: inputX, 
+			y: inputY,
+			w: inputW,
+			h: inputH
+		});
+		var dialogueImage = Crafty.e("2D, DOM, Image") .attr({x: inputX, y: inputY, w: inputW, h: inputH}) .image("sprites/dialogue300100background.png");
+		var dialogueText = Crafty.e("2D, DOM, Text") .attr({ x: inputX, y: inputY, w: inputW, h: inputH }) .text(text) .css({"color": fontColor, "font": fontAndSize, "text-align": "left"});
+
+		this.bind("KeyDown", function(e) {
+			if (e.key == Crafty.keys['SPACE']) {
+				dialogueImage.destroy();
+				dialogueText.destroy();
+				this.destroy();
+				Crafty.pause();
+			}
+		});
+	}
+});
+
 ////////////////////////////
 //		Constructors
 //			for
@@ -202,20 +260,6 @@ Crafty.c("endType", { // run into this and you win
 	}
 });
 
-Crafty.c("textType", {
-	init: function() {
-		this.requires("2D, DOM, Text");
-	},
-	setText: function(inputX, inputY, inputW, inputH, text) {
-		this.attr({
-			x: inputX, 
-			y: inputY,
-			w: inputW,
-			h: inputH
-		});
-		this.text(text);
-	}
-});
 
 
 ////////////////////////////
@@ -280,7 +324,7 @@ Crafty.c("playerType", {
 			function (hit) {
 				if(this._falling) {
 					if(!this._up) { 		//coming from the top
-						this.y = hit[0].obj.y - 2 * hit[0].obj.h;
+						this.y = hit[0].obj.y - 16;
 						this._falling = false;
 						this._up = true;
 						Crafty.audio.play("jumpSound", 1, .5);
@@ -379,7 +423,7 @@ Crafty.c("playerType", {
 		this.y = 500;
 		this._y = 500;
 		this.disableControl();
-		var deathText = Crafty.e("textType") .setText(inputX, 125, 100, 20, "You died");
+		var deathText = Crafty.e("textType") .setText(inputX, 125, 100, 20, "You died", "000000", "14pt Arial");
 		this.timeout( function() {
 			Crafty.viewport.x = 0;
 			Crafty.scene("game");
