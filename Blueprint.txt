@@ -11,6 +11,7 @@ Goals:
 	Create new player sprite
 	Move level layout to external file
 	Sun move across level (timer maybe)
+		when you die the sun moves a certain amount, making the timer go down
 	Enemies
 	Smoother movement
 	Weapons and attacks

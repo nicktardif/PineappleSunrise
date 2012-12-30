@@ -145,20 +145,6 @@ Crafty.c("textType", {
 		this.text(text);
 		this.css({"color": fontColor, "font": fontAndSize});
 	}
-
-	/*setText: function(inputX, inputY, inputW, inputH, text, font, fontColor, fontSize) {
-		this.attr({
-			x: inputX, 
-			y: inputY,
-			w: inputW,
-			h: inputH
-		});
-		this.text(text);
-		this.textColor(fontColor);
-		this.textFont({ size: fontSize, family: font});
-	}, */
-
-
 });
 
 Crafty.c("dialogueType", {
@@ -166,9 +152,9 @@ Crafty.c("dialogueType", {
 		//going to eventually have different size sprites according to which size is needed
 		this.requires("2D, DOM, Color");
 	},
-	setDialogue: function(inputX, inputY, inputW, inputH, color, text, fontColor, fontAndSize) {
+	setDialogue: function(inputX, inputY, inputW, inputH, textArray, fontColor, fontAndSize) {
 	//text array[0] is a number of how many "blurbs" are in the dialogue box
-	//iterate through each of those, making a new text type in the box
+	//iterate through each of those, making a new text entity in the box
 		this.attr({
 			x: inputX, 
 			y: inputY,
@@ -176,12 +162,19 @@ Crafty.c("dialogueType", {
 			h: inputH
 		});
 		var dialogueImage = Crafty.e("2D, DOM, Image") .attr({x: inputX, y: inputY, w: inputW, h: inputH}) .image("sprites/dialogue300100background.png");
-		var dialogueText = Crafty.e("2D, DOM, Text") .attr({ x: inputX, y: inputY, w: inputW, h: inputH }) .text(text) .css({"color": fontColor, "font": fontAndSize, "text-align": "left"});
+		var dialogueText = new Array();
+		for(var j = 0; j < textArray[0]; j++) {
+			//the 8 and 16 pixel buffer is so the text does not touch the border
+			dialogueText[j] = Crafty.e("2D, DOM, Text") .attr({ x: inputX + 8, y: inputY + 8 + (j * 16), w: inputW - 16, h: inputH - 16 }) .text(textArray[j + 1]) .css({"color": fontColor, "font": fontAndSize, "text-align": "left"});
+		}
 
+		//removes the entire dialogue box when spacebar is pushed and game resumes
 		this.bind("KeyDown", function(e) {
 			if (e.key == Crafty.keys['SPACE']) {
 				dialogueImage.destroy();
-				dialogueText.destroy();
+				for(var j = 0; j < textArray[0]; j++) {
+					dialogueText[j].destroy();
+				}
 				this.destroy();
 				Crafty.pause();
 			}
@@ -321,25 +314,17 @@ Crafty.c("playerType", {
 			this.death(this.x);
 		});
 		this.onHit("spring", 
+
+			//Nothing immediately happens upon touching it
 			function (hit) {
-				if(this._falling) {
-					if(!this._up) { 		//coming from the top
-						this.y = hit[0].obj.y - 16;
-						this._falling = false;
-						this._up = true;
-						Crafty.audio.play("jumpSound", 1, .5);
-					}
-					else {					//coming from the bottom
-						this.y += hit[0].obj.h / 2;
-						this._falling = true;
-						this._up = false;
-					}
-				}
 			},
+
+			//Upon leaving the spring you get a half second jump boost and a jump sound triggers if you do jump
 			function() {
-				this.twoway(3.0, 3.0);
+				this.twoway(mspeed, 3.0);
+				if(this._falling && this._up) Crafty.audio.play("jumpSound", 1, .5);
 				this.timeout(function() {
-					this.twoway(3.0, -3.0);	
+					this.twoway(mspeed, -3.0);	
 				}, 500);
 			}
 		); 

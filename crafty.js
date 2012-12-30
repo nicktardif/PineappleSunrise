@@ -6802,7 +6802,6 @@ Crafty.c("Twoway", {
 		});
 
 		if (speed) this._speed = speed;
-		jump = jump || this._speed * 2;
 
 		this.bind("EnterFrame", function () {
 			if (this.disableControls) return;

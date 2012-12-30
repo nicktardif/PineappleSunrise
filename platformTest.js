@@ -4,6 +4,13 @@ window.onload = function() {
 		var height = 272;
         Crafty.init(width, height);
 		var fallAmounts = [0, 0, 0, 0];
+
+
+////////////////////////////
+//		Game scene	
+//		defintion	
+//		
+
         Crafty.scene("game", function () {
             var MOVESPEED = 3;
             var JUMPSPEED = 6;
@@ -49,8 +56,17 @@ window.onload = function() {
 			Crafty.sprite(LARGEBLOCKSIZE, "sprites/largesprites.png", {
 				fatsoSprite: [0,0]
 			});
-			//Entity Creation
+
+////////////////////////////
+//		Level	
+//		defintions	
+
 			var levelArray =[
+
+				// - - - - - - - - - - - - - - - - - - - - - - - - -
+				//                     Level 1
+				// - - - - - - - - - - - - - - - - - - - - - - - - -
+
 				//leftwall
 				[5, -8, 0, 8, height, 1, "black"],
 
@@ -103,6 +119,7 @@ window.onload = function() {
 
 				//spring
 				[6, 256, GROUNDLEVEL - 4 * 16, 16, 8],
+				[2, 256, GROUNDLEVEL - 4 * 16 + 8, 16, 8],
 
 				//pits
 				[9, -128, 128, 0],
@@ -143,18 +160,52 @@ window.onload = function() {
 				[7, 1424, GROUNDLEVEL - 1 * 16, 16, 16, 200],
 				[7, 1440, GROUNDLEVEL - 1 * 16, 16, 16, 200],
 				[7, 1456, GROUNDLEVEL - 1 * 16, 16, 16, 200],
-
-					//[5, 48, GROUNDLEVEL - 16, 16, 16, 0, "red"],
-					
+				
+				//water
+				[8, 0, GROUNDLEVEL + 8, 64, 16],
+				[8, 64, GROUNDLEVEL + 8, 64, 16],
+				[8, 128, GROUNDLEVEL + 8, 64, 16],
+				[8, 192, GROUNDLEVEL + 8, 64, 16],
+				[8, 256, GROUNDLEVEL + 8, 64, 16],
+				[8, 320, GROUNDLEVEL + 8, 64, 16],
+				[8, 384, GROUNDLEVEL + 8, 64, 16],
+				[8, 448, GROUNDLEVEL + 8, 64, 16],
+				[8, 512, GROUNDLEVEL + 8, 64, 16],
+				[8, 576, GROUNDLEVEL + 8, 64, 16],
+				[8, 640, GROUNDLEVEL + 8, 64, 16],
+				[8, 704, GROUNDLEVEL + 8, 64, 16],
+				[8, 768, GROUNDLEVEL + 8, 64, 16],
+				[8, 832, GROUNDLEVEL + 8, 64, 16],
+				[8, 896, GROUNDLEVEL + 8, 64, 16],
+				[8, 960, GROUNDLEVEL + 8, 64, 16],
+				[8, 1024, GROUNDLEVEL + 8, 64, 16],
+				[8, 1088, GROUNDLEVEL + 8, 64, 16],
+				[8, 1152, GROUNDLEVEL + 8, 64, 16],
+				[8, 1216, GROUNDLEVEL + 8, 64, 16],
+				[8, 1280, GROUNDLEVEL + 8, 64, 16],
+				[8, 1344, GROUNDLEVEL + 8, 64, 16],
+				[8, 1408, GROUNDLEVEL + 8, 64, 16],
+				[8, 1472, GROUNDLEVEL + 8, 64, 16],
+				[8, 1536, GROUNDLEVEL + 8, 64, 16],
+				[8, 1600, GROUNDLEVEL + 8, 64, 16],
+				[8, 1664, GROUNDLEVEL + 8, 64, 16],
+				[8, 1728, GROUNDLEVEL + 8, 64, 16],
+				[8, 1792, GROUNDLEVEL + 8, 64, 16],
+				[8, 1856, GROUNDLEVEL + 8, 64, 16],
+				[8, 1920, GROUNDLEVEL + 8, 64, 16],
+				[8, 1984, GROUNDLEVEL + 8, 64, 16],
+				[8, 2048, GROUNDLEVEL + 8, 64, 16],
+				[8, 2112, GROUNDLEVEL + 8, 64, 16],
+				[8, 2176, GROUNDLEVEL + 8, 64, 16],
 								
 				// end
 				[10, 1744, GROUNDLEVEL - 2 * 16, 16, 16],
 
 				//text
-				//[11, 50, 10, 100, 50, "Level 1", "#ffffff", "10pt Palatino"],
+				[11, 50, 10, 100, 50, "Level 1", "#ffffff", "12pt Palatino"],
 
 				//dialogue
-				[12, 100, 50, 300, 100, "lightbrown", "Level 1. Press 'P' to pause the game, press 'M' to mute all sounds, press 'B' to mute the background music, press 'SPACEBAR' to start the game", "#e2671f", "10pt Palatino"],
+				[12, 100, 50, 300, 100, [5, "Press 'P' to pause the game", "Press 'M' to mute all sounds", "Press 'B' to mute the background music", "", "Press 'SPACEBAR' to start the game"], "#e2671f", "10pt Palatino"],
 
 				//fatso
 				[21, 608, GROUNDLEVEL - 2 * 16, 440, 608, 0.5],
@@ -164,6 +215,8 @@ window.onload = function() {
 				//player
 				[20, 0, GROUNDLEVEL-16]
 								];
+
+			//Entity Creation
 					
 			for(var i = 0; i < levelArray.length; i++) {
 				switch (levelArray[i][0]) {
@@ -213,7 +266,7 @@ window.onload = function() {
 						break;
 					case 12: //dialogue box
 						Crafty.e("dialogueType")
-						.setDialogue(levelArray[i][1], levelArray[i][2], levelArray[i][3], levelArray[i][4], levelArray[i][5], levelArray[i][6], levelArray[i][7], levelArray[i][8]);
+						.setDialogue(levelArray[i][1], levelArray[i][2], levelArray[i][3], levelArray[i][4], levelArray[i][5], levelArray[i][6], levelArray[i][7]);
 						break;
 					case 20: //player
 						Crafty.e("playerType")
@@ -228,15 +281,15 @@ window.onload = function() {
 				}
 			}
 
-			// Place water all across the bottom of the screen
-			for (xWaterLocation = 0; xWaterLocation < 2100; xWaterLocation+= 64) {
-				Crafty.e("waterType")
-					.setWater(xWaterLocation, GROUNDLEVEL+8, 64, 16)
-			}
-
 			Crafty.pause();	// pauses the game while the info box is open
 			
         });
+
+
+////////////////////////////
+//		Other scene	
+//		defintions	
+//		(loading, title)	
  
         Crafty.scene("loading", function() {
 			Crafty.load(["sprites/sprites.png", "sprites/largesprites.png", "sprites/cloudswithskyandhorizon.png"], function() {
@@ -259,15 +312,15 @@ window.onload = function() {
 		Crafty.scene("titleScreen", function() {
 			Crafty.background("#ffcd75");
 			Crafty.e("2D, DOM, Image") .attr({x: 0, y: 0, w: 700, h: 130}) .image("sprites/psunrisebanner.png");
-			Crafty.e("2D, DOM, Text") .attr({x: 610, y: 5, w: 100, h: 20}) .text("Options") .css({"font": "10pt Arial"});
-			Crafty.e("2D, DOM, Text") .attr({x: 30, y: 132, w: 60, h: 60}) .text("Level 1");
-			Crafty.e("2D, DOM, Text") .attr({x: 200, y: 132, w: 60, h: 60}) .text("Level 2");
-			Crafty.e("2D, DOM, Text") .attr({x: 370, y: 132, w: 60, h: 60}) .text("Level 3");
-			Crafty.e("2D, DOM, Text") .attr({x: 540, y: 132, w: 60, h: 60}) .text("Level 4");
-			Crafty.e("2D, DOM, Text") .attr({x: 30, y: 202, w: 60, h: 60}) .text("Level 5");
-			Crafty.e("2D, DOM, Text") .attr({x: 200, y: 202, w: 60, h: 60}) .text("Level 6");
-			Crafty.e("2D, DOM, Text") .attr({x: 370, y: 202, w: 60, h: 60}) .text("Level 7");
-			Crafty.e("2D, DOM, Text") .attr({x: 540, y: 202, w: 60, h: 60}) .text("Level 8");
+			//Crafty.e("2D, DOM, Text") .attr({x: 610, y: 5, w: 100, h: 20}) .text("Options") .css({"font": "10pt Arial"});
+			Crafty.e("2D, DOM, Text") .attr({x: 30, y: 132, w: 60, h: 60}) .text("Level 1") .css({ "color": "#000000"});
+			Crafty.e("2D, DOM, Text") .attr({x: 200, y: 132, w: 60, h: 60}) .text("Level 2").css({ "color": "#000000"});
+			Crafty.e("2D, DOM, Text") .attr({x: 370, y: 132, w: 60, h: 60}) .text("Level 3").css({ "color": "#000000"});
+			Crafty.e("2D, DOM, Text") .attr({x: 540, y: 132, w: 60, h: 60}) .text("Level 4").css({ "color": "#000000"});
+			Crafty.e("2D, DOM, Text") .attr({x: 30, y: 202, w: 60, h: 60}) .text("Level 5").css({ "color": "#000000"});
+			Crafty.e("2D, DOM, Text") .attr({x: 200, y: 202, w: 60, h: 60}) .text("Level 6").css({ "color": "#000000"});
+			Crafty.e("2D, DOM, Text") .attr({x: 370, y: 202, w: 60, h: 60}) .text("Level 7").css({ "color": "#000000"});
+			Crafty.e("2D, DOM, Text") .attr({x: 540, y: 202, w: 60, h: 60}) .text("Level 8").css({ "color": "#000000"});
 
 			
 			this.bind("KeyDown", function(e) {
@@ -300,6 +353,12 @@ window.onload = function() {
 		});
 
 		
+////////////////////////////
+//
+//		Code to run			
+//	
+
+
         Crafty.scene("titleScreen");
 		
 };
