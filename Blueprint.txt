@@ -1,20 +1,16 @@
 Sidescroller: Pineapple Sunrise
 
 Our plan:
-	Austin:
-	Nick: HUD, Enemies
 
 Goals:
 	Implement repeating sprites, so you can have a larger platform
-	Title Screen
 	HUD interface
 	Create new player sprite
 	Move level layout to external file
 	Sun move across level (timer maybe)
 		when you die the sun moves a certain amount, making the timer go down
 	Enemies
-	Smoother movement
-	Weapons and attacks
+	Smoother movement and controls
 
 Bugs:
 	Jump through the springs and stuff

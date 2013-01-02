@@ -50,7 +50,6 @@ Crafty.c("movingPlatformType", { //solid platform that can move in the x and y d
 			yForward: 1,
 			xForward: 1
 		});
-		//this.color("tomato");
 		this.bind("EnterFrame", function() {
 			if(this.yForward === 1) {
 				this._y -= this.ySpeed;
@@ -75,6 +74,69 @@ Crafty.c("movingPlatformType", { //solid platform that can move in the x and y d
 		});
 	}
 });
+
+// -- Not implemented yet, need to fix friction on horizontal slider
+/*
+Crafty.c("horizontalMovingPlatformType", { //solid platform that can move in the x and y directions
+	init: function() {
+		this.requires("2D, DOM, platform, solid, movingPlatform, noHorizontal");
+	},
+	setHorizontalPlatform: function(inputX, inputY, inputW, inputH, minX, maxX, xvel) {
+		this.attr({ 
+			x: inputX,
+			y: inputY,
+			w: inputW,
+			h: inputH,
+			minXBound: minX,
+			maxXBound: maxX,
+			xSpeed: xvel,
+			xForward: 1
+		});
+		this.bind("EnterFrame", function() {
+			if(this.xForward === 1) {
+				this._x += this.xSpeed;
+				this.x += this.xSpeed;
+				if(this.x >= this.maxXBound) this.xForward = 0;	
+			}
+			else {
+				this._x -= this.xSpeed;
+				this.x -= this.xSpeed;
+				if(this.x <= this.minXBound) this.xForward = 1;	
+			} 
+		});
+	}
+});
+Crafty.c("VerticalMovingPlatformType", { //solid platform that can move in the x and y directions
+	init: function() {
+		this.requires("2D, DOM, platform, solid, movingPlatform, noHorizontal");
+	},
+	setVerticalPlatform: function(inputX, inputY, inputW, inputH, minY, maxY, yvel) {
+		this.attr({ 
+			x: inputX,
+			y: inputY,
+			w: inputW,
+			h: inputH,
+			minYBound: minY,
+			maxYBound: maxY,
+			ySpeed: yvel,
+			yForward: 1,
+		});
+		this.bind("EnterFrame", function() {
+			if(this.yForward === 1) {
+				this._y -= this.ySpeed;
+				this.y -= this.ySpeed;
+				if(this.y <= this.maxYBound) this.yForward = 0;	
+			}
+			else {
+				this._y += this.ySpeed;
+				this.y += this.ySpeed;
+				if(this.y >= this.minYBound) this.yForward = 1;	
+			} 
+		});
+	}
+});
+
+*/
 Crafty.c("groundType", {  //platform that has a solid color (for now)
 	init: function() {
 		this.requires("2D, DOM, solid, platform, ground, noHorizontal");
@@ -279,6 +341,13 @@ Crafty.c("playerType", {
 			h: bsize
 		});
 		this.twoway(mspeed, jspeed); 
+		var currentWeapon = 0;
+		var orientation = 1; //initialize orientation to left
+
+		//
+		//        ----  OnHit interactions ----
+		//
+
 		this.onHit("noHorizontal", function (hit) {
 			if(this.y < hit[0].obj.y) {
 
@@ -363,33 +432,66 @@ Crafty.c("playerType", {
 			Crafty.viewport.x = 0;
 			Crafty.scene("game");
 		});
+		this.onHit("weapon", function(hit) {
+			this.bind("KeyDown", function(e) {
+				if(e.key == Crafty.keys['F']) {
+					currentWeapon = hit[0].obj;
+					hit[0].obj.owner = this;
+				}
+			});
+		});
 		this.bind("EnterFrame", function() {
-			//position of the viewport
-			var vpx = this._x - 350;
-			if(vpx > 0 && vpx < 1500) {
-				Crafty.viewport.x = -vpx;
+			var vpx = this._x - 350; 		//positions the viewport horizontally
+			if(this.x > 350 && vpx < 1850) {
+				Crafty.viewport.x = 350 - this.x;
+			}
+			if(currentWeapon != 0) {		//if has weapon, moves it according to the player
+				if(this.orientation == 0) {
+					currentWeapon.x = this.x - 12;
+				}
+				else  {
+					currentWeapon.x = this.x + 12; 
+				}
+				if(this.isPlaying("walk_left") || this.isPlaying("walk_right") ) { currentWeapon.y = Math.random() * 2 + 1 + this.y;
+				}
+				else currentWeapon.y = this.y;
 			}
 		});
 		// animate walking
 		this.bind("NewDirection",
 			function (direction) {
 			    if (direction.x < 0) {
-			        if (!this.isPlaying("walk_left"))
+					this.orientation = 0;
+			        if (!this.isPlaying("walk_left")) {
 			            this.stop().animate("walk_left", 5, -1);
+					}
+					if (currentWeapon != 0) { 		//sets the weapon sprite to the correct orientation on newDirection
+						currentWeapon.sprite(0, 19, 16, 16);
+					}
 			    }
 			    if (direction.x > 0) {
-			        if (!this.isPlaying("walk_right"))
+					this.orientation = 1;
+			        if (!this.isPlaying("walk_right")) {
 			            this.stop().animate("walk_right", 5, -1);
+					}
+					if (currentWeapon != 0) { 		//sets it to the correct orientation again
+						currentWeapon.sprite(0, 12, 16, 16);
+					}
 			    }
 			    if (!direction.x) {
 			        this.stop().animate("stopped", 10, 1);
 			    }
 			});
-		this.attr("triggers", 0); //set a trigger count
-		this.bind("myevent", function() {
-			this.triggers++; //whenever myevent is triggered, increment
+
+			//Austin put this in, not sure what it does since we aren't using the debugger module
+
+		//this.attr("triggers", 0); //set a trigger count
+		//this.bind("myevent", function() {
+			//this.triggers++; //whenever myevent is triggered, increment
 			//document.getElementById("debug").innerHTML = this.triggers;
-		});
+		//});
+
+
 		this.bind("KeyDown", function(e) {
 			if (e.key == Crafty.keys['M']) {
 				Crafty.audio.toggleMute();
@@ -401,7 +503,13 @@ Crafty.c("playerType", {
 			if (e.key == Crafty.keys['B'] || e.key == Crafty.keys['P']) {
 				Crafty.audio.togglePause('backgroundMusic');
 			}
-			Crafty.trigger("myevent");
+
+			//Weapon attacks
+			if(e.key == Crafty.keys['SPACE'] && currentWeapon != 0 && this.orientation == 1) currentWeapon.leftAttack();
+			else if(e.key == Crafty.keys['SPACE'] && currentWeapon != 0 && this.orientation == 0) currentWeapon.rightAttack();
+
+				//Again, not sure what this does
+			//Crafty.trigger("myevent");
 		});
 	},
 	death: function(inputX) {
@@ -418,8 +526,8 @@ Crafty.c("playerType", {
 Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 	init: function() {
 		this.requires("2D, DOM, fatsoSprite, enemy, SpriteAnimation");
-		this.animate("faceLeft", 1, 0, -1);
-		this.animate("faceRight", 0, 0, 1);
+		this.animate("faceRight", 0, 1, 3);
+		this.animate("faceLeft", 0, 0, 3);
 		var leftBound;
 		var rightBound;
 	},
@@ -429,18 +537,19 @@ Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 			y: inputY,
 			w: 2 * bSize,
 			h: 2 * bSize,
-			movingLeft : 1,
 			leftBound: lb,
 			rightBound: rb
 		});
+		var movingLeft = 1;
+		var animationSpeed = 10 / speed;
 		this.bind("EnterFrame", function() {
-			if(this.movingLeft === 1) {
+			if(this.movingLeft == 1) {
 				this._x -= speed; 
 				this.x -= speed;
 				if(this.x <= this.leftBound){
 					this.movingLeft = 0;
 					this.stop();
-					this.animate("faceLeft", 100000, 0);
+					this.animate("faceLeft", animationSpeed, 5);
 				}
 			}
 			else { 
@@ -449,12 +558,59 @@ Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 				if(this.x >= this.rightBound){
 					this.movingLeft = 1;
 					this.stop();
-					this.animate("faceRight", 100000, 0);
+					this.animate("faceRight", animationSpeed, 5);
 				}
 			}
 		});
 	}
 });
 
+////////////////////////////
+//		Constructors
+//			for
+//		Weapons
+
+Crafty.c("hammerWeaponType", {
+	init: function() {
+		this.requires("2D, DOM, weapon, hammerSprite, SpriteAnimation, Collision");	
+		this.animate("attackLeft", 0, 12, 6);
+		this.animate("attackRight", 0, 19, 6);
+		this.animate("hammerFaceLeft", 0, 12, 0);
+		this.animate("hammerFaceRight", 0, 19, 0);
+	},
+	setHammer: function(inputX, inputY, bsize) {
+		this.attr({
+			x: inputX,
+			y: inputY,
+			w: bsize,
+			h: bsize
+		});
+		this.name = "Hammer";
+		this.owner = 0;
+		this.active = 0;
+
+		this.onHit("enemy", function (hit) {
+			if(this.active == 1) {
+				hit[0].obj.destroy();
+			}
+		});
+		new Crafty.polygon([0,0], [2 * this.w, 0], [2 * this.w, this.h], [0, this.h]);
+	},
+	leftAttack: function() {
+		this.active = 1;
+		this.animate("attackLeft", 20, 0);
+		this.timeout(function() {
+			this.active = 0;	
+		}, 20);
+
+	},
+	rightAttack: function() {
+		this.active = 1;
+		this.animate("attackRight", 20, 0);
+		this.timeout(function() {
+			this.active = 0;	
+		}, 20);
+	}
+});
+
 //make lava (special type of pit, insta death)
-//make water (special type of pit, limited jumping, breath counter timer)

@@ -12,7 +12,7 @@ window.onload = function() {
 //		
 
         Crafty.scene("game", function () {
-            var MOVESPEED = 3;
+            var MOVESPEED = 2.5;
             var JUMPSPEED = 6;
             var BLOCKSIZE = 16;
 			var LARGEBLOCKSIZE = 2 * BLOCKSIZE;
@@ -51,7 +51,7 @@ window.onload = function() {
 				sign85: [5,8], sign86: [6,8], sign87: [7,8], sign88: [8,8], sign89: [9,8],
 				sign90: [0,9], sign91: [1,9], sign92: [2,9], sign93: [3,9], sign94: [4,9],
 				sign95: [5,9], sign96: [6,9], sign97: [7,9], sign98: [8,9], sign99: [9,9],
-				springSprite: [2,10]
+				springSprite: [2,10], hammerSprite: [0, 12]
 			});
 			Crafty.sprite(LARGEBLOCKSIZE, "sprites/largesprites.png", {
 				fatsoSprite: [0,0]
@@ -213,7 +213,12 @@ window.onload = function() {
 				[21, 1040, GROUNDLEVEL - 7 * 16, 1040, 1120, 0.3],
 
 				//player
-				[20, 0, GROUNDLEVEL-16]
+				[20, 0, GROUNDLEVEL-16],
+
+				//hammer weapon
+				[40, 48, GROUNDLEVEL - 1 * 16, BLOCKSIZE]
+
+
 								];
 
 			//Entity Creation
@@ -275,6 +280,10 @@ window.onload = function() {
 					case 21: //fatso
 						Crafty.e("fatsoType")
 						.setFatso(levelArray[i][1], levelArray[i][2], BLOCKSIZE, levelArray[i][3], levelArray[i][4], levelArray[i][5]);
+						break;
+					case 40: //hammer weapon
+						Crafty.e("hammerWeaponType")
+						.setHammer(levelArray[i][1], levelArray[i][2], levelArray[i][3]);
 						break;
 					default:
 						break;
