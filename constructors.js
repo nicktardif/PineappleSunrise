@@ -141,10 +141,10 @@ Crafty.c("groundType", {  //platform that has a solid color (for now)
 	init: function() {
 		this.requires("2D, DOM, solid, platform, ground, noHorizontal");
 	},
-	setGround: function(inputX, GROUNDLEVEL, inputW, inputH) {
+	setGround: function(inputX, inputY, inputW, inputH) {
 		this.attr({
 			x: inputX,
-			y: GROUNDLEVEL,
+			y: inputY,
 			w: inputW,
 			h: inputH
 		});
@@ -268,9 +268,9 @@ Crafty.c("pitType", { //hit this and the level restarts, also has a fallCounter 
 	},
 	setPit: function(startX, GROUNDLEVEL, width, pitNumber, fallNumber) {
 		this.attr({ 
-			x: startX - (width/2),
-			y: GROUNDLEVEL + 20,
-			w: width * 2,
+			x: startX - 16,
+			y: GROUNDLEVEL + 16,
+			w: width + 32,
 			h: 1
 		});
 		this.pitNumber = pitNumber;
@@ -303,7 +303,8 @@ Crafty.c("waterType", { //water, float in it, drown if you stay in too long
 });
 Crafty.c("endType", { // run into this and you win
 	init: function() {
-		this.requires("2D, DOM, endSprite");
+		this.requires("2D, DOM, SpriteAnimation, endSprite");
+		var currentState;
 	},
 	setEnd: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
@@ -311,6 +312,25 @@ Crafty.c("endType", { // run into this and you win
 			y: inputY,
 			w: inputW,
 			h: inputH
+		});
+		this.currentState = 0;
+		this.bind("pineappleCollected", function() {
+			if(this.currentState == 0) {
+				this.sprite(1, 2, 32, 32);
+			}
+			else if(this.currentState == 1) {
+				this.sprite(2, 2, 32, 32);
+			}
+			else if(this.currentState == 2) {
+				this.sprite(3, 2, 32, 32);
+			}
+			else if(this.currentState == 3) {
+				this.sprite(4, 2, 32, 32);
+			}
+			else if(this.currentState == 4) {
+				this.sprite(5, 2, 32, 32);
+			}
+			this.currentState = this.currentState + 1;
 		});
 	}
 });
@@ -343,6 +363,7 @@ Crafty.c("playerType", {
 		this.twoway(mspeed, jspeed); 
 		var currentWeapon = 0;
 		var orientation = 1; //initialize orientation to left
+		var pineapplesCollected = 0;
 
 		//
 		//        ----  OnHit interactions ----
@@ -427,19 +448,17 @@ Crafty.c("playerType", {
 			}
 		});
 		this.onHit("endType", function(hit) {
-			Crafty.audio.stop("backgroundMusic");
-			Crafty.audio.play("winner");
-			Crafty.viewport.x = 0;
-			Crafty.scene("game");
+			if(hit[0].obj.currentState == 5) {
+				Crafty.audio.stop("backgroundMusic");
+				//Crafty.audio.play("winner"); need a better end-of-level sound
+				Crafty.viewport.x = 0;
+				Crafty.scene("game");
+			}
 		});
-		this.onHit("weapon", function(hit) {
-			this.bind("KeyDown", function(e) {
-				if(e.key == Crafty.keys['F']) {
-					currentWeapon = hit[0].obj;
-					hit[0].obj.owner = this;
-				}
-			});
+		
+		this.bind("KeyDown", function(e) {
 		});
+
 		this.bind("EnterFrame", function() {
 			var vpx = this._x - 350; 		//positions the viewport horizontally
 			if(this.x > 350 && vpx < 1850) {
@@ -458,30 +477,29 @@ Crafty.c("playerType", {
 			}
 		});
 		// animate walking
-		this.bind("NewDirection",
-			function (direction) {
-			    if (direction.x < 0) {
-					this.orientation = 0;
-			        if (!this.isPlaying("walk_left")) {
-			            this.stop().animate("walk_left", 5, -1);
-					}
-					if (currentWeapon != 0) { 		//sets the weapon sprite to the correct orientation on newDirection
-						currentWeapon.sprite(0, 19, 16, 16);
-					}
-			    }
-			    if (direction.x > 0) {
-					this.orientation = 1;
-			        if (!this.isPlaying("walk_right")) {
-			            this.stop().animate("walk_right", 5, -1);
-					}
-					if (currentWeapon != 0) { 		//sets it to the correct orientation again
-						currentWeapon.sprite(0, 12, 16, 16);
-					}
-			    }
-			    if (!direction.x) {
-			        this.stop().animate("stopped", 10, 1);
-			    }
-			});
+		this.bind("NewDirection", function (direction) {
+			if (direction.x < 0) {
+				this.orientation = 0;
+				if (!this.isPlaying("walk_left")) {
+					this.stop().animate("walk_left", 5, -1);
+				}
+				if (currentWeapon != 0) { 		//sets the weapon sprite to the correct orientation on newDirection
+					currentWeapon.sprite(0, 19, 16, 16);
+				}
+			}
+			if (direction.x > 0) {
+				this.orientation = 1;
+				if (!this.isPlaying("walk_right")) {
+					this.stop().animate("walk_right", 5, -1);
+				}
+				if (currentWeapon != 0) { 		//sets it to the correct orientation again
+					currentWeapon.sprite(0, 12, 16, 16);
+				}
+			}
+			if (!direction.x) {
+				this.stop().animate("stopped", 10, 1);
+			}
+		});
 
 			//Austin put this in, not sure what it does since we aren't using the debugger module
 
@@ -490,6 +508,7 @@ Crafty.c("playerType", {
 			//this.triggers++; //whenever myevent is triggered, increment
 			//document.getElementById("debug").innerHTML = this.triggers;
 		//});
+
 
 
 		this.bind("KeyDown", function(e) {
@@ -503,6 +522,21 @@ Crafty.c("playerType", {
 			if (e.key == Crafty.keys['B'] || e.key == Crafty.keys['P']) {
 				Crafty.audio.togglePause('backgroundMusic');
 			}
+			if(e.key == Crafty.keys['F']) {
+				if(this.hit("weapon") ) {
+					var hitArray = this.hit("weapon");
+					currentWeapon = hitArray[0].obj;
+					hitArray[0].obj.owner = this;
+				};
+				if(this.hit("pineapple") ){
+					var hitArray = this.hit("pineapple");
+					hitArray[0].obj.destroy();
+					Crafty.trigger("pineappleCollected"); 
+				};
+			}
+
+
+
 
 			//Weapon attacks
 			if(e.key == Crafty.keys['SPACE'] && currentWeapon != 0 && this.orientation == 1) currentWeapon.leftAttack();
@@ -610,6 +644,26 @@ Crafty.c("hammerWeaponType", {
 		this.timeout(function() {
 			this.active = 0;	
 		}, 20);
+	}
+});
+
+////////////////////////////
+//		Constructors
+//		for
+//		Items	
+
+Crafty.c("pineappleType", { //need to collect 5 of these to finish the level
+	init: function() {
+		this.requires("2D, DOM, pineappleSprite, pineapple");
+		var pineappleText;
+	},
+	setPineapple: function(inputX, inputY, inputW, inputH) {
+		this.attr({ 
+			x: inputX,
+			y: inputY,
+			w: inputW,
+			h: inputH
+		});
 	}
 });
 
