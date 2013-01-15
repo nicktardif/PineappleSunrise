@@ -62,7 +62,7 @@ window.onload = function() {
 		//		defintions	
 
 		var levelArray =[
-			[ 	// --- level 0
+			[ 	// --- Level 0
 			], 
 
 
@@ -165,6 +165,7 @@ window.onload = function() {
 				[7, 1456, GROUNDLEVEL - 1 * 16, 16, 16, 200],
 				
 				//water
+				/* 			creates a massive amount of lag
 				[8, 0, GROUNDLEVEL + 8, 64, 16],
 				[8, 64, GROUNDLEVEL + 8, 64, 16],
 				[8, 128, GROUNDLEVEL + 8, 64, 16],
@@ -200,6 +201,7 @@ window.onload = function() {
 				[8, 2048, GROUNDLEVEL + 8, 64, 16],
 				[8, 2112, GROUNDLEVEL + 8, 64, 16],
 				[8, 2176, GROUNDLEVEL + 8, 64, 16],
+				*/
 								
 				// end
 				[10, 1744, GROUNDLEVEL - 2 * 16, 32, 32],
@@ -233,11 +235,11 @@ window.onload = function() {
 				[1, 1136, GROUNDLEVEL + 8, 128, 8],
 
 				//platforms
-				[2, 192, GROUNDLEVEL - 3 * 16, 64, 8],
-				[2, 304, GROUNDLEVEL - 4 * 16, 64, 8],
-				[2, 368, GROUNDLEVEL - 4 * 16, 128, 8],	
-				[2, 544, GROUNDLEVEL - 2 * 16, 48, 16],
-				[2, 528, GROUNDLEVEL - 8 * 16 + 8, 16, 8],
+				[2, 192, GROUNDLEVEL - 32, 64, 8],
+				[2, 304, GROUNDLEVEL - 4 * 16 + 1, 64, 8],
+				[2, 368, GROUNDLEVEL - 4 * 16 + 1, 128, 8],	
+				[2, 544, GROUNDLEVEL - 2 * 16, 48, 8],
+				[2, 528, GROUNDLEVEL - 8 * 16 + 9, 16, 8],
 				[2, 432, GROUNDLEVEL - 10 * 16 , 32, 8],
 				[2, 512, GROUNDLEVEL - 13 * 16 , 128, 8],
 				[2, 816, GROUNDLEVEL - 11 * 16 , 32, 8],
@@ -269,8 +271,8 @@ window.onload = function() {
 					[4, 864, GROUNDLEVEL - 6 * 16, 48, 4, 864, 864, GROUNDLEVEL - 6 * 16, GROUNDLEVEL - 11 * 16, 0, 0.3],
 
 				//wall
-				[5, 528, GROUNDLEVEL- 7 * 16, 8, 96, 0, "black"],
-				[5, 536, GROUNDLEVEL- 7 * 16, 8, 96, 1, "black"],
+				[5, 528, GROUNDLEVEL- 7 * 16, 8, 88, 0, "black"],
+				[5, 536, GROUNDLEVEL- 7 * 16, 8, 88, 1, "black"],
 
 
 				//spring
@@ -282,17 +284,17 @@ window.onload = function() {
 				[9, 1264, 2000, 1], 
 
 				//disappearing
-				[7, 1296, GROUNDLEVEL -  4 * 16, 16, 8, 300],
-				[7, 1312, GROUNDLEVEL -  4 * 16, 16, 8, 300],
-				[7, 1328, GROUNDLEVEL -  4 * 16, 16, 8, 300],
-				[7, 1344, GROUNDLEVEL -  4 * 16, 16, 8, 300],
-				[7, 1360, GROUNDLEVEL -  4 * 16, 16, 8, 300],
-				[7, 1376, GROUNDLEVEL -  4 * 16, 16, 8, 300],
-				[7, 1392, GROUNDLEVEL -  4 * 16, 16, 8, 300],
-				[7, 1408, GROUNDLEVEL -  4 * 16, 16, 8, 300],
-				[7, 1424, GROUNDLEVEL -  4 * 16, 16, 8, 300],
-				[7, 1440, GROUNDLEVEL -  4 * 16, 16, 8, 300],
-				[7, 1456, GROUNDLEVEL -  4 * 16, 16, 8, 300],
+				[7, 1296, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300],
+				[7, 1312, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300],
+				[7, 1328, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300],
+				[7, 1344, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300],
+				[7, 1360, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300],
+				[7, 1376, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300],
+				[7, 1392, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300],
+				[7, 1408, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300],
+				[7, 1424, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300],
+				[7, 1440, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300],
+				[7, 1456, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300],
 
 				//end
 				[10, 1696, GROUNDLEVEL - 14 * 16, 32, 32],
@@ -314,7 +316,7 @@ window.onload = function() {
 				[21, 1600, GROUNDLEVEL - 14 * 16, 1600, 1632, 0.2],
 
 				//player
-				[20, 0, GROUNDLEVEL- 1 * 16],
+				[20, 1130, GROUNDLEVEL- 1 * 16],
 
 				//hammer weapon
 				[40, 1352, GROUNDLEVEL - 16 * 16, BLOCKSIZE]
@@ -442,12 +444,12 @@ window.onload = function() {
 		
 		this.bind("KeyDown", function(e) {
 			if (e.key == Crafty.keys['1']) {
-				levelNumber = 2;
+				levelNumber = 1;
 				Crafty.scene("loading");
 			}
 			if (e.key == Crafty.keys['2']) {
-				Crafty.scene("loading");
 				levelNumber = 2;
+				Crafty.scene("loading");
 			}
 			if (e.key == Crafty.keys['3']) {
 				Crafty.scene("loading");

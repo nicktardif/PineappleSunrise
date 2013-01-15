@@ -5,7 +5,7 @@
 
 Crafty.c("platformType", { //platform that you can't jump up through
 	init: function() {
-		this.requires("2D, DOM, platform, solid, normalPlatform, noHorizontal");
+		this.requires("2D, DOM, platform, ground, normalPlatform, solid");
 	},
 	setPlatform: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
@@ -14,7 +14,6 @@ Crafty.c("platformType", { //platform that you can't jump up through
 			w: inputW,
 			h: inputH
 		});
-		//this.color("dodgerblue");
 	}
 });
 Crafty.c("thinPlatformType", { //platform that you can jump through
@@ -28,12 +27,11 @@ Crafty.c("thinPlatformType", { //platform that you can jump through
 			w: inputW,
 			h: inputH
 		});
-		//this.color("mediumpurple");
 	}
 });
 Crafty.c("movingPlatformType", { //solid platform that can move in the x and y directions
 	init: function() {
-		this.requires("2D, DOM, platform, solid, movingPlatform, noHorizontal");
+		this.requires("2D, DOM, platform, solid, movingPlatform");
 	},
 	setMovingPlatform: function(inputX, inputY, inputW, inputH, minX, maxX, minY, maxY, xvel, yvel) {
 		this.attr({ 
@@ -79,7 +77,7 @@ Crafty.c("movingPlatformType", { //solid platform that can move in the x and y d
 /*
 Crafty.c("horizontalMovingPlatformType", { //solid platform that can move in the x and y directions
 	init: function() {
-		this.requires("2D, DOM, platform, solid, movingPlatform, noHorizontal");
+		this.requires("2D, DOM, platform, solid, movingPlatform");
 	},
 	setHorizontalPlatform: function(inputX, inputY, inputW, inputH, minX, maxX, xvel) {
 		this.attr({ 
@@ -108,7 +106,7 @@ Crafty.c("horizontalMovingPlatformType", { //solid platform that can move in the
 });
 Crafty.c("VerticalMovingPlatformType", { //solid platform that can move in the x and y directions
 	init: function() {
-		this.requires("2D, DOM, platform, solid, movingPlatform, noHorizontal");
+		this.requires("2D, DOM, platform, solid, movingPlatform");
 	},
 	setVerticalPlatform: function(inputX, inputY, inputW, inputH, minY, maxY, yvel) {
 		this.attr({ 
@@ -139,7 +137,7 @@ Crafty.c("VerticalMovingPlatformType", { //solid platform that can move in the x
 */
 Crafty.c("groundType", {  //platform that has a solid color (for now)
 	init: function() {
-		this.requires("2D, DOM, solid, platform, ground, noHorizontal");
+		this.requires("2D, DOM, solid, platform, ground");
 	},
 	setGround: function(inputX, inputY, inputW, inputH) {
 		this.attr({
@@ -148,7 +146,6 @@ Crafty.c("groundType", {  //platform that has a solid color (for now)
 			w: inputW,
 			h: inputH
 		});
-		//this.color("black");
 	}
 });
 Crafty.c("wallType", { //barrier to going horizontally, is either leftWall or
@@ -169,7 +166,8 @@ Crafty.c("wallType", { //barrier to going horizontally, is either leftWall or
 });
 Crafty.c("disappearingType", { 	//block dissappears after a set amount of time
 	init: function() {
-		this.requires("2D, DOM, disappearing, Collision");
+		this.requires("2D, DOM, disappearing");
+		var hiddenPlatform;
 	},
 	setDisappearing: function(inputX, inputY, inputW, inputH, deleteTime) {
 		this.attr({
@@ -177,19 +175,20 @@ Crafty.c("disappearingType", { 	//block dissappears after a set amount of time
 			y: inputY,
 			w: inputW,
 			h: inputH,
-			disappearTime: deleteTime
+			disappearTime: deleteTime,
+			hiddenPlatform: Crafty.e("2D, DOM, platform, solid").attr({ x: inputX + 2, y:inputY + 1, h: 1, w: inputW - 4, visible: false})
+			
 		});
-		this.collision();
-		//this.color("seagreen");
-		var cd = Crafty.e("2D, DOM, platform, solid, disappearing") 
-			.attr({ x: inputX + 1, y: inputY + 1, h: 1, w: inputW - 2, visible: false });
-		this.onHit("playerType", function() {
-			this.timeout(function() {
-				cd.destroy();
-				this.destroy();
-				Crafty.audio.play('platformBreak', 1, .5);
-			}, this.disappearTime);
-		});
+
+		//hiddenPlatform is to keep the player "on top" of the disappearing block, so the disappearing
+		//onHit can trigger and not just the platform onHit
+		//hiddenPlatform = Crafty.e("2D, DOM, platform, solid") 
+			//.attr({ x: inputX + 1, y: inputY + 1, h: 1, w: inputW - 2, visible: false });
+	},
+	disappear: function() {
+		this.hiddenPlatform.destroy();
+		this.destroy();
+		Crafty.audio.play('platformBreak', 1, .5);
 	}
 });
 
@@ -369,11 +368,26 @@ Crafty.c("playerType", {
 		//        ----  OnHit interactions ----
 		//
 
-		this.onHit("noHorizontal", function (hit) {
-			if(this.y < hit[0].obj.y) {
-
+		this.onHit("disappearing", function(hit) {
+			if(this._up) {		 			//if jumping up into it, bounce back down
+				this.y = hit[0].obj.y + hit[0].obj.h;
+				this._falling = true;
+				this._up = false;
 			}
-			else {
+			this.timeout(function() {
+				hit[0].obj.hiddenPlatform.destroy();
+				hit[0].obj.destroy();
+			}, hit[0].obj.disappearTime);
+		});
+		this.onHit("solid", function (hit) {
+			if(this.y < hit[0].obj.y) {		//if on top object all is cool
+			}
+			else if(this._up) { 			//if jumping up into it, bounce back down
+				this.y = hit[0].obj.y + hit[0].obj.h;
+				this._falling = true;
+				this._up = false;
+			}
+			else { 							//cannot run through object
 				if(this.x < hit[0].obj.x) {
 					this.x = hit[0].obj.x - 16;
 					this._x = hit[0].obj.x - 16;
@@ -382,18 +396,6 @@ Crafty.c("playerType", {
 					this.x = (hit[0].obj.x + hit[0].obj.w); 
 					this._x = (hit[0].obj.x + hit[0].obj.w); 
 				}
-				if(this._up) {
-					this.y += hit[0].obj.h / 2;
-					this._falling = true;
-					this._up = false;
-				}
-			}
-		});
-		this.onHit("solid", function (hit) {
-		    if (this._up) {
-				this.y += hit[0].obj.h / 2;
-				this._falling = true;
-				this._up = false;
 			}
 		});
 		this.onHit("pit", function(hit) {
@@ -411,11 +413,13 @@ Crafty.c("playerType", {
 
 			//Upon leaving the spring you get a half second jump boost and a jump sound triggers if you do jump
 			function() {
-				this.twoway(mspeed, 3.0);
-				if(this._falling && this._up) Crafty.audio.play("jumpSound", 1, .5);
-				this.timeout(function() {
-					this.twoway(mspeed, -3.0);	
-				}, 500);
+				if(this._falling && this._up) {
+					this.twoway(mspeed, 3.0);
+					Crafty.audio.play("jumpSound", 1, .5);
+					this.timeout(function() {
+						this.twoway(mspeed, -3.0);	
+					}, 500);
+				}
 			}
 		); 
 		this.onHit("movingPlatform", function(hit) {
@@ -456,9 +460,10 @@ Crafty.c("playerType", {
 			}
 		});
 		
-		this.bind("KeyDown", function(e) {
-		});
-
+		//
+		//        ----  Event definitions ----
+		//
+		
 		this.bind("EnterFrame", function() {
 			var vpx = this._x - 350; 		//positions the viewport horizontally
 			if(this.x > 350 && vpx < 1850) {
@@ -471,7 +476,8 @@ Crafty.c("playerType", {
 				else  {
 					currentWeapon.x = this.x + 12; 
 				}
-				if(this.isPlaying("walk_left") || this.isPlaying("walk_right") ) { currentWeapon.y = Math.random() * 2 + 1 + this.y;
+				if(this.isPlaying("walk_left") || this.isPlaying("walk_right") ) { 
+					currentWeapon.y = Math.random() * 2 + 1 + this.y;
 				}
 				else currentWeapon.y = this.y;
 			}
@@ -501,17 +507,8 @@ Crafty.c("playerType", {
 			}
 		});
 
-			//Austin put this in, not sure what it does since we aren't using the debugger module
-
-		//this.attr("triggers", 0); //set a trigger count
-		//this.bind("myevent", function() {
-			//this.triggers++; //whenever myevent is triggered, increment
-			//document.getElementById("debug").innerHTML = this.triggers;
-		//});
-
-
-
 		this.bind("KeyDown", function(e) {
+			//toggling controls
 			if (e.key == Crafty.keys['M']) {
 				Crafty.audio.toggleMute();
 			}
@@ -522,6 +519,8 @@ Crafty.c("playerType", {
 			if (e.key == Crafty.keys['B'] || e.key == Crafty.keys['P']) {
 				Crafty.audio.togglePause('backgroundMusic');
 			}
+
+			//actions
 			if(e.key == Crafty.keys['F']) {
 				if(this.hit("weapon") ) {
 					var hitArray = this.hit("weapon");
@@ -534,9 +533,6 @@ Crafty.c("playerType", {
 					Crafty.trigger("pineappleCollected"); 
 				};
 			}
-
-
-
 
 			//Weapon attacks
 			if(e.key == Crafty.keys['SPACE'] && currentWeapon != 0 && this.orientation == 1) currentWeapon.leftAttack();
@@ -576,6 +572,7 @@ Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 		});
 		var movingLeft = 1;
 		var animationSpeed = 10 / speed;
+		this.animate("faceLeft", animationSpeed, -1); //set initial animation
 		this.bind("EnterFrame", function() {
 			if(this.movingLeft == 1) {
 				this._x -= speed; 
@@ -583,7 +580,7 @@ Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 				if(this.x <= this.leftBound){
 					this.movingLeft = 0;
 					this.stop();
-					this.animate("faceLeft", animationSpeed, 5);
+					this.animate("faceLeft", animationSpeed, -1);
 				}
 			}
 			else { 
@@ -592,7 +589,7 @@ Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 				if(this.x >= this.rightBound){
 					this.movingLeft = 1;
 					this.stop();
-					this.animate("faceRight", animationSpeed, 5);
+					this.animate("faceRight", animationSpeed, -1);
 				}
 			}
 		});
