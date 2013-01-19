@@ -1,90 +1,27 @@
 Sidescroller: Pineapple Sunrise
 
 Our plan:
-	Andre:
 
-	Austin:
-
-	Nick: HUD, Enemies
-
-Figure this stuff out:
-	Implement repeating sprites, so you can have a larger platform
-	Image skips when jumping up through non-solid platform
-	Title Screen
-	Animate Player
+Goals:
 	HUD interface
+	Text that appears only on collision with an object
+	Create new player sprite (for when I get an artist)
 	Sun move across level (timer maybe)
-	Enemies
+		when you die the sun moves a certain amount, making the timer go down
+	Leaping monsters
+	Smooth viewport scrolling
+	Implement powerups
 
-Tasks:
-	Levels
-	Logic
-	Sprites
-	Title Screen
-	Level select, etc.
-	Scene transitions
-	Loading, level select, download sprites, etc.
-Maybe later:
-	Score
-	High scores
+Bugs:
+	Image skips when jumping up through non-solid platform
+	When on normal platforms the character sometimes shifts down one pixel to "rest" on the block
+	Character does not rest on downward moving platform
 
-Class Tree
-Classes:
-Entity (can collide)
-Creature
-Player
-
-* Attributes: Lives, Coins
-Enemy
-Collectible
-Coins
-Power-ups
-Chili pepper of fire
-Avocado of speed
-Ice cream of ice
-Coconut shell of shielding
-Blocks
-different kinds
+Power-ups:
+	-Chili pepper of fire
+	-Avocado of speed
+	-Ice cream of ice
+	-Coconut shell of shielding
 Spikes
 Ice
 Lava
-Moving platforms
-Springs
-Level
-Layout
-
-* Holes and blocks
-* Coin placement
-* enemy placement
-* kinds of enemies
-* Fall counters
-* initial position of Entities
-Background
-Floor
-
-abstract class Entity
-* attribute: position
-class Creature
-* methods:
-o collide(Entity)
-o move()
-o jump(double height)
-o attack(Entity) // can be overridden
-
-* attributes:
-o position
-o vertical speed
-o horizontal speed
-class Player
-* attributes:
-o current PowerUp
-o int points // coins
-o int lives
-class PowerUp
-* attributes:
-o type
-o duration
-
-* subclasses have different ones
-
-16-bit graphicss
