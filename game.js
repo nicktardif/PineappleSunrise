@@ -74,31 +74,29 @@ window.onload = function() {
 				[5, -8, 0, 8, height, 1, "black"],
 
 				//ground
-				[1, 0, GROUNDLEVEL, 128, 8], 
-				[1, 400, GROUNDLEVEL, 160, 8],
-				[1, 560, GROUNDLEVEL, 128, 8],
-				[1, 848, GROUNDLEVEL, 160, 8],
+				[1, 0, GROUNDLEVEL, 128, 16], 
+				[1, 400, GROUNDLEVEL, 160, 16],
+				[1, 560, GROUNDLEVEL, 128, 16],
+				[1, 848, GROUNDLEVEL, 160, 16],
 
 				[1, 1696, 120, 8],
 
 				//platforms
 				[2, 720, GROUNDLEVEL - 4 * 16, 96, 8],
-				[2, 704, GROUNDLEVEL - 7.5 * 16, 16, 8],
-				[2, 816, GROUNDLEVEL - 7.5 * 16, 16, 8],
+				[2, 704, GROUNDLEVEL - 8 * 16, 16, 8],
+				[2, 672, GROUNDLEVEL - 12 * 16, 16, 8],
+				[2, 736, GROUNDLEVEL - 15 * 16, 16, 8],
+				[2, 816, GROUNDLEVEL - 8 * 16, 16, 8],
 
-				[2, 1040, GROUNDLEVEL - 2 * 16, 16, 8],
-				[2, 1104, GROUNDLEVEL - 2 * 16, 16, 8],
-				[2, 1072, GROUNDLEVEL - 5 * 16, 16, 8],
-				[2, 1136, GROUNDLEVEL - 5 * 16, 16, 8],
 
-				[2, 1264, GROUNDLEVEL - 5 * 16, 64, 8],
+				[2, 1232, GROUNDLEVEL - 5 * 16, 96, 8],
+				[2, 1696, GROUNDLEVEL - 1 * 16, 96, 8],
+
 
 
 				//thin platforms
-				[3, 1040, GROUNDLEVEL - 5 * 16, 32, 8],
-				[3, 1088, GROUNDLEVEL - 5 * 16, 48, 8],
-				[3, 1056, GROUNDLEVEL - 2 * 16, 48, 8],
-				[3, 1120, GROUNDLEVEL - 2 * 16, 32, 8],
+				[3, 1040, GROUNDLEVEL - 5 * 16, 108, 8],
+				[3, 1040, GROUNDLEVEL - 2 * 16, 108, 8],
 
 
 				//stairs
@@ -131,12 +129,12 @@ window.onload = function() {
 				[9, 1008, 700, 2],
 
 				//disappearing
-				[7, 720, GROUNDLEVEL - 7.5 * 16, 16, 8, 300],
-				[7, 736, GROUNDLEVEL - 7.5 * 16, 16, 8, 300],
-				[7, 752, GROUNDLEVEL - 7.5 * 16, 16, 8, 300],
-				[7, 768, GROUNDLEVEL - 7.5 * 16, 16, 8, 300],
-				[7, 784, GROUNDLEVEL - 7.5 * 16, 16, 8, 300],
-				[7, 800, GROUNDLEVEL - 7.5 * 16, 16, 8, 300],
+				[7, 720, GROUNDLEVEL - 8 * 16, 16, 8, 300],
+				[7, 736, GROUNDLEVEL - 8 * 16, 16, 8, 300],
+				[7, 752, GROUNDLEVEL - 8 * 16, 16, 8, 300],
+				[7, 768, GROUNDLEVEL - 8 * 16, 16, 8, 300],
+				[7, 784, GROUNDLEVEL - 8 * 16, 16, 8, 300],
+				[7, 800, GROUNDLEVEL - 8 * 16, 16, 8, 300],
 
 				[7, 1392, GROUNDLEVEL - 5 * 16, 16, 16, 200],
 				[7, 1408, GROUNDLEVEL - 5 * 16, 16, 16, 200],
@@ -164,47 +162,8 @@ window.onload = function() {
 				[7, 1440, GROUNDLEVEL - 1 * 16, 16, 16, 200],
 				[7, 1456, GROUNDLEVEL - 1 * 16, 16, 16, 200],
 				
-				//water
-				/* 			creates a massive amount of lag
-				[8, 0, GROUNDLEVEL + 8, 64, 16],
-				[8, 64, GROUNDLEVEL + 8, 64, 16],
-				[8, 128, GROUNDLEVEL + 8, 64, 16],
-				[8, 192, GROUNDLEVEL + 8, 64, 16],
-				[8, 256, GROUNDLEVEL + 8, 64, 16],
-				[8, 320, GROUNDLEVEL + 8, 64, 16],
-				[8, 384, GROUNDLEVEL + 8, 64, 16],
-				[8, 448, GROUNDLEVEL + 8, 64, 16],
-				[8, 512, GROUNDLEVEL + 8, 64, 16],
-				[8, 576, GROUNDLEVEL + 8, 64, 16],
-				[8, 640, GROUNDLEVEL + 8, 64, 16],
-				[8, 704, GROUNDLEVEL + 8, 64, 16],
-				[8, 768, GROUNDLEVEL + 8, 64, 16],
-				[8, 832, GROUNDLEVEL + 8, 64, 16],
-				[8, 896, GROUNDLEVEL + 8, 64, 16],
-				[8, 960, GROUNDLEVEL + 8, 64, 16],
-				[8, 1024, GROUNDLEVEL + 8, 64, 16],
-				[8, 1088, GROUNDLEVEL + 8, 64, 16],
-				[8, 1152, GROUNDLEVEL + 8, 64, 16],
-				[8, 1216, GROUNDLEVEL + 8, 64, 16],
-				[8, 1280, GROUNDLEVEL + 8, 64, 16],
-				[8, 1344, GROUNDLEVEL + 8, 64, 16],
-				[8, 1408, GROUNDLEVEL + 8, 64, 16],
-				[8, 1472, GROUNDLEVEL + 8, 64, 16],
-				[8, 1536, GROUNDLEVEL + 8, 64, 16],
-				[8, 1600, GROUNDLEVEL + 8, 64, 16],
-				[8, 1664, GROUNDLEVEL + 8, 64, 16],
-				[8, 1728, GROUNDLEVEL + 8, 64, 16],
-				[8, 1792, GROUNDLEVEL + 8, 64, 16],
-				[8, 1856, GROUNDLEVEL + 8, 64, 16],
-				[8, 1920, GROUNDLEVEL + 8, 64, 16],
-				[8, 1984, GROUNDLEVEL + 8, 64, 16],
-				[8, 2048, GROUNDLEVEL + 8, 64, 16],
-				[8, 2112, GROUNDLEVEL + 8, 64, 16],
-				[8, 2176, GROUNDLEVEL + 8, 64, 16],
-				*/
-								
 				// end
-				[10, 1744, GROUNDLEVEL - 2 * 16, 32, 32],
+				[10, 1744, GROUNDLEVEL - 3 * 16, 32, 32],
 
 				//text
 				[11, 50, 10, 100, 50, "Level 1", "#ffffff", "12pt Palatino"],
@@ -212,16 +171,20 @@ window.onload = function() {
 				//dialogue
 				[12, 100, 50, 300, 100, [5, "Press 'P' to pause the game", "Press 'M' to mute all sounds", "Press 'B' to mute the background music", "", "Press 'SPACEBAR' to start the game"], "#e2671f", "10pt Palatino"],
 
+				//pineapple
+				[41, 336, GROUNDLEVEL - 9 * 16, 16, 16],
+				[41, 736, GROUNDLEVEL - 16 * 16, 16, 16],
+				[41, 768, GROUNDLEVEL - 5 * 16, 16, 16],
+				[41, 1104, GROUNDLEVEL - 6 * 16, 16, 16],
+				[41, 1424, GROUNDLEVEL - 3 * 16, 16, 16],
+
 				//fatso
 				[21, 608, GROUNDLEVEL - 2 * 16, 440, 608, 0.5],
 				[21, 720, GROUNDLEVEL - 6 * 16, 720, 784, 0.2],
 				[21, 1040, GROUNDLEVEL - 7 * 16, 1040, 1120, 0.3],
 
 				//player
-				[20, 0, GROUNDLEVEL-16],
-
-				//hammer weapon
-				[40, 48, GROUNDLEVEL - 1 * 16, BLOCKSIZE]
+				[20, 0, GROUNDLEVEL-16]
 			], 
 
 			[   // - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -316,7 +279,7 @@ window.onload = function() {
 				[21, 1600, GROUNDLEVEL - 14 * 16, 1600, 1632, 0.2],
 
 				//player
-				[20, 1130, GROUNDLEVEL- 1 * 16],
+				[20, 0, GROUNDLEVEL- 1 * 16],
 
 				//hammer weapon
 				[40, 1352, GROUNDLEVEL - 16 * 16, BLOCKSIZE]
