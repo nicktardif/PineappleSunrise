@@ -456,7 +456,7 @@ Crafty.c("playerType", {
 				Crafty.audio.stop("backgroundMusic");
 				//Crafty.audio.play("winner"); need a better end-of-level sound
 				Crafty.viewport.x = 0;
-				Crafty.scene("game");
+				Crafty.scene("titleScreen");
 			}
 		});
 		

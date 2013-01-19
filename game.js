@@ -374,13 +374,8 @@ window.onload = function() {
 	//		(loading, title)	
  
 	Crafty.scene("loading", function() {
-		Crafty.load(["sprites/sprites.png", "sprites/largesprites.png", "sprites/cloudswithskyandhorizon.png"], function() {
+		Crafty.load(["sprites/sprites.png", "sprites/largesprites.png", "sprites/cloudswithskyandhorizon.png", "sprites/psunrisebanner.png", "sprites/level1.png", "sprites/level2.png"], function() {
 				Crafty.scene("game");
-		});
-		//Crafty.background("black");
-		Crafty.e("2D, DOM, Text") .text("Loading") .css({
-				"text-align": "center",
-				"color": "white"
 		});
 		Crafty.audio.add({ 
 			backgroundMusic: ["audio/bgmusic.ogg"],
@@ -394,15 +389,18 @@ window.onload = function() {
 	Crafty.scene("titleScreen", function() {
 		Crafty.background("#ffcd75");
 		Crafty.e("2D, DOM, Image") .attr({x: 0, y: 0, w: 700, h: 130}) .image("sprites/psunrisebanner.png");
-		//Crafty.e("2D, DOM, Text") .attr({x: 610, y: 5, w: 100, h: 20}) .text("Options") .css({"font": "10pt Arial"});
+		Crafty.e("2D, DOM, Image") .attr({x: 30, y: 132, w: 300, h: 200}) .image("sprites/level1.png");
+		Crafty.e("2D, DOM, Image") .attr({x: 370, y: 132, w: 300, h: 200}) .image("sprites/level2.png");
 		Crafty.e("2D, DOM, Text") .attr({x: 30, y: 132, w: 60, h: 60}) .text("Level 1") .css({ "color": "#000000"});
-		Crafty.e("2D, DOM, Text") .attr({x: 200, y: 132, w: 60, h: 60}) .text("Level 2").css({ "color": "#000000"});
+		Crafty.e("2D, DOM, Text") .attr({x: 370, y: 132, w: 60, h: 60}) .text("Level 2").css({ "color": "#000000"});
+		/*
 		Crafty.e("2D, DOM, Text") .attr({x: 370, y: 132, w: 60, h: 60}) .text("Level 3").css({ "color": "#000000"});
 		Crafty.e("2D, DOM, Text") .attr({x: 540, y: 132, w: 60, h: 60}) .text("Level 4").css({ "color": "#000000"});
 		Crafty.e("2D, DOM, Text") .attr({x: 30, y: 202, w: 60, h: 60}) .text("Level 5").css({ "color": "#000000"});
 		Crafty.e("2D, DOM, Text") .attr({x: 200, y: 202, w: 60, h: 60}) .text("Level 6").css({ "color": "#000000"});
 		Crafty.e("2D, DOM, Text") .attr({x: 370, y: 202, w: 60, h: 60}) .text("Level 7").css({ "color": "#000000"});
 		Crafty.e("2D, DOM, Text") .attr({x: 540, y: 202, w: 60, h: 60}) .text("Level 8").css({ "color": "#000000"});
+		*/
 
 		
 		this.bind("KeyDown", function(e) {
