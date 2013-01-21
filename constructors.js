@@ -31,7 +31,8 @@ Crafty.c("thinPlatformType", { //platform that you can jump through
 });
 Crafty.c("movingPlatformType", { //solid platform that can move in the x and y directions
 	init: function() {
-		this.requires("2D, DOM, platform, solid, movingPlatform");
+		this.requires("2D, DOM, movingPlatform, solid");
+		var hiddenPlatform;
 	},
 	setMovingPlatform: function(inputX, inputY, inputW, inputH, minX, maxX, minY, maxY, xvel, yvel) {
 		this.attr({ 
@@ -46,27 +47,32 @@ Crafty.c("movingPlatformType", { //solid platform that can move in the x and y d
 			xSpeed: xvel,
 			ySpeed: yvel,
 			yForward: 1,
-			xForward: 1
+			xForward: 1,
+			hiddenPlatform: Crafty.e("2D, DOM, platform").attr({ x: inputX, y: inputY + 1, h: 1, w: inputW})
 		});
 		this.bind("EnterFrame", function() {
 			if(this.yForward === 1) {
 				this._y -= this.ySpeed;
 				this.y -= this.ySpeed;
+				this.hiddenPlatform.y = this.y + 1;
 				if(this.y <= this.maxYBound) this.yForward = 0;	
 			}
 			else {
 				this._y += this.ySpeed;
 				this.y += this.ySpeed;
+				this.hiddenPlatform.y = this.y + 1;
 				if(this.y >= this.minYBound) this.yForward = 1;	
 			} 
 			if(this.xForward === 1) {
 				this._x += this.xSpeed;
 				this.x += this.xSpeed;
+				this.hiddenPlatform.x = this.x;
 				if(this.x >= this.maxXBound) this.xForward = 0;	
 			}
 			else {
 				this._x -= this.xSpeed;
 				this.x -= this.xSpeed;
+				this.hiddenPlatform.x = this.x;
 				if(this.x <= this.minXBound) this.xForward = 1;	
 			} 
 		});
@@ -182,8 +188,6 @@ Crafty.c("disappearingType", { 	//block dissappears after a set amount of time
 
 		//hiddenPlatform is to keep the player "on top" of the disappearing block, so the disappearing
 		//onHit can trigger and not just the platform onHit
-		//hiddenPlatform = Crafty.e("2D, DOM, platform, solid") 
-			//.attr({ x: inputX + 1, y: inputY + 1, h: 1, w: inputW - 2, visible: false });
 	},
 	disappear: function() {
 		this.hiddenPlatform.destroy();
@@ -424,12 +428,12 @@ Crafty.c("playerType", {
 		); 
 		this.onHit("movingPlatform", function(hit) {
 			if(hit[0].obj.yForward === 1) {		//platform is moving up
-				this.y -= hit[0].obj.ySpeed;
-				this._y -= hit[0].obj.ySpeed;
+				this.y = hit[0].obj.y - 15;
+				this._y = hit[0].obj.y - 15;
 			}
 			else {								//platform is moving down
-				this.y += hit[0].obj.ySpeed;
-				this._y += hit[0].obj.ySpeed;
+				this.y = hit[0].obj.y - 15;
+				this._y = hit[0].obj.y - 15;
 			}
 			if(hit[0].obj.xForward === 1) { 	//platform is moving right
 				this.x += hit[0].obj.xSpeed;
@@ -458,6 +462,10 @@ Crafty.c("playerType", {
 				Crafty.viewport.x = 0;
 				Crafty.scene("titleScreen");
 			}
+		});
+		this.onHit("pineapple", function(hit) {
+			hit[0].obj.destroy();
+			Crafty.trigger("pineappleCollected");
 		});
 		
 		//
@@ -522,16 +530,9 @@ Crafty.c("playerType", {
 
 			//actions
 			if(e.key == Crafty.keys['F']) {
-				if(this.hit("weapon") ) {
-					var hitArray = this.hit("weapon");
-					currentWeapon = hitArray[0].obj;
-					hitArray[0].obj.owner = this;
-				};
-				if(this.hit("pineapple") ){
-					var hitArray = this.hit("pineapple");
-					hitArray[0].obj.destroy();
-					Crafty.trigger("pineappleCollected"); 
-				};
+				var hitArray = this.hit("weapon");
+				currentWeapon = hitArray[0].obj;
+				hitArray[0].obj.owner = this;
 			}
 
 			//Weapon attacks

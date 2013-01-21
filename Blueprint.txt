@@ -6,16 +6,16 @@ Goals:
 	HUD interface
 	Text that appears only on collision with an object
 	Create new player sprite (for when I get an artist)
-	Sun move across level (timer maybe)
-		when you die the sun moves a certain amount, making the timer go down
 	Leaping monsters
-	Smooth viewport scrolling
+	Smoother viewport scrolling
 	Implement powerups
 
 Bugs:
+	Music needs to end when level ends
+	Pit death counter reset at end of level
+
 	Image skips when jumping up through non-solid platform
 	When on normal platforms the character sometimes shifts down one pixel to "rest" on the block
-	Character does not rest on downward moving platform
 
 Power-ups:
 	-Chili pepper of fire

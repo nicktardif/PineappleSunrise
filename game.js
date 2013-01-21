@@ -374,7 +374,8 @@ window.onload = function() {
 	//		(loading, title)	
  
 	Crafty.scene("loading", function() {
-		Crafty.load(["sprites/sprites.png", "sprites/largesprites.png", "sprites/cloudswithskyandhorizon.png", "sprites/psunrisebanner.png", "sprites/level1.png", "sprites/level2.png"], function() {
+		//load the level sprites before the level starts
+		Crafty.load(["sprites/sprites.png", "sprites/largesprites.png", "sprites/cloudswithskyandhorizon.png"], function() {
 				Crafty.scene("game");
 		});
 		Crafty.audio.add({ 
@@ -383,16 +384,18 @@ window.onload = function() {
 			platformBreak: ["audio/break.ogg"],
 			winner: ["audio/winner.ogg"] 
 		});
-		//Crafty.audio.play("backgroundMusic", -1, .75); turned off during development 
+		Crafty.audio.play("backgroundMusic", -1, .75); //turned off during development 
 	});
 	
 	Crafty.scene("titleScreen", function() {
 		Crafty.background("#ffcd75");
 		Crafty.e("2D, DOM, Image") .attr({x: 0, y: 0, w: 700, h: 130}) .image("sprites/psunrisebanner.png");
-		Crafty.e("2D, DOM, Image") .attr({x: 30, y: 132, w: 300, h: 200}) .image("sprites/level1.png");
-		Crafty.e("2D, DOM, Image") .attr({x: 370, y: 132, w: 300, h: 200}) .image("sprites/level2.png");
+		Crafty.e("2D, DOM, Image") .attr({x: 30, y: 132, w: 150, h: 100}) .image("sprites/level1.png");
+		Crafty.e("2D, DOM, Image") .attr({x: 200, y: 132, w: 150, h: 100}) .image("sprites/level2.png");
 		Crafty.e("2D, DOM, Text") .attr({x: 30, y: 132, w: 60, h: 60}) .text("Level 1") .css({ "color": "#000000"});
-		Crafty.e("2D, DOM, Text") .attr({x: 370, y: 132, w: 60, h: 60}) .text("Level 2").css({ "color": "#000000"});
+		Crafty.e("2D, DOM, Text") .attr({x: 200, y: 132, w: 60, h: 60}) .text("Level 2").css({ "color": "#000000"});
+		Crafty.e("2D, DOM, Text") .attr({x: 370, y: 132, w: 300, h: 200}) .text("Press the number of the level you wish to play").css({ "color": "#000000"});
+		Crafty.e("2D, DOM, Text") .attr({x: 370, y: 250, w: 300, h: 200}) .text("Game created by Nick Tardif").css({ "color": "#000000"});
 		/*
 		Crafty.e("2D, DOM, Text") .attr({x: 370, y: 132, w: 60, h: 60}) .text("Level 3").css({ "color": "#000000"});
 		Crafty.e("2D, DOM, Text") .attr({x: 540, y: 132, w: 60, h: 60}) .text("Level 4").css({ "color": "#000000"});
@@ -444,6 +447,9 @@ window.onload = function() {
 	////////////////////////////
 	//		Code to run			
 
-	Crafty.scene("titleScreen");
+		//load the titleScreen sprites before the titlescreen starts
+		Crafty.load(["sprites/psunrisebanner.png", "sprites/level1.png", "sprites/level2.png"], function() {
+			Crafty.scene("titleScreen");
+		});
 		
 };
