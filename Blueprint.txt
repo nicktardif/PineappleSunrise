@@ -11,8 +11,6 @@ Goals:
 	Implement powerups
 
 Bugs:
-	Music needs to end when level ends
-	Pit death counter reset at end of level
 
 	Image skips when jumping up through non-solid platform
 	When on normal platforms the character sometimes shifts down one pixel to "rest" on the block

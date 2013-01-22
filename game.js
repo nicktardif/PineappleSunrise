@@ -169,7 +169,7 @@ window.onload = function() {
 				[11, 50, 10, 100, 50, "Level 1", "#ffffff", "12pt Palatino"],
 
 				//dialogue
-				[12, 100, 50, 300, 100, [5, "Press 'P' to pause the game", "Press 'M' to mute all sounds", "Press 'B' to mute the background music", "", "Press 'SPACEBAR' to start the game"], "#e2671f", "10pt Palatino"],
+				[12, 100, 50, 300, 100, [5, "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Controls:", "WASD- Movement &nbsp &nbsp &nbsp 'F'-Pickup Items", "'P'-Pause Game &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 'B'- Mute Background Music", "", "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Press 'SPACEBAR' to start the game"], "#e2671f", "10pt Palatino"],
 
 				//pineapple
 				[41, 336, GROUNDLEVEL - 9 * 16, 16, 16],
@@ -210,11 +210,10 @@ window.onload = function() {
 				[2, 1216, GROUNDLEVEL - 2 * 16, 48, 16],
 				[2, 1232, GROUNDLEVEL - 3 * 16, 32, 16],
 				[2, 1472, GROUNDLEVEL - 4 * 16, 32, 8],
-				[2, 1264, GROUNDLEVEL - 10 * 16, 16, 16],
-				[2, 1280, GROUNDLEVEL - 11 * 16, 16, 16],
-				[2, 1296, GROUNDLEVEL - 12 * 16, 160, 16],
-				[2, 1344, GROUNDLEVEL - 15 * 16, 32, 8],
-				[2, 1456, GROUNDLEVEL - 12 * 16, 64, 16],
+				[2, 1264, GROUNDLEVEL - 10 * 16, 16, 8],
+				[2, 1280, GROUNDLEVEL - 11 * 16, 16, 8],
+				[2, 1296, GROUNDLEVEL - 12 * 16, 160, 8],
+				[2, 1456, GROUNDLEVEL - 12 * 16, 64, 8],
 				[2, 1600, GROUNDLEVEL - 12 * 16, 64, 8],
 				[2, 1616, GROUNDLEVEL - 15 * 16, 32, 8],
 				[2, 1696, GROUNDLEVEL - 12 * 16, 32, 8],
@@ -273,16 +272,16 @@ window.onload = function() {
 				[12, 100, 50, 300, 100, [5, "Press 'P' to pause the game", "Press 'M' to mute all sounds", "Press 'B' to mute the background music", "", "Press 'SPACEBAR' to start the game"], "#e2671f", "10pt Palatino"],
 
 				//fatso
+				[21, 512, GROUNDLEVEL - 15 * 16, 512, 608, 0.2],
 				[21, 1296, GROUNDLEVEL - 14 * 16, 1296, 1488, 0.5],
 				[21, 1488, GROUNDLEVEL - 14 * 16, 1296, 1488, 0.5],
-				[21, 512, GROUNDLEVEL - 15 * 16, 512, 608, 0.2],
 				[21, 1600, GROUNDLEVEL - 14 * 16, 1600, 1632, 0.2],
 
 				//player
 				[20, 0, GROUNDLEVEL- 1 * 16],
 
 				//hammer weapon
-				[40, 1352, GROUNDLEVEL - 16 * 16, BLOCKSIZE]
+				[40, 48, GROUNDLEVEL - 1 * 16, BLOCKSIZE]
 
 			]
 
@@ -376,15 +375,19 @@ window.onload = function() {
 	Crafty.scene("loading", function() {
 		//load the level sprites before the level starts
 		Crafty.load(["sprites/sprites.png", "sprites/largesprites.png", "sprites/cloudswithskyandhorizon.png"], function() {
+				fallAmounts = [0, 0, 0, 0];
+				Crafty.audio.play("backgroundMusic", -1, .75); //turned off during development 
 				Crafty.scene("game");
 		});
 		Crafty.audio.add({ 
 			backgroundMusic: ["audio/bgmusic.ogg"],
 			jumpSound: ["audio/jump.ogg"],
 			platformBreak: ["audio/break.ogg"],
-			winner: ["audio/winner.ogg"] 
+			fatsoYell: ["audio/fatsoYell.ogg"],
+			splat: ["audio/splat.ogg"],
+			vwoom: ["audio/vwoom.ogg"],
+			falling: ["audio/fallingScream.ogg"]
 		});
-		Crafty.audio.play("backgroundMusic", -1, .75); //turned off during development 
 	});
 	
 	Crafty.scene("titleScreen", function() {

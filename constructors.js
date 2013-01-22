@@ -367,6 +367,7 @@ Crafty.c("playerType", {
 		var currentWeapon = 0;
 		var orientation = 1; //initialize orientation to left
 		var pineapplesCollected = 0;
+		var onWeapon = 0;
 
 		//
 		//        ----  OnHit interactions ----
@@ -403,10 +404,12 @@ Crafty.c("playerType", {
 			}
 		});
 		this.onHit("pit", function(hit) {
+			Crafty.audio.play('falling', 1, .5);
 			this.death(this.x);
 			fallAmounts[hit[0].obj.pitNumber] = fallAmounts[hit[0].obj.pitNumber] + 1;
 		});
 		this.onHit("enemy", function(hit) {
+			Crafty.audio.play("splat", 1, .5);
 			this.death(this.x);
 		});
 		this.onHit("spring", 
@@ -457,8 +460,8 @@ Crafty.c("playerType", {
 		});
 		this.onHit("endType", function(hit) {
 			if(hit[0].obj.currentState == 5) {
-				Crafty.audio.stop("backgroundMusic");
-				//Crafty.audio.play("winner"); need a better end-of-level sound
+				Crafty.audio.stop();
+				Crafty.audio.play("vwoom");
 				Crafty.viewport.x = 0;
 				Crafty.scene("titleScreen");
 			}
@@ -467,7 +470,7 @@ Crafty.c("playerType", {
 			hit[0].obj.destroy();
 			Crafty.trigger("pineappleCollected");
 		});
-		
+
 		//
 		//        ----  Event definitions ----
 		//
@@ -484,6 +487,7 @@ Crafty.c("playerType", {
 				else  {
 					currentWeapon.x = this.x + 12; 
 				}
+				//gives the weapon a little "jiggle"
 				if(this.isPlaying("walk_left") || this.isPlaying("walk_right") ) { 
 					currentWeapon.y = Math.random() * 2 + 1 + this.y;
 				}
@@ -530,17 +534,17 @@ Crafty.c("playerType", {
 
 			//actions
 			if(e.key == Crafty.keys['F']) {
-				var hitArray = this.hit("weapon");
-				currentWeapon = hitArray[0].obj;
-				hitArray[0].obj.owner = this;
+				onWeapon = this.hit("weapon");
+				if(this.onWeapon != "false") {
+					//sets weapon to be currentWeapon, only if player is on a weapon
+					currentWeapon = onWeapon[0].obj;
+				}
 			}
 
 			//Weapon attacks
 			if(e.key == Crafty.keys['SPACE'] && currentWeapon != 0 && this.orientation == 1) currentWeapon.leftAttack();
 			else if(e.key == Crafty.keys['SPACE'] && currentWeapon != 0 && this.orientation == 0) currentWeapon.rightAttack();
 
-				//Again, not sure what this does
-			//Crafty.trigger("myevent");
 		});
 	},
 	death: function(inputX) {
@@ -623,10 +627,10 @@ Crafty.c("hammerWeaponType", {
 
 		this.onHit("enemy", function (hit) {
 			if(this.active == 1) {
+				Crafty.audio.play('fatsoYell', 1, .5);
 				hit[0].obj.destroy();
 			}
 		});
-		new Crafty.polygon([0,0], [2 * this.w, 0], [2 * this.w, this.h], [0, this.h]);
 	},
 	leftAttack: function() {
 		this.active = 1;
