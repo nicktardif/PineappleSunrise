@@ -347,13 +347,14 @@ Crafty.c("endType", { // run into this and you win
 
 Crafty.c("playerType", {
 	init: function() {
+		var animationDuration = 500;
 		this.requires("2D, DOM, player, Gravity, Controls, Twoway, Collision, SpriteAnimation");
 		this.gravity('platform');
 		this.gravityConst(.3);
 		this.collision();
-		this.animate("walk_right", 4, 18, 6);
-		this.animate("walk_left", 1, 18, 3);
-		this.animate("stopped", 0, 18, 0);
+		this.reel("walk_right", animationDuration, 4, 18, 3);
+		this.reel("walk_left", animationDuration, 1, 18, 3);
+		this.reel("stopped", animationDuration, 0, 18, 1);
 		
 	},
 	setPlayer: function(inputX, inputY, bsize, mspeed, jspeed, fallAmounts) {
@@ -499,7 +500,7 @@ Crafty.c("playerType", {
 			if (direction.x < 0) {
 				this.orientation = 0;
 				if (!this.isPlaying("walk_left")) {
-					this.stop().animate("walk_left", 5, -1);
+					this.pauseAnimation().animate("walk_left", -1);
 				}
 				if (currentWeapon != 0) { 		//sets the weapon sprite to the correct orientation on newDirection
 					currentWeapon.sprite(0, 19, 16, 16);
@@ -508,14 +509,14 @@ Crafty.c("playerType", {
 			if (direction.x > 0) {
 				this.orientation = 1;
 				if (!this.isPlaying("walk_right")) {
-					this.stop().animate("walk_right", 5, -1);
+					this.pauseAnimation().animate("walk_right", -1);
 				}
 				if (currentWeapon != 0) { 		//sets it to the correct orientation again
 					currentWeapon.sprite(0, 12, 16, 16);
 				}
 			}
 			if (!direction.x) {
-				this.stop().animate("stopped", 10, 1);
+				this.pauseAnimation().animate("stopped", -1);
 			}
 		});
 
@@ -560,9 +561,10 @@ Crafty.c("playerType", {
 });
 Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 	init: function() {
+		var animationDuration = 500;
 		this.requires("2D, DOM, fatsoSprite, enemy, SpriteAnimation");
-		this.animate("faceRight", 0, 1, 3);
-		this.animate("faceLeft", 0, 0, 3);
+		this.reel("faceRight", animationDuration, 0, 1, 3);
+		this.reel("faceLeft", animationDuration, 0, 0, 3);
 		var leftBound;
 		var rightBound;
 	},
@@ -584,8 +586,8 @@ Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 				this.x -= speed;
 				if(this.x <= this.leftBound){
 					this.movingLeft = 0;
-					this.stop();
-					this.animate("faceLeft", animationSpeed, -1);
+					this.pauseAnimation();
+					this.animate("faceLeft", -1);
 				}
 			}
 			else { 
@@ -593,7 +595,7 @@ Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 				this.x += speed;
 				if(this.x >= this.rightBound){
 					this.movingLeft = 1;
-					this.stop();
+					this.pauseAnimation();
 					this.animate("faceRight", animationSpeed, -1);
 				}
 			}
