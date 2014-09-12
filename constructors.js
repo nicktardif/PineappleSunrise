@@ -3,11 +3,15 @@
 //			for
 //		Level Structure	objects
 
-Crafty.c("platformType", { //platform that you can't jump up through
+function Platform(inputX, inputY, inputW, inputH) {
+	Crafty.e("platform").platform(inputX, inputY, inputW, inputH);
+}
+
+Crafty.c("platform", { //platform that you can't jump up through
 	init: function() {
-		this.requires("2D, DOM, platform, ground, normalPlatform, solid");
+		this.requires("2D, DOM, platform, ground, normalPlatformSprite, solid");
 	},
-	setPlatform: function(inputX, inputY, inputW, inputH) {
+	platform: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
@@ -16,11 +20,16 @@ Crafty.c("platformType", { //platform that you can't jump up through
 		});
 	}
 });
-Crafty.c("thinPlatformType", { //platform that you can jump through
+
+function ThinPlatform(inputX, inputY, inputW, inputH) {
+	Crafty.e("thinPlatform").thinPlatform(inputX, inputY, inputW, inputH);
+}
+
+Crafty.c("thinPlatform", { //platform that you can jump through
 	init: function() {
-		this.requires("2D, DOM, platform, thinPlatform");
+		this.requires("2D, DOM, platform, thinPlatform, thinPlatformSprite");
 	},
-	setPlatform: function(inputX, inputY, inputW, inputH) {
+	thinPlatform: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
@@ -29,12 +38,17 @@ Crafty.c("thinPlatformType", { //platform that you can jump through
 		});
 	}
 });
-Crafty.c("movingPlatformType", { //solid platform that can move in the x and y directions
+
+function MovingPlatform(inputX, inputY, inputW, inputH, minX, maxX, minY, maxY, xvel, yvel) {
+	Crafty.e("movingPlatform").movingPlatform(inputX, inputY, inputW, inputH, minX, maxX, minY, maxY, xvel, yvel);
+}
+
+Crafty.c("movingPlatform", { //solid platform that can move in the x and y directions
 	init: function() {
-		this.requires("2D, DOM, movingPlatform, solid");
+		this.requires("2D, DOM, movingPlatform, solid, movingPlatformSprite");
 		var hiddenPlatform;
 	},
-	setMovingPlatform: function(inputX, inputY, inputW, inputH, minX, maxX, minY, maxY, xvel, yvel) {
+	movingPlatform: function(inputX, inputY, inputW, inputH, minX, maxX, minY, maxY, xvel, yvel) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
@@ -81,11 +95,11 @@ Crafty.c("movingPlatformType", { //solid platform that can move in the x and y d
 
 // -- Not implemented yet, need to fix friction on horizontal slider
 /*
-Crafty.c("horizontalMovingPlatformType", { //solid platform that can move in the x and y directions
+Crafty.c("horizontalMovingPlatform", { //solid platform that can move in the x and y directions
 	init: function() {
 		this.requires("2D, DOM, platform, solid, movingPlatform");
 	},
-	setHorizontalPlatform: function(inputX, inputY, inputW, inputH, minX, maxX, xvel) {
+	horizontalPlatform: function(inputX, inputY, inputW, inputH, minX, maxX, xvel) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
@@ -110,7 +124,7 @@ Crafty.c("horizontalMovingPlatformType", { //solid platform that can move in the
 		});
 	}
 });
-Crafty.c("VerticalMovingPlatformType", { //solid platform that can move in the x and y directions
+Crafty.c("VerticalMovingPlatform", { //solid platform that can move in the x and y directions
 	init: function() {
 		this.requires("2D, DOM, platform, solid, movingPlatform");
 	},
@@ -141,11 +155,23 @@ Crafty.c("VerticalMovingPlatformType", { //solid platform that can move in the x
 });
 
 */
-Crafty.c("groundType", {  //platform that has a solid color (for now)
-	init: function() {
-		this.requires("2D, DOM, solid, platform, ground");
+
+// Constructor for ground objects
+function Ground(inputX, inputY, inputW, inputH) {
+	Crafty.e("ground").ground(inputX, inputY, inputW, inputH);
+}
+
+Crafty.c("ground", {  //platform that has a solid color (for now)
+	init: function(inputX, inputY, inputW, inputH) {
+		this.requires("2D, DOM, solid, platform, groundSprite");
+		this.attr({
+			x: inputX,
+			y: inputY,
+			w: inputW,
+			h: inputH
+		});
 	},
-	setGround: function(inputX, inputY, inputW, inputH) {
+	ground: function(inputX, inputY, inputW, inputH) {
 		this.attr({
 			x: inputX,
 			y: inputY,
@@ -154,12 +180,18 @@ Crafty.c("groundType", {  //platform that has a solid color (for now)
 		});
 	}
 });
-Crafty.c("wallType", { //barrier to going horizontally, is either leftWall or
+
+// Constructor for wall objects
+function Wall(inputX, inputY, inputW, inputH, wallType, color) {
+	Crafty.e("wall").wall(inputX, inputY, inputW, inputH, wallType, color);
+}
+
+Crafty.c("wall", { //barrier to going horizontally, is either leftWall or
 					   //rightWall
 	init: function() {
 		this.requires("2D, DOM, wall, Color");
 	},
-	setWall: function(inputX, inputY, inputW, inputH, wallType, color) {
+	wall: function(inputX, inputY, inputW, inputH, wallType, color) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
@@ -170,12 +202,17 @@ Crafty.c("wallType", { //barrier to going horizontally, is either leftWall or
 		this.color(color);
 	}
 });
-Crafty.c("disappearingType", { 	//block dissappears after a set amount of time
+
+function DisappearingBlock(inputX, inputY, inputW, inputH, deleteTime) {
+	Crafty.e("disappearingBlock").disappearing(inputX, inputY, inputW, inputH, deleteTime);
+}
+
+Crafty.c("disappearingBlock", { 	//block dissappears after a set amount of time
 	init: function() {
-		this.requires("2D, DOM, disappearing");
+		this.requires("2D, DOM, disappearing, disappearingSprite");
 		var hiddenPlatform;
 	},
-	setDisappearing: function(inputX, inputY, inputW, inputH, deleteTime) {
+	disappearing: function(inputX, inputY, inputW, inputH, deleteTime) {
 		this.attr({
 			x: inputX,
 			y: inputY,
@@ -196,11 +233,15 @@ Crafty.c("disappearingType", { 	//block dissappears after a set amount of time
 	}
 });
 
-Crafty.c("textType", {
+function Text(inputX, inputY, inputW, inputH, text, fontColor, fontAndSize) {
+	Crafty.e("text").text(inputX, inputY, inputW, inputH, text, fontColor, fontAndSize);
+}
+
+Crafty.c("text", {
 	init: function() {
 		this.requires("2D, DOM, Text");
 	},
-	setText: function(inputX, inputY, inputW, inputH, text, fontColor, fontAndSize) {
+	text: function(inputX, inputY, inputW, inputH, text, fontColor, fontAndSize) {
 		this.attr({
 			x: inputX, 
 			y: inputY,
@@ -212,12 +253,16 @@ Crafty.c("textType", {
 	}
 });
 
-Crafty.c("dialogueType", {
+function Dialogue(inputX, inputY, inputW, inputH, textArray, fontColor, fontAndSize) {
+	Crafty.e("dialogue").dialogue(inputX, inputY, inputW, inputH, textArray, fontColor, fontAndSize);
+}
+
+Crafty.c("dialogue", {
 	init: function() {
 		//going to eventually have different size sprites according to which size is needed
 		this.requires("2D, DOM, Color");
 	},
-	setDialogue: function(inputX, inputY, inputW, inputH, textArray, fontColor, fontAndSize) {
+	dialogue: function(inputX, inputY, inputW, inputH, textArray, fontColor, fontAndSize) {
 	//text array[0] is a number of how many "blurbs" are in the dialogue box
 	//iterate through each of those, making a new text entity in the box
 		this.attr({
@@ -252,11 +297,15 @@ Crafty.c("dialogueType", {
 //			for
 //		Obstacles
 
-Crafty.c("springType", { //sends you high in the air
+function Spring(inputX, inputY, inputW, inputH) {
+	Crafty.e("spring").spring(inputX, inputY, inputW, inputH);
+}
+
+Crafty.c("spring", { //sends you high in the air
 	init: function() {
 		this.requires("2D, DOM, spring, springSprite");
 	},
-	setSpring: function(inputX, inputY, inputW, inputH) {
+	spring: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
@@ -265,11 +314,17 @@ Crafty.c("springType", { //sends you high in the air
 		})
 	}
 });
-Crafty.c("pitType", { //hit this and the level restarts, also has a fallCounter sign
+
+function Pit(startX, GROUNDLEVEL, width, pitNumber, fallNumber) {
+	console.log('fallnumber = ' + fallNumber);
+	Crafty.e("pit").pit(startX, GROUNDLEVEL, width, pitNumber, fallNumber);
+}
+
+Crafty.c("pit", { //hit this and the level restarts, also has a fallCounter sign
 	init: function() {
 		this.requires("2D, DOM, pit");	
 	},
-	setPit: function(startX, GROUNDLEVEL, width, pitNumber, fallNumber) {
+	pit: function(startX, GROUNDLEVEL, width, pitNumber, fallNumber) {
 		this.attr({ 
 			x: startX - 16,
 			y: GROUNDLEVEL + 16,
@@ -277,7 +332,7 @@ Crafty.c("pitType", { //hit this and the level restarts, also has a fallCounter 
 			h: 1
 		});
 		this.pitNumber = pitNumber;
-		var pitString = fallNumber.toString();
+		var pitString = fallNumber;
 		var signString = "sign";
 		var imageString = signString.concat(pitString);
 		Crafty.e("2D", "DOM", imageString)
@@ -288,13 +343,18 @@ Crafty.c("pitType", { //hit this and the level restarts, also has a fallCounter 
 			});	
 	}
 });
-Crafty.c("waterType", { //water, float in it, drown if you stay in too long
+
+function Water(inputX, inputY, inputW, inputH) {
+	Crafty.e("water").water(inputX, inputY, inputW, inputH);
+}
+
+Crafty.c("water", { //water, float in it, drown if you stay in too long
 	init: function() {
-		this.requires("2D, DOM, water, SpriteAnimation");
+		this.requires("2D, DOM, waterSprite, SpriteAnimation");
 		this.animate('waterMoving', 0, 11, 3); // works for widths up to 80 pixels (5 blocks)
 		this.animate('waterMoving', 100, -1);
 	},
-	setWater: function(inputX, inputY, inputW, inputH) {
+	water: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
@@ -304,12 +364,17 @@ Crafty.c("waterType", { //water, float in it, drown if you stay in too long
 
 	}
 });
-Crafty.c("endType", { // run into this and you win
+
+function End(inputX, inputY, inputW, inputH) {
+	Crafty.e("end").end(inputX, inputY, inputW, inputH);
+}
+
+Crafty.c("end", { // run into this and you win
 	init: function() {
 		this.requires("2D, DOM, SpriteAnimation, endSprite");
 		var currentState;
 	},
-	setEnd: function(inputX, inputY, inputW, inputH) {
+	end: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
@@ -345,10 +410,14 @@ Crafty.c("endType", { // run into this and you win
 //			for
 //		Creatures
 
-Crafty.c("playerType", {
+function Player(inputX, inputY, bsize, mspeed, jspeed, fallAmounts) {
+	Crafty.e("player").player(inputX, inputY, bsize, mspeed, jspeed, fallAmounts);
+}
+
+Crafty.c("player", {
 	init: function() {
 		var animationDuration = 500;
-		this.requires("2D, DOM, player, Gravity, Controls, Twoway, Collision, SpriteAnimation");
+		this.requires("2D, DOM, playerSprite, Gravity, Controls, Twoway, Collision, SpriteAnimation");
 		this.gravity('platform');
 		this.gravityConst(.3);
 		this.collision();
@@ -357,7 +426,7 @@ Crafty.c("playerType", {
 		this.reel("stopped", animationDuration, 0, 18, 1);
 		
 	},
-	setPlayer: function(inputX, inputY, bsize, mspeed, jspeed, fallAmounts) {
+	player: function(inputX, inputY, bsize, mspeed, jspeed, fallAmounts) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
@@ -449,7 +518,7 @@ Crafty.c("playerType", {
 			}
 
 		});
-		this.onHit("wallType", function (hit) {
+		this.onHit("wall", function (hit) {
 			if(hit[0].obj.isLeft === 1) { 
 				this.x += hit[0].obj.w / 4;
 				this._x += hit[0].obj.w / 4;
@@ -459,7 +528,7 @@ Crafty.c("playerType", {
 				this._x -= hit[0].obj.w / 4;
 			}
 		});
-		this.onHit("endType", function(hit) {
+		this.onHit("end", function(hit) {
 			if(hit[0].obj.currentState == 5) {
 				Crafty.audio.stop();
 				Crafty.audio.play("vwoom");
@@ -552,14 +621,19 @@ Crafty.c("playerType", {
 		this.y = 500;
 		this._y = 500;
 		this.disableControl();
-		var deathText = Crafty.e("textType") .setText(inputX, 125, 100, 20, "You died", "000000", "14pt Arial");
+		var deathText = Crafty.e("text").text(inputX, 125, 100, 20, "You died", "000000", "14pt Arial");
 		this.timeout( function() {
 			Crafty.viewport.x = 0;
 			Crafty.scene("game");
 		}, 500);
 	}
 });
-Crafty.c("fatsoType", { 	//large enemy that walks back and forth
+
+function Fatso(inputX, inputY, bSize, lb, rb, speed) {
+	Crafty.e("fatso").fatso(inputX, inputY, bSize, lb, rb, speed);
+}
+
+Crafty.c("fatso", { 	//large enemy that walks back and forth
 	init: function() {
 		var animationDuration = 500;
 		this.requires("2D, DOM, fatsoSprite, enemy, SpriteAnimation");
@@ -568,7 +642,7 @@ Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 		var leftBound;
 		var rightBound;
 	},
-	setFatso: function(inputX, inputY, bSize, lb, rb, speed) {
+	fatso: function(inputX, inputY, bSize, lb, rb, speed) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
@@ -608,15 +682,20 @@ Crafty.c("fatsoType", { 	//large enemy that walks back and forth
 //			for
 //		Weapons
 
-Crafty.c("hammerWeaponType", {
+function Hammer(inputX, inputY, bsize) {
+	Crafty.e("hammer").hammer(inputX, inputY, bsize);
+}
+
+Crafty.c("hammer", {
 	init: function() {
+		var animationDuration = 500;
 		this.requires("2D, DOM, weapon, hammerSprite, SpriteAnimation, Collision");	
-		this.animate("attackLeft", 0, 12, 6);
-		this.animate("attackRight", 0, 19, 6);
-		this.animate("hammerFaceLeft", 0, 12, 0);
-		this.animate("hammerFaceRight", 0, 19, 0);
+		this.reel("attackLeft", 500, 0, 12, 6);
+		this.reel("attackRight", 500, 0, 19, 6);
+		this.reel("hammerFaceLeft", 500, 0, 12, 0);
+		this.reel("hammerFaceRight", 500, 0, 19, 0);
 	},
-	setHammer: function(inputX, inputY, bsize) {
+	hammer: function(inputX, inputY, bsize) {
 		this.attr({
 			x: inputX,
 			y: inputY,
@@ -636,7 +715,7 @@ Crafty.c("hammerWeaponType", {
 	},
 	leftAttack: function() {
 		this.active = 1;
-		this.animate("attackLeft", 20, 0);
+		this.animate("attackLeft", 0);
 		this.timeout(function() {
 			this.active = 0;	
 		}, 20);
@@ -644,7 +723,7 @@ Crafty.c("hammerWeaponType", {
 	},
 	rightAttack: function() {
 		this.active = 1;
-		this.animate("attackRight", 20, 0);
+		this.animate("attackRight", 0);
 		this.timeout(function() {
 			this.active = 0;	
 		}, 20);
@@ -656,12 +735,16 @@ Crafty.c("hammerWeaponType", {
 //		for
 //		Items	
 
-Crafty.c("pineappleType", { //need to collect 5 of these to finish the level
+function Pineapple(inputX, inputY, inputW, inputH) {
+	Crafty.e("pineapple").pineapple(inputX, inputY, inputW, inputH);
+}
+
+Crafty.c("pineapple", { //need to collect 5 of these to finish the level
 	init: function() {
 		this.requires("2D, DOM, pineappleSprite, pineapple");
 		var pineappleText;
 	},
-	setPineapple: function(inputX, inputY, inputW, inputH) {
+	pineapple: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
