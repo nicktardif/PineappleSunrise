@@ -1,8 +1,30 @@
+var blocksize = 0;
+
 window.onload = function() {
-	//document.body.innerHTML += "<div id='debug'></div><div id='instructions'>Press <strong>P</strong> to pause, <strong>B</strong> to toggle background music, <strong>M</strong> to mute all sounds</div>";
-	var width = 700;
-	var height = 320;
-	Crafty.init(width, height);
+    var availableXPixels = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+    var availableYPixels = window.innerHeight|| document.documentElement.clientHeight|| document.body.clientHeight;
+
+	var gWidth = 40; // width in game units
+	var gHeight = 20; // height in game units
+	var PIXELS_PER_GAME_UNIT = 16;
+
+	// How much screen can fit in the y direction?
+	var scale = Math.floor(availableYPixels / (gHeight * PIXELS_PER_GAME_UNIT));
+
+	// Scale down until the screen fits in the x direction too
+	while(gWidth * scale * PIXELS_PER_GAME_UNIT > availableXPixels) {
+		scale--;
+	}
+
+	// Dimensions of each 1x1 game unit in pixels
+	blockSize = scale * PIXELS_PER_GAME_UNIT;
+
+	var spritesLocation = 'sprites/scale' + blockSize + '/';
+
+	var pWidth = gWidth * blockSize;
+	var pHeight = gHeight * blockSize;
+	Crafty.init(pWidth, pHeight);
+
 	var fallAmounts = [0, 0, 0, 0];
 	var levelNumber = 0;
 
@@ -12,20 +34,17 @@ window.onload = function() {
 	//		defintion	
 
 	Crafty.scene("game", function () {
-		var BLOCKSIZE = 16;
-		var LARGEBLOCKSIZE = 2 * BLOCKSIZE;
-
 		// Draw background
 			Crafty.e("2D, DOM, Image")
 				.attr({w: 2100, h: Crafty.viewport.height})
 				//.attr({w: Crafty.viewport.width*2, h: Crafty.viewport.height})
-				.image("sprites/cloudswithskyandhorizon.png", "repeat");
+				.image(spritesLocation + "cloudswithskyandhorizon.png", "repeat");
 		
 		//set the images for the sprites
-		Crafty.sprite(BLOCKSIZE, "sprites/sprites.png", {
+		Crafty.sprite(blockSize, spritesLocation + "sprites.png", {
 			playerSprite: [0,18],
 			normalPlatformSprite: [0,16], thinPlatformSprite: [0,17], movingPlatformSprite: [0,15], disappearingSprite: [0,14], groundSprite: [0,13],
-			waterSprite: [0,11], endSprite: [9,10],
+			waterSprite: [0,11], 
 			sign0: [0,0], sign1: [1,0], sign2: [2,0], sign3: [3,0], sign4: [4,0],
 			sign5: [5,0], sign6: [6,0], sign7: [7,0], sign8: [8,0], sign9: [9,0],
 			sign10: [0,1], sign11: [1,1], sign12: [2,1], sign13: [3,1], sign14: [4,1],
@@ -48,21 +67,19 @@ window.onload = function() {
 			sign95: [5,9], sign96: [6,9], sign97: [7,9], sign98: [8,9], sign99: [9,9],
 			springSprite: [2,10], hammerSprite: [0, 12], pineappleSprite: [1,10]
 		});
-		Crafty.sprite(LARGEBLOCKSIZE, "sprites/largesprites.png", {
+
+		// Load the large sprites (size is twice that of the other sprites
+		Crafty.sprite(blockSize * 2, spritesLocation + "largesprites.png", {
 			fatsoSprite: [0,0], endSprite: [0,2]
 		});
 
-		var level_load_functions = [level_1, level_2];
+		// Have a blank function for level 0
+		var level_load_functions = [function() {}, level_1, level_2];
 		
-		if (levelNumber !== 0) // Prevent indexOutOfBounds
-			levelNumber--;
-
 		level_load_functions[levelNumber]();
 
 		Crafty.pause();	// pauses the game while the info box is open
-			
 	});
-
 
 	////////////////////////////
 	//		Other scene	
@@ -71,7 +88,7 @@ window.onload = function() {
  
 	Crafty.scene("loading", function() {
 		//load the level sprites before the level starts
-		Crafty.load(["sprites/sprites.png", "sprites/largesprites.png", "sprites/cloudswithskyandhorizon.png"], function() {
+		Crafty.load([spritesLocation + "sprites.png", spritesLocation + "largesprites.png", spritesLocation + "cloudswithskyandhorizon.png"], function() {
 				fallAmounts = [0, 0, 0, 0];
 				Crafty.audio.play("backgroundMusic", -1, .75); //turned off during development 
 				Crafty.scene("game");
@@ -89,13 +106,17 @@ window.onload = function() {
 	
 	Crafty.scene("titleScreen", function() {
 		Crafty.background("#ffcd75");
-		Crafty.e("2D, DOM, Image") .attr({x: 0, y: 0, w: 700, h: 130}) .image("sprites/psunrisebanner.png");
-		Crafty.e("2D, DOM, Image") .attr({x: 30, y: 132, w: 150, h: 100}) .image("sprites/level1.png");
-		Crafty.e("2D, DOM, Image") .attr({x: 200, y: 132, w: 150, h: 100}) .image("sprites/level2.png");
-		Crafty.e("2D, DOM, Text") .attr({x: 30, y: 132, w: 60, h: 60}) .text("Level 1") .css({ "color": "#000000"});
-		Crafty.e("2D, DOM, Text") .attr({x: 200, y: 132, w: 60, h: 60}) .text("Level 2").css({ "color": "#000000"});
-		Crafty.e("2D, DOM, Text") .attr({x: 370, y: 132, w: 300, h: 200}) .text("Press the number of the level you wish to play").css({ "color": "#000000"});
-		Crafty.e("2D, DOM, Text") .attr({x: 370, y: 250, w: 300, h: 200}) .text("Game created by Nick Tardif").css({ "color": "#000000"});
+
+		MyImage(0, 0, 19, 9, spritesLocation + 'psunrisebanner.png');
+
+		MyImage(3, 8, 10, 6, spritesLocation + 'level1.png');
+		Text(3, 8, 1, 3, "Level 1", "#000", '18pt Palatino');
+
+		MyImage(14, 8, 10, 6, spritesLocation + 'level2.png');
+		Text(14, 8, 1, 3, "Level 2", "#000", '18pt Palatino');
+
+		Text(21, 8, 20, 14, "Press the number of the level you wish to play", "#000", '20pt Palatino');
+		Text(21, 9, 20, 14, "Game created by Nick Tardif", "#000", '20pt Palatino');
 		/*
 		Crafty.e("2D, DOM, Text") .attr({x: 370, y: 132, w: 60, h: 60}) .text("Level 3").css({ "color": "#000000"});
 		Crafty.e("2D, DOM, Text") .attr({x: 540, y: 132, w: 60, h: 60}) .text("Level 4").css({ "color": "#000000"});
@@ -144,228 +165,228 @@ window.onload = function() {
 	});
 
 	function level_1() {
+		console.log('blocksize is ' + blockSize);
 		var MOVESPEED = 2.5;
 		var JUMPSPEED = 6;
-		var GROUNDLEVEL = height-16;
-		var BLOCKSIZE = 16;
+		var GROUNDLEVEL = gHeight - 1;
 
 		//leftwall
-		Wall(-8, 0, 8, height, 1, "black");
+		Wall(-0.5, 0, 0.5, gHeight, 1, "black", blockSize);
 
 		//ground
-		Ground(0, GROUNDLEVEL, 128, 16); 
-		Ground(400, GROUNDLEVEL, 160, 16);
-		Ground(560, GROUNDLEVEL, 128, 16);
-		Ground(848, GROUNDLEVEL, 160, 16);
+		Ground(0, GROUNDLEVEL, 8, 1); 
+		Ground(25, GROUNDLEVEL, 10, 1, blockSize);
+		Ground(35, GROUNDLEVEL, 8, 1, blockSize);
+		Ground(53, GROUNDLEVEL, 10, 1, blockSize);
 
-		Ground(1696, 120, 8);
+		Ground(106, 7, 0.5, blockSize);
 
 		//platforms
-		Platform(720, GROUNDLEVEL - 4 * 16, 96, 8);
-		Platform(704, GROUNDLEVEL - 8 * 16, 16, 8);
-		Platform(672, GROUNDLEVEL - 12 * 16, 16, 8);
-		Platform(736, GROUNDLEVEL - 15 * 16, 16, 8);
-		Platform(816, GROUNDLEVEL - 8 * 16, 16, 8);
+		Platform(45, GROUNDLEVEL - 4, 6, 0.5, blockSize);
+		Platform(44, GROUNDLEVEL - 8, 1, 0.5, blockSize);
+		Platform(42, GROUNDLEVEL - 12, 1, 0.5, blockSize);
+		Platform(46, GROUNDLEVEL - 15, 1, 0.5, blockSize);
+		Platform(51, GROUNDLEVEL - 8, 1, 0.5, blockSize);
 
-		Platform(1232, GROUNDLEVEL - 5 * 16, 96, 8);
-		Platform(1696, GROUNDLEVEL - 1 * 16, 96, 8);
+		Platform(77, GROUNDLEVEL - 5, 6, 0.5, blockSize);
+		Platform(106, GROUNDLEVEL - 1, 6, 0.5, blockSize);
 
 		//thin platforms
-		ThinPlatform(1040, GROUNDLEVEL - 5 * 16, 108, 8);
-		ThinPlatform(1040, GROUNDLEVEL - 2 * 16, 108, 8);
+		ThinPlatform(65, GROUNDLEVEL - 5, 6, 0.5, blockSize);
+		ThinPlatform(65, GROUNDLEVEL - 2, 6, 0.5, blockSize);
 
 		//stairs
-		Platform(80, GROUNDLEVEL - 1 * 16, 48, 16);
-		Platform(96, GROUNDLEVEL - 2 * 16, 32, 16);
-		Platform(112, GROUNDLEVEL - 3 * 16, 16, 16);
+		Platform(5, GROUNDLEVEL - 1, 3, 1, blockSize);
+		Platform(6, GROUNDLEVEL - 2, 2, 1, blockSize);
+		Platform(7, GROUNDLEVEL - 3, 1, 1, blockSize);
 
-		Platform(640, GROUNDLEVEL - 1 * 16, 48, 16);
-		Platform(656, GROUNDLEVEL - 2 * 16, 32, 16);
-		Platform(672, GROUNDLEVEL - 3 * 16, 16, 16);
+		Platform(40, GROUNDLEVEL - 1, 3, 1, blockSize);
+		Platform(41, GROUNDLEVEL - 2, 2, 1, blockSize);
+		Platform(42, GROUNDLEVEL - 3, 1, 1, blockSize);
 
-		Platform(848, GROUNDLEVEL - 3 * 16, 16, 16);
-		Platform(848, GROUNDLEVEL - 2 * 16, 32, 16);
-		Platform(848, GROUNDLEVEL - 1 * 16, 48, 16);
+		Platform(53, GROUNDLEVEL - 3, 1, 1, blockSize);
+		Platform(53, GROUNDLEVEL - 2, 2, 1, blockSize);
+		Platform(53, GROUNDLEVEL - 1, 3, 1, blockSize);
 
 		//moving platforms
-		MovingPlatform(160, GROUNDLEVEL - 3 * 16, 48, 4, 160, 160, GROUNDLEVEL - 3 * 16, GROUNDLEVEL - (3 * 16) - 64, 0, 0.3);
-		MovingPlatform(320, GROUNDLEVEL - 3 * 16, 48, 4, 320, 320, GROUNDLEVEL - 3 * 16, GROUNDLEVEL - (3 * 16) - 64, 0, 0.3);
+		MovingPlatform(10, GROUNDLEVEL - 3, 3, 0.25, 10, 10, GROUNDLEVEL - 3, GROUNDLEVEL - 7, 0, 0.3, blockSize);
+		MovingPlatform(20, GROUNDLEVEL - 3, 3, 0.25, 20, 20, GROUNDLEVEL - 3, GROUNDLEVEL - 7, 0, 0.3, blockSize);
 
-		MovingPlatform(1488, GROUNDLEVEL - 2 * 16, 48, 4, 1488, 1648, GROUNDLEVEL - 2 * 16, GROUNDLEVEL - (2 * 16) - 64, 0.5, 0.000000001);
+		MovingPlatform(93, GROUNDLEVEL - 2, 3, 0.25, 93, 103, GROUNDLEVEL - 2, GROUNDLEVEL - 6, 0.5, 0.000000001, blockSize);
 
 		//spring
-		Spring(256, GROUNDLEVEL - 4 * 16, 16, 8);
-		Platform(256, GROUNDLEVEL - 4 * 16 + 8, 16, 8);
+		Spring(16, GROUNDLEVEL - 4, 1, 0.5, blockSize);
+		Platform(16, GROUNDLEVEL - 3.75, 1, 0.5, blockSize);
 
 		//pits
-		Pit(-128, GROUNDLEVEL, 128, 0, fallAmounts[0]);
-		Pit(128, GROUNDLEVEL, 272, 0, fallAmounts[0]);
-		Pit(688, GROUNDLEVEL, 144, 1, fallAmounts[1]);
-		Pit(1008, GROUNDLEVEL, 700, 2, fallAmounts[2]);
+		Pit(-8, GROUNDLEVEL, 8, 0, fallAmounts[0], blockSize);
+		Pit(8, GROUNDLEVEL, 17, 0, fallAmounts[0], blockSize);
+		Pit(43, GROUNDLEVEL, 9, 1, fallAmounts[1], blockSize);
+		Pit(63, GROUNDLEVEL, 43, 2, fallAmounts[2], blockSize);
 
 		//disappearing
-		DisappearingBlock(720, GROUNDLEVEL - 8 * 16, 16, 8, 300);
-		DisappearingBlock(736, GROUNDLEVEL - 8 * 16, 16, 8, 300);
-		DisappearingBlock(752, GROUNDLEVEL - 8 * 16, 16, 8, 300);
-		DisappearingBlock(768, GROUNDLEVEL - 8 * 16, 16, 8, 300);
-		DisappearingBlock(784, GROUNDLEVEL - 8 * 16, 16, 8, 300);
-		DisappearingBlock(800, GROUNDLEVEL - 8 * 16, 16, 8, 300);
+		DisappearingBlock(45, GROUNDLEVEL - 8, 1, 0.5, 300, blockSize);
+		DisappearingBlock(46, GROUNDLEVEL - 8, 1, 0.5, 300, blockSize);
+		DisappearingBlock(47, GROUNDLEVEL - 8, 1, 0.5, 300, blockSize);
+		DisappearingBlock(48, GROUNDLEVEL - 8, 1, 0.5, 300, blockSize);
+		DisappearingBlock(49, GROUNDLEVEL - 8, 1, 0.5, 300, blockSize);
+		DisappearingBlock(50, GROUNDLEVEL - 8, 1, 0.5, 300, blockSize);
 
-		DisappearingBlock(1392, GROUNDLEVEL - 5 * 16, 16, 16, 200);
-		DisappearingBlock(1408, GROUNDLEVEL - 5 * 16, 16, 16, 200);
-		DisappearingBlock(1424, GROUNDLEVEL - 5 * 16, 16, 16, 200);
-		DisappearingBlock(1440, GROUNDLEVEL - 5 * 16, 16, 16, 200);
-		DisappearingBlock(1456, GROUNDLEVEL - 5 * 16, 16, 16, 200);
-		DisappearingBlock(1392, GROUNDLEVEL - 4 * 16, 16, 16, 200);
-		DisappearingBlock(1408, GROUNDLEVEL - 4 * 16, 16, 16, 200);
-		DisappearingBlock(1424, GROUNDLEVEL - 4 * 16, 16, 16, 200);
-		DisappearingBlock(1440, GROUNDLEVEL - 4 * 16, 16, 16, 200);
-		DisappearingBlock(1456, GROUNDLEVEL - 4 * 16, 16, 16, 200);
-		DisappearingBlock(1392, GROUNDLEVEL - 3 * 16, 16, 16, 200);
-		DisappearingBlock(1408, GROUNDLEVEL - 3 * 16, 16, 16, 200);
-		DisappearingBlock(1424, GROUNDLEVEL - 3 * 16, 16, 16, 200);
-		DisappearingBlock(1440, GROUNDLEVEL - 3 * 16, 16, 16, 200);
-		DisappearingBlock(1456, GROUNDLEVEL - 3 * 16, 16, 16, 200);
-		DisappearingBlock(1392, GROUNDLEVEL - 2 * 16, 16, 16, 200);
-		DisappearingBlock(1408, GROUNDLEVEL - 2 * 16, 16, 16, 200);
-		DisappearingBlock(1424, GROUNDLEVEL - 2 * 16, 16, 16, 200);
-		DisappearingBlock(1440, GROUNDLEVEL - 2 * 16, 16, 16, 200);
-		DisappearingBlock(1456, GROUNDLEVEL - 2 * 16, 16, 16, 200);
-		DisappearingBlock(1392, GROUNDLEVEL - 1 * 16, 16, 16, 200);
-		DisappearingBlock(1408, GROUNDLEVEL - 1 * 16, 16, 16, 200);
-		DisappearingBlock(1424, GROUNDLEVEL - 1 * 16, 16, 16, 200);
-		DisappearingBlock(1440, GROUNDLEVEL - 1 * 16, 16, 16, 200);
-		DisappearingBlock(1456, GROUNDLEVEL - 1 * 16, 16, 16, 200);
+		DisappearingBlock(87, GROUNDLEVEL - 5, 1, 1, 200, blockSize);
+		DisappearingBlock(88, GROUNDLEVEL - 5, 1, 1, 200, blockSize);
+		DisappearingBlock(89, GROUNDLEVEL - 5, 1, 1, 200, blockSize);
+		DisappearingBlock(90, GROUNDLEVEL - 5, 1, 1, 200, blockSize);
+		DisappearingBlock(91, GROUNDLEVEL - 5, 1, 1, 200, blockSize);
+		DisappearingBlock(87, GROUNDLEVEL - 4, 1, 1, 200, blockSize);
+		DisappearingBlock(88, GROUNDLEVEL - 4, 1, 1, 200, blockSize);
+		DisappearingBlock(89, GROUNDLEVEL - 4, 1, 1, 200, blockSize);
+		DisappearingBlock(90, GROUNDLEVEL - 4, 1, 1, 200, blockSize);
+		DisappearingBlock(91, GROUNDLEVEL - 4, 1, 1, 200, blockSize);
+		DisappearingBlock(87, GROUNDLEVEL - 3, 1, 1, 200, blockSize);
+		DisappearingBlock(88, GROUNDLEVEL - 3, 1, 1, 200, blockSize);
+		DisappearingBlock(89, GROUNDLEVEL - 3, 1, 1, 200, blockSize);
+		DisappearingBlock(90, GROUNDLEVEL - 3, 1, 1, 200, blockSize);
+		DisappearingBlock(91, GROUNDLEVEL - 3, 1, 1, 200, blockSize);
+		DisappearingBlock(87, GROUNDLEVEL - 2, 1, 1, 200, blockSize);
+		DisappearingBlock(88, GROUNDLEVEL - 2, 1, 1, 200, blockSize);
+		DisappearingBlock(89, GROUNDLEVEL - 2, 1, 1, 200, blockSize);
+		DisappearingBlock(90, GROUNDLEVEL - 2, 1, 1, 200, blockSize);
+		DisappearingBlock(91, GROUNDLEVEL - 2, 1, 1, 200, blockSize);
+		DisappearingBlock(87, GROUNDLEVEL - 1, 1, 1, 200, blockSize);
+		DisappearingBlock(88, GROUNDLEVEL - 1, 1, 1, 200, blockSize);
+		DisappearingBlock(89, GROUNDLEVEL - 1, 1, 1, 200, blockSize);
+		DisappearingBlock(90, GROUNDLEVEL - 1, 1, 1, 200, blockSize);
+		DisappearingBlock(91, GROUNDLEVEL - 1, 1, 1, 200, blockSize);
 		
 		// end
-		End(1744, GROUNDLEVEL - 3 * 16, 32, 32);
+		End(109, GROUNDLEVEL - 3, 2, 2, blockSize);
 
 		//text
-		Text(50, 10, 100, 50, "Level 1", "#ffffff", "12pt Palatino");
+		Text(3, 0.5, 6, 3, "Level 1", "#ffffff", "12pt Palatino", blockSize);
 
 		//dialogue
 		Dialogue(100, 50, 300, 100, [5, "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Controls:", "WASD- Movement &nbsp &nbsp &nbsp 'F'-Pickup Items", "'P'-Pause Game &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 'B'- Mute Background Music", "", "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Press 'SPACEBAR' to start the game"], "#e2671f", "10pt Palatino");
 
 		//pineapple
-		Pineapple(336, GROUNDLEVEL - 9 * 16, 16, 16);
-		Pineapple(736, GROUNDLEVEL - 16 * 16, 16, 16);
-		Pineapple(768, GROUNDLEVEL - 5 * 16, 16, 16);
-		Pineapple(1104, GROUNDLEVEL - 6 * 16, 16, 16);
-		Pineapple(1424, GROUNDLEVEL - 3 * 16, 16, 16);
+		Pineapple(21, GROUNDLEVEL - 9, 1, 1, blockSize);
+		Pineapple(46, GROUNDLEVEL - 16, 1, 1, blockSize);
+		Pineapple(48, GROUNDLEVEL - 5, 1, 1, blockSize);
+		Pineapple(69, GROUNDLEVEL - 6, 1, 1, blockSize);
+		Pineapple(89, GROUNDLEVEL - 3, 1, 1, blockSize);
 
 		//fatso
-		Fatso(608, GROUNDLEVEL - 2 * 16, BLOCKSIZE, 440, 608, 0.5);
-		Fatso(720, GROUNDLEVEL - 6 * 16, BLOCKSIZE, 720, 784, 0.2);
-		Fatso(1040, GROUNDLEVEL - 7 * 16, BLOCKSIZE, 1040, 1120, 0.3);
+		Fatso(38, GROUNDLEVEL - 2, 27, 38, 0.5, blockSize);
+		Fatso(45, GROUNDLEVEL - 6, 45, 49, 0.2, blockSize);
+		Fatso(65, GROUNDLEVEL - 7, 65, 70, 0.3, blockSize);
 
 		//player
-		Player(0, GROUNDLEVEL-16, BLOCKSIZE, MOVESPEED, JUMPSPEED, fallAmounts);
+		Player(0, GROUNDLEVEL- 1, MOVESPEED, JUMPSPEED, fallAmounts, blockSize);
 	}
 
-	function level_2() {
+	function level_2(blockSize) {
 		var MOVESPEED = 2.5;
 		var JUMPSPEED = 6;
-		var GROUNDLEVEL = height-16;
-		var BLOCKSIZE = 16;
+		var GROUNDLEVEL = gHeight - 1;
+		var BLOCKSIZE = blockSize;
 
 		//ground
-		Ground(0, GROUNDLEVEL, 160, 8);
-		Ground(0, GROUNDLEVEL + 8, 160, 8);
-		Ground(1136, GROUNDLEVEL, 128, 8);
-		Ground(1136, GROUNDLEVEL + 8, 128, 8);
+		Ground(0, GROUNDLEVEL, 10, 0.5);
+		Ground(0, GROUNDLEVEL + 8, 10, 0.5);
+		Ground(71, GROUNDLEVEL, 8, 0.5);
+		Ground(71, GROUNDLEVEL + 8, 8, 0.5);
 
 		//platforms
-		Platform(192, GROUNDLEVEL - 32, 64, 8);
-		Platform(304, GROUNDLEVEL - 4 * 16 + 1, 64, 8);
-		Platform(368, GROUNDLEVEL - 4 * 16 + 1, 128, 8);
-		Platform(544, GROUNDLEVEL - 2 * 16, 48, 8);
-		Platform(528, GROUNDLEVEL - 8 * 16 + 9, 16, 8);
-		Platform(432, GROUNDLEVEL - 10 * 16 , 32, 8);
-		Platform(512, GROUNDLEVEL - 13 * 16 , 128, 8);
-		Platform(816, GROUNDLEVEL - 11 * 16 , 32, 8);
-		Platform(1200, GROUNDLEVEL - 1 * 16, 64, 16);
-		Platform(1216, GROUNDLEVEL - 2 * 16, 48, 16);
-		Platform(1232, GROUNDLEVEL - 3 * 16, 32, 16);
-		Platform(1472, GROUNDLEVEL - 4 * 16, 32, 8);
-		Platform(1264, GROUNDLEVEL - 10 * 16, 16, 8);
-		Platform(1280, GROUNDLEVEL - 11 * 16, 16, 8);
-		Platform(1296, GROUNDLEVEL - 12 * 16, 160, 8);
-		Platform(1456, GROUNDLEVEL - 12 * 16, 64, 8);
-		Platform(1600, GROUNDLEVEL - 12 * 16, 64, 8);
-		Platform(1616, GROUNDLEVEL - 15 * 16, 32, 8);
-		Platform(1696, GROUNDLEVEL - 12 * 16, 32, 8);
+		Platform(12, GROUNDLEVEL - 2, 4, 0.5);
+		Platform(19, GROUNDLEVEL - 3.9375, 4, 0.5);
+		Platform(23, GROUNDLEVEL - 3.9375, 8, 0.5);
+		Platform(34, GROUNDLEVEL - 2 , 3, 0.5);
+		Platform(33, GROUNDLEVEL - 7.4375, 1, 0.5);
+		Platform(27, GROUNDLEVEL - 10, 2, 0.5);
+		Platform(32, GROUNDLEVEL - 13, 0.5, 0.5);
+		Platform(51, GROUNDLEVEL - 11, 2, 0.5);
+		Platform(75, GROUNDLEVEL - 1, 4, 1);
+		Platform(76, GROUNDLEVEL - 2, 3, 1);
+		Platform(77, GROUNDLEVEL - 3, 2, 1);
+		Platform(92, GROUNDLEVEL - 4, 2, 0.5);
+		Platform(79, GROUNDLEVEL - 10, 1, 0.5);
+		Platform(80, GROUNDLEVEL - 11, 1, 0.5);
+		Platform(81, GROUNDLEVEL - 12, 10, 0.5);
+		Platform(91, GROUNDLEVEL - 12, 4, 0.5);
+		Platform(100, GROUNDLEVEL - 12, 4, 0.5);
+		Platform(101, GROUNDLEVEL - 15, 2, 0.5);
+		Platform(106, GROUNDLEVEL - 12, 2, 0.5);
 
 
 		//moving platforms
 		//horizontal
-		MovingPlatform(640, GROUNDLEVEL - 5 * 16, 48, 4, 640, 800, GROUNDLEVEL - 2 * 16, GROUNDLEVEL - (2 * 16) - 64, 0.5, 0.000000001);
-		MovingPlatform(1296, GROUNDLEVEL - 2 * 16, 32, 4, 1296, 1424, GROUNDLEVEL - 2 * 16, GROUNDLEVEL - (2 * 16) - 64, 0.5, 0.000000001);
+		MovingPlatform(40, GROUNDLEVEL - 5, 3, 0.25, 40, 50, GROUNDLEVEL - 2, GROUNDLEVEL - 6, 0.5, 0.000000001);
+		MovingPlatform(81, GROUNDLEVEL - 2, 2, 0.25, 81, 89, GROUNDLEVEL - 2, GROUNDLEVEL - 6, 0.5, 0.000000001);
 
 		//diagonal
-		MovingPlatform(928, GROUNDLEVEL - 5 * 16, 48, 4, 928, 1087, GROUNDLEVEL - 1 * 16, GROUNDLEVEL - 5 * 16, 0.5, 0.2028);
+		MovingPlatform(58, GROUNDLEVEL - 5, 3, 0.25, 58, 67, GROUNDLEVEL - 1, GROUNDLEVEL - 5, 0.5, 0.2028);
 
 
 		//vertical
-		MovingPlatform(864, GROUNDLEVEL - 5 * 16, 48, 4, 864, 864, GROUNDLEVEL - 1 * 16, GROUNDLEVEL - 5 * 16, 0, 0.3);
-		MovingPlatform(864, GROUNDLEVEL - 6 * 16, 48, 4, 864, 864, GROUNDLEVEL - 6 * 16, GROUNDLEVEL - 11 * 16, 0, 0.3);
+		MovingPlatform(54, GROUNDLEVEL - 5, 3, 0.25, 54, 54, GROUNDLEVEL - 1, GROUNDLEVEL - 5, 0, 0.3);
+		MovingPlatform(54, GROUNDLEVEL - 6, 3, 0.25, 54, 54, GROUNDLEVEL - 6, GROUNDLEVEL - 11, 0, 0.3);
 
 		//wall
-		Wall(528, GROUNDLEVEL- 7 * 16, 8, 88, 0, "black");
-		Wall(536, GROUNDLEVEL- 7 * 16, 8, 88, 1, "black");
+		Wall(33, GROUNDLEVEL- 7, 0.5, 5, 0, "black");
+		Wall(33, GROUNDLEVEL- 7, 0.5, 5, 1, "black");
 
 
 		//spring
-		Spring(544, GROUNDLEVEL - 3 * 16 + 8, 16, 8);
-		Spring(1232, GROUNDLEVEL - 4 * 16 + 8, 16, 8);
+		Spring(34, GROUNDLEVEL - 2.5, 1, 0.5);
+		Spring(77, GROUNDLEVEL - 3.5, 1, 0.5);
 
 		//pit
-		Pit(160, 1000, 0);
-		Pit(1264, 2000, 1);
+		Pit(10, 62, 0);
+		Pit(79, 125, 1);
 
 		//disappearing
-		DisappearingBlock(1296, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300);
-		DisappearingBlock(1312, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300);
-		DisappearingBlock(1328, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300);
-		DisappearingBlock(1344, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300);
-		DisappearingBlock(1360, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300);
-		DisappearingBlock(1376, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300);
-		DisappearingBlock(1392, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300);
-		DisappearingBlock(1408, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300);
-		DisappearingBlock(1424, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300);
-		DisappearingBlock(1440, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300);
-		DisappearingBlock(1456, GROUNDLEVEL -  4 * 16 - 1, 16, 8, 300);
+		DisappearingBlock(81, GROUNDLEVEL -  4 - (1 / 16), 1, 0.5, 300);
+		DisappearingBlock(82, GROUNDLEVEL -  4 - (1 / 16), 1, 0.5, 300);
+		DisappearingBlock(83, GROUNDLEVEL -  4 - (1 / 16), 1, 0.5, 300);
+		DisappearingBlock(84, GROUNDLEVEL -  4 - (1 / 16), 1, 0.5, 300);
+		DisappearingBlock(85, GROUNDLEVEL -  4 - (1 / 16), 1, 0.5, 300);
+		DisappearingBlock(86, GROUNDLEVEL -  4 - (1 / 16), 1, 0.5, 300);
+		DisappearingBlock(87, GROUNDLEVEL -  4 - (1 / 16), 1, 0.5, 300);
+		DisappearingBlock(88, GROUNDLEVEL -  4 - (1 / 16), 1, 0.5, 300);
+		DisappearingBlock(89, GROUNDLEVEL -  4 - (1 / 16), 1, 0.5, 300);
+		DisappearingBlock(90, GROUNDLEVEL -  4 - (1 / 16), 1, 0.5, 300);
+		DisappearingBlock(91, GROUNDLEVEL -  4 - (1 / 16), 1, 0.5, 300);
 
 		//end
-		End(1696, GROUNDLEVEL - 14 * 16, 32, 32);
+		End(106, GROUNDLEVEL - 14, 2, 2);
 
 		//pineapple
-		Pineapple(576, GROUNDLEVEL - 3 * 16, 16, 16);
-		Pineapple(816, GROUNDLEVEL - 12 * 16 , 16, 16);
-		Pineapple(1392, GROUNDLEVEL - 13 * 16 , 16, 16);
-		Pineapple(1472, GROUNDLEVEL - 5 * 16, 16, 16);
-		Pineapple(1616, GROUNDLEVEL - 16 * 16, 16, 16);
+		Pineapple(36, GROUNDLEVEL - 3, 1, 1);
+		Pineapple(51, GROUNDLEVEL - 12, 1, 1);
+		Pineapple(87, GROUNDLEVEL - 13, 1, 1);
+		Pineapple(92, GROUNDLEVEL - 5, 1, 1);
+		Pineapple(101, GROUNDLEVEL - 16, 1, 1);
 
 		//dialogue
 		Dialogue(100, 50, 300, 100, [5, "Press 'P' to pause the game", "Press 'M' to mute all sounds", "Press 'B' to mute the background music", "", "Press 'SPACEBAR' to start the game"], "#e2671f", "10pt Palatino");
 
 		//fatso
-		Fatso(512, GROUNDLEVEL - 15 * 16, BLOCKSIZE, 512, 608, 0.2);
-		Fatso(1296, GROUNDLEVEL - 14 * 16, BLOCKSIZE, 1296, 1488, 0.5);
-		Fatso(1488, GROUNDLEVEL - 14 * 16, BLOCKSIZE, 1296, 1488, 0.5);
-		Fatso(1600, GROUNDLEVEL - 14 * 16, BLOCKSIZE, 1600, 1632, 0.2);
+		Fatso(32, GROUNDLEVEL - 15, 32, 38, 0.2);
+		Fatso(81, GROUNDLEVEL - 14, 81, 93, 0.5);
+		Fatso(93, GROUNDLEVEL - 14, 81, 93, 0.5);
+		Fatso(100, GROUNDLEVEL - 14, 100, 102, 0.2);
 
 		//player
-		Player(0, GROUNDLEVEL-16, BLOCKSIZE, MOVESPEED, JUMPSPEED, fallAmounts);
+		Player(0, GROUNDLEVEL - 1, MOVESPEED, JUMPSPEED, fallAmounts);
 
 		//hammer weapon
-		Hammer(48, GROUNDLEVEL - 1 * 16, BLOCKSIZE);
+		Hammer(3, GROUNDLEVEL - 1);
 	}
 		
 	////////////////////////////
 	//		Code to run			
 
 		//load the titleScreen sprites before the titlescreen starts
-		Crafty.load(["sprites/psunrisebanner.png", "sprites/level1.png", "sprites/level2.png"], function() {
+		Crafty.load([spritesLocation + 'psunrisebanner.png', spritesLocation + 'level1.png', spritesLocation + 'level2.png'], function() {
 			Crafty.scene("titleScreen");
 		});
 };

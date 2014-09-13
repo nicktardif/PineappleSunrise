@@ -1,10 +1,18 @@
+function scale(craftyEntity, scaleFactor) {
+	craftyEntity._x = craftyEntity._x * scaleFactor;
+	craftyEntity._y = craftyEntity._y * scaleFactor;
+	craftyEntity._w = craftyEntity._w * scaleFactor;
+	craftyEntity._h = craftyEntity._h * scaleFactor;
+	return craftyEntity;
+}
+
 ////////////////////////////
 //		Constructors
 //			for
 //		Level Structure	objects
 
 function Platform(inputX, inputY, inputW, inputH) {
-	Crafty.e("platform").platform(inputX, inputY, inputW, inputH);
+	scale(Crafty.e("platform").platform(inputX, inputY, inputW, inputH), blockSize);
 }
 
 Crafty.c("platform", { //platform that you can't jump up through
@@ -18,11 +26,12 @@ Crafty.c("platform", { //platform that you can't jump up through
 			w: inputW,
 			h: inputH
 		});
+		return this;
 	}
 });
 
 function ThinPlatform(inputX, inputY, inputW, inputH) {
-	Crafty.e("thinPlatform").thinPlatform(inputX, inputY, inputW, inputH);
+	scale(Crafty.e("thinPlatform").thinPlatform(inputX, inputY, inputW, inputH), blockSize);
 }
 
 Crafty.c("thinPlatform", { //platform that you can jump through
@@ -36,11 +45,12 @@ Crafty.c("thinPlatform", { //platform that you can jump through
 			w: inputW,
 			h: inputH
 		});
+		return this;
 	}
 });
 
 function MovingPlatform(inputX, inputY, inputW, inputH, minX, maxX, minY, maxY, xvel, yvel) {
-	Crafty.e("movingPlatform").movingPlatform(inputX, inputY, inputW, inputH, minX, maxX, minY, maxY, xvel, yvel);
+	scale(Crafty.e("movingPlatform").movingPlatform(inputX, inputY, inputW, inputH, minX, maxX, minY, maxY, xvel, yvel), blockSize);
 }
 
 Crafty.c("movingPlatform", { //solid platform that can move in the x and y directions
@@ -62,7 +72,7 @@ Crafty.c("movingPlatform", { //solid platform that can move in the x and y direc
 			ySpeed: yvel,
 			yForward: 1,
 			xForward: 1,
-			hiddenPlatform: Crafty.e("2D, DOM, platform").attr({ x: inputX, y: inputY + 1, h: 1, w: inputW})
+			hiddenPlatform: scale(Crafty.e("2D, DOM, platform").attr({ x: inputX, y: inputY + 1, h: 1, w: inputW}), blockSize)
 		});
 		this.bind("EnterFrame", function() {
 			if(this.yForward === 1) {
@@ -90,6 +100,7 @@ Crafty.c("movingPlatform", { //solid platform that can move in the x and y direc
 				if(this.x <= this.minXBound) this.xForward = 1;	
 			} 
 		});
+		return this;
 	}
 });
 
@@ -156,20 +167,14 @@ Crafty.c("VerticalMovingPlatform", { //solid platform that can move in the x and
 
 */
 
-// Constructor for ground objects
 function Ground(inputX, inputY, inputW, inputH) {
-	Crafty.e("ground").ground(inputX, inputY, inputW, inputH);
+	// Construct the ground object and scale it to the screen
+	scale(Crafty.e("ground").ground(inputX, inputY, inputW, inputH), blockSize);
 }
 
 Crafty.c("ground", {  //platform that has a solid color (for now)
 	init: function(inputX, inputY, inputW, inputH) {
 		this.requires("2D, DOM, solid, platform, groundSprite");
-		this.attr({
-			x: inputX,
-			y: inputY,
-			w: inputW,
-			h: inputH
-		});
 	},
 	ground: function(inputX, inputY, inputW, inputH) {
 		this.attr({
@@ -178,12 +183,13 @@ Crafty.c("ground", {  //platform that has a solid color (for now)
 			w: inputW,
 			h: inputH
 		});
+		return this;
 	}
 });
 
 // Constructor for wall objects
 function Wall(inputX, inputY, inputW, inputH, wallType, color) {
-	Crafty.e("wall").wall(inputX, inputY, inputW, inputH, wallType, color);
+	scale(Crafty.e("wall").wall(inputX, inputY, inputW, inputH, wallType, color), blockSize);
 }
 
 Crafty.c("wall", { //barrier to going horizontally, is either leftWall or
@@ -200,11 +206,12 @@ Crafty.c("wall", { //barrier to going horizontally, is either leftWall or
 			isLeft: wallType
 		});
 		this.color(color);
+		return this;
 	}
 });
 
 function DisappearingBlock(inputX, inputY, inputW, inputH, deleteTime) {
-	Crafty.e("disappearingBlock").disappearing(inputX, inputY, inputW, inputH, deleteTime);
+	scale(Crafty.e("disappearingBlock").disappearing(inputX, inputY, inputW, inputH, deleteTime), blockSize);
 }
 
 Crafty.c("disappearingBlock", { 	//block dissappears after a set amount of time
@@ -220,8 +227,8 @@ Crafty.c("disappearingBlock", { 	//block dissappears after a set amount of time
 			h: inputH,
 			disappearTime: deleteTime,
 			hiddenPlatform: Crafty.e("2D, DOM, platform, solid").attr({ x: inputX + 2, y:inputY + 1, h: 1, w: inputW - 4, visible: false})
-			
 		});
+		return this;
 
 		//hiddenPlatform is to keep the player "on top" of the disappearing block, so the disappearing
 		//onHit can trigger and not just the platform onHit
@@ -234,14 +241,14 @@ Crafty.c("disappearingBlock", { 	//block dissappears after a set amount of time
 });
 
 function Text(inputX, inputY, inputW, inputH, text, fontColor, fontAndSize) {
-	Crafty.e("text").text(inputX, inputY, inputW, inputH, text, fontColor, fontAndSize);
+	scale(Crafty.e("text").makeText(inputX, inputY, inputW, inputH, text, fontColor, fontAndSize), blockSize);
 }
 
 Crafty.c("text", {
 	init: function() {
 		this.requires("2D, DOM, Text");
 	},
-	text: function(inputX, inputY, inputW, inputH, text, fontColor, fontAndSize) {
+	makeText: function(inputX, inputY, inputW, inputH, text, fontColor, fontAndSize) {
 		this.attr({
 			x: inputX, 
 			y: inputY,
@@ -250,6 +257,7 @@ Crafty.c("text", {
 		});
 		this.text(text);
 		this.css({"color": fontColor, "font": fontAndSize});
+		return this;
 	}
 });
 
@@ -292,13 +300,33 @@ Crafty.c("dialogue", {
 	}
 });
 
+function MyImage(inputX, inputY, inputW, inputH, imagePath) {
+	scale(Crafty.e("image").makeImage(inputX, inputY, inputW, inputH, imagePath), blockSize);
+}
+
+Crafty.c("image", {
+	init: function() {
+		this.requires("2D, DOM, Image");
+	},
+	makeImage: function(inputX, inputY, inputW, inputH, imagePath) {
+		this.attr({
+			x: inputX,
+			y: inputY,
+			w: inputW,
+			h: inputH
+		});
+		this.image(imagePath);
+		return this;
+	}
+});
+
 ////////////////////////////
 //		Constructors
 //			for
 //		Obstacles
 
 function Spring(inputX, inputY, inputW, inputH) {
-	Crafty.e("spring").spring(inputX, inputY, inputW, inputH);
+	scale(Crafty.e("spring").spring(inputX, inputY, inputW, inputH), blockSize);
 }
 
 Crafty.c("spring", { //sends you high in the air
@@ -311,24 +339,24 @@ Crafty.c("spring", { //sends you high in the air
 			y: inputY,
 			w: inputW,
 			h: inputH
-		})
+		});
+		return this;
 	}
 });
 
 function Pit(startX, GROUNDLEVEL, width, pitNumber, fallNumber) {
-	console.log('fallnumber = ' + fallNumber);
-	Crafty.e("pit").pit(startX, GROUNDLEVEL, width, pitNumber, fallNumber);
+	scale(Crafty.e("pit").pit(startX, GROUNDLEVEL, width, pitNumber, fallNumber, blockSize), blockSize);
 }
 
 Crafty.c("pit", { //hit this and the level restarts, also has a fallCounter sign
 	init: function() {
 		this.requires("2D, DOM, pit");	
 	},
-	pit: function(startX, GROUNDLEVEL, width, pitNumber, fallNumber) {
+	pit: function(startX, GROUNDLEVEL, width, pitNumber, fallNumber, blockSize) {
 		this.attr({ 
-			x: startX - 16,
-			y: GROUNDLEVEL + 16,
-			w: width + 32,
+			x: startX - blockSize,
+			y: GROUNDLEVEL + blockSize,
+			w: width + 2 * blockSize,
 			h: 1
 		});
 		this.pitNumber = pitNumber;
@@ -336,16 +364,17 @@ Crafty.c("pit", { //hit this and the level restarts, also has a fallCounter sign
 		var signString = "sign";
 		var imageString = signString.concat(pitString);
 		Crafty.e("2D", "DOM", imageString)
-			.attr({ x: startX - 16,
-					y: GROUNDLEVEL - 16,
-					w: 16,
-					h: 16
+			.attr({ x: startX - blockSize,
+					y: GROUNDLEVEL - blockSize,
+					w: blockSize,
+					h: blockSize
 			});	
+		return this;
 	}
 });
 
 function Water(inputX, inputY, inputW, inputH) {
-	Crafty.e("water").water(inputX, inputY, inputW, inputH);
+	scale(Crafty.e("water").water(inputX, inputY, inputW, inputH), blockSize);
 }
 
 Crafty.c("water", { //water, float in it, drown if you stay in too long
@@ -361,12 +390,12 @@ Crafty.c("water", { //water, float in it, drown if you stay in too long
 			w: inputW,
 			h: inputH
 		});
-
+		return this;
 	}
 });
 
 function End(inputX, inputY, inputW, inputH) {
-	Crafty.e("end").end(inputX, inputY, inputW, inputH);
+	scale(Crafty.e("end").end(inputX, inputY, inputW, inputH), blockSize);
 }
 
 Crafty.c("end", { // run into this and you win
@@ -400,6 +429,7 @@ Crafty.c("end", { // run into this and you win
 			}
 			this.currentState = this.currentState + 1;
 		});
+		return this;
 	}
 });
 
@@ -410,8 +440,8 @@ Crafty.c("end", { // run into this and you win
 //			for
 //		Creatures
 
-function Player(inputX, inputY, bsize, mspeed, jspeed, fallAmounts) {
-	Crafty.e("player").player(inputX, inputY, bsize, mspeed, jspeed, fallAmounts);
+function Player(inputX, inputY, mspeed, jspeed, fallAmounts) {
+	scale(Crafty.e("player").player(inputX, inputY, mspeed, jspeed, fallAmounts), blockSize);
 }
 
 Crafty.c("player", {
@@ -426,12 +456,12 @@ Crafty.c("player", {
 		this.reel("stopped", animationDuration, 0, 18, 1);
 		
 	},
-	player: function(inputX, inputY, bsize, mspeed, jspeed, fallAmounts) {
+	player: function(inputX, inputY, mspeed, jspeed, fallAmounts) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
-			w: bsize,
-			h: bsize
+			w: 1,
+			h: 1
 		});
 		this.twoway(mspeed, jspeed); 
 		var currentWeapon = 0;
@@ -616,6 +646,7 @@ Crafty.c("player", {
 			else if(e.key == Crafty.keys['SPACE'] && currentWeapon != 0 && this.orientation == 0) currentWeapon.rightAttack();
 
 		});
+		return this;
 	},
 	death: function(inputX) {
 		this.y = 500;
@@ -629,8 +660,8 @@ Crafty.c("player", {
 	}
 });
 
-function Fatso(inputX, inputY, bSize, lb, rb, speed) {
-	Crafty.e("fatso").fatso(inputX, inputY, bSize, lb, rb, speed);
+function Fatso(inputX, inputY, lb, rb, speed) {
+	scale(Crafty.e("fatso").fatso(inputX, inputY, lb, rb, speed), blockSize);
 }
 
 Crafty.c("fatso", { 	//large enemy that walks back and forth
@@ -642,12 +673,12 @@ Crafty.c("fatso", { 	//large enemy that walks back and forth
 		var leftBound;
 		var rightBound;
 	},
-	fatso: function(inputX, inputY, bSize, lb, rb, speed) {
+	fatso: function(inputX, inputY, lb, rb, speed) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
-			w: 2 * bSize,
-			h: 2 * bSize,
+			w: 2,
+			h: 2,
 			leftBound: lb,
 			rightBound: rb
 		});
@@ -674,6 +705,7 @@ Crafty.c("fatso", { 	//large enemy that walks back and forth
 				}
 			}
 		});
+		return this;
 	}
 });
 
@@ -682,8 +714,8 @@ Crafty.c("fatso", { 	//large enemy that walks back and forth
 //			for
 //		Weapons
 
-function Hammer(inputX, inputY, bsize) {
-	Crafty.e("hammer").hammer(inputX, inputY, bsize);
+function Hammer(inputX, inputY) {
+	scale(Crafty.e("hammer").hammer(inputX, inputY), blockSize);
 }
 
 Crafty.c("hammer", {
@@ -695,12 +727,12 @@ Crafty.c("hammer", {
 		this.reel("hammerFaceLeft", 500, 0, 12, 0);
 		this.reel("hammerFaceRight", 500, 0, 19, 0);
 	},
-	hammer: function(inputX, inputY, bsize) {
+	hammer: function(inputX, inputY) {
 		this.attr({
 			x: inputX,
 			y: inputY,
-			w: bsize,
-			h: bsize
+			w: 1,
+			h: 1
 		});
 		this.name = "Hammer";
 		this.owner = 0;
@@ -712,6 +744,7 @@ Crafty.c("hammer", {
 				hit[0].obj.destroy();
 			}
 		});
+		return this;
 	},
 	leftAttack: function() {
 		this.active = 1;
@@ -736,7 +769,7 @@ Crafty.c("hammer", {
 //		Items	
 
 function Pineapple(inputX, inputY, inputW, inputH) {
-	Crafty.e("pineapple").pineapple(inputX, inputY, inputW, inputH);
+	scale(Crafty.e("pineapple").pineapple(inputX, inputY, inputW, inputH), blockSize);
 }
 
 Crafty.c("pineapple", { //need to collect 5 of these to finish the level
@@ -751,6 +784,7 @@ Crafty.c("pineapple", { //need to collect 5 of these to finish the level
 			w: inputW,
 			h: inputH
 		});
+		return this;
 	}
 });
 
