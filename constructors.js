@@ -1,8 +1,8 @@
 function scale(craftyEntity, scaleFactor) {
-	craftyEntity._x = craftyEntity._x * scaleFactor;
-	craftyEntity._y = craftyEntity._y * scaleFactor;
-	craftyEntity._w = craftyEntity._w * scaleFactor;
-	craftyEntity._h = craftyEntity._h * scaleFactor;
+	craftyEntity.x = craftyEntity.x * scaleFactor;
+	craftyEntity.y = craftyEntity.y * scaleFactor;
+	craftyEntity.w = craftyEntity.w * scaleFactor;
+	craftyEntity.h = craftyEntity.h * scaleFactor;
 	return craftyEntity;
 }
 
@@ -11,13 +11,68 @@ function scale(craftyEntity, scaleFactor) {
 //			for
 //		Level Structure	objects
 
+// Component that the player cannot fall through
+Crafty.c("solidTop", {
+});
+
 function Platform(inputX, inputY, inputW, inputH) {
 	scale(Crafty.e("platform").platform(inputX, inputY, inputW, inputH), blockSize);
 }
 
-Crafty.c("platform", { //platform that you can't jump up through
+Crafty.c("creature", {
 	init: function() {
-		this.requires("2D, DOM, platform, ground, normalPlatformSprite, solid");
+		this.requires("2D, Collision"); 
+
+		this.onHit("solidBottom", function (hit) {
+			var col = hit[0].obj; // collision object
+			if(this._up) { 			//if jumping up into it, bounce back down
+				console.log('calculating the onhit for solidBottom');
+				this.y = col.y + col.h;
+				this._falling = true;
+				this._up = false;
+			}
+		});
+		this.onHit("solidLeft", function (hit) {
+			var col = hit[0].obj; // collision object
+			if(this.x < col.x && this.y > col.y - 0.75 * this.h) {
+				console.log('calculating the onhit for solidLeft');
+				this.x = col.x - this.w;
+				this._x = col.x - this.w;
+			}
+		});
+		this.onHit("solidRight", function (hit) {
+			var col = hit[0].obj; // collision object
+			if(this.x > (col.x + 0.75 * col.w) && this.y > col.y - 0.75 * this.h) {
+				console.log('calculating the onhit for solidRight');
+				this.x = (col.x + col.w); 
+				this._x = (col.x + col.w); 
+			}
+		});
+		this.onHit("movingPlatform", function(hit) {
+			var col = hit[0].obj; // collision object
+			if(col.yForward === 1) {		//platform is moving up
+				this.y = col.y - this.h + 1;
+				this._y = col.y - this.h + 1;
+			}
+			else {								//platform is moving down
+				this.y = col.y - this.h + 1;
+				this._y = col.y - this.h + 1;
+			}
+			if(col.xForward === 1) { 	//platform is moving right
+				this.x += col.xSpeed;
+				this._x += col.xSpeed;
+			}
+			else {								//platform is moving left
+				this.x -= col.xSpeed;
+				this._x -= col.xSpeed;
+			}
+		});
+	}
+});
+
+Crafty.c("platform", {
+	init: function() {
+		this.requires("2D, DOM, solidTop, solidBottom, solidLeft, solidRight, normalPlatformSprite");
 	},
 	platform: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
@@ -36,7 +91,7 @@ function ThinPlatform(inputX, inputY, inputW, inputH) {
 
 Crafty.c("thinPlatform", { //platform that you can jump through
 	init: function() {
-		this.requires("2D, DOM, platform, thinPlatform, thinPlatformSprite");
+		this.requires("2D, DOM, solidTop, thinPlatformSprite");
 	},
 	thinPlatform: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
@@ -55,8 +110,7 @@ function MovingPlatform(inputX, inputY, inputW, inputH, minX, maxX, minY, maxY, 
 
 Crafty.c("movingPlatform", { //solid platform that can move in the x and y directions
 	init: function() {
-		this.requires("2D, DOM, movingPlatform, solid, movingPlatformSprite");
-		var hiddenPlatform;
+		this.requires("2D, DOM, solidBottom, solidTop, solidLeft, solidRight, movingPlatformSprite");
 	},
 	movingPlatform: function(inputX, inputY, inputW, inputH, minX, maxX, minY, maxY, xvel, yvel) {
 		this.attr({ 
@@ -71,32 +125,27 @@ Crafty.c("movingPlatform", { //solid platform that can move in the x and y direc
 			xSpeed: xvel,
 			ySpeed: yvel,
 			yForward: 1,
-			xForward: 1,
-			hiddenPlatform: scale(Crafty.e("2D, DOM, platform").attr({ x: inputX, y: inputY + 1, h: 1, w: inputW}), blockSize)
+			xForward: 1
 		});
 		this.bind("EnterFrame", function() {
 			if(this.yForward === 1) {
 				this._y -= this.ySpeed;
 				this.y -= this.ySpeed;
-				this.hiddenPlatform.y = this.y + 1;
 				if(this.y <= this.maxYBound) this.yForward = 0;	
 			}
 			else {
 				this._y += this.ySpeed;
 				this.y += this.ySpeed;
-				this.hiddenPlatform.y = this.y + 1;
 				if(this.y >= this.minYBound) this.yForward = 1;	
 			} 
 			if(this.xForward === 1) {
 				this._x += this.xSpeed;
 				this.x += this.xSpeed;
-				this.hiddenPlatform.x = this.x;
 				if(this.x >= this.maxXBound) this.xForward = 0;	
 			}
 			else {
 				this._x -= this.xSpeed;
 				this.x -= this.xSpeed;
-				this.hiddenPlatform.x = this.x;
 				if(this.x <= this.minXBound) this.xForward = 1;	
 			} 
 		});
@@ -174,7 +223,7 @@ function Ground(inputX, inputY, inputW, inputH) {
 
 Crafty.c("ground", {  //platform that has a solid color (for now)
 	init: function(inputX, inputY, inputW, inputH) {
-		this.requires("2D, DOM, solid, platform, groundSprite");
+		this.requires("2D, DOM, solidBottom, solidTop, solidLeft, solidRight, groundSprite");
 	},
 	ground: function(inputX, inputY, inputW, inputH) {
 		this.attr({
@@ -188,22 +237,21 @@ Crafty.c("ground", {  //platform that has a solid color (for now)
 });
 
 // Constructor for wall objects
-function Wall(inputX, inputY, inputW, inputH, wallType, color) {
-	scale(Crafty.e("wall").wall(inputX, inputY, inputW, inputH, wallType, color), blockSize);
+function Wall(inputX, inputY, inputW, inputH, color) {
+	scale(Crafty.e("wall").wall(inputX, inputY, inputW, inputH, color), blockSize);
 }
 
 Crafty.c("wall", { //barrier to going horizontally, is either leftWall or
 					   //rightWall
 	init: function() {
-		this.requires("2D, DOM, wall, Color");
+		this.requires("2D, DOM, Color, solidLeft, solidRight");
 	},
-	wall: function(inputX, inputY, inputW, inputH, wallType, color) {
+	wall: function(inputX, inputY, inputW, inputH, color) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
 			w: inputW,
-			h: inputH,
-			isLeft: wallType
+			h: inputH
 		});
 		this.color(color);
 		return this;
@@ -216,7 +264,7 @@ function DisappearingBlock(inputX, inputY, inputW, inputH, deleteTime) {
 
 Crafty.c("disappearingBlock", { 	//block dissappears after a set amount of time
 	init: function() {
-		this.requires("2D, DOM, disappearing, disappearingSprite");
+		this.requires("2D, DOM, disappearing, disappearingSprite, solidBottom, solidTop");
 		var hiddenPlatform;
 	},
 	disappearing: function(inputX, inputY, inputW, inputH, deleteTime) {
@@ -225,8 +273,7 @@ Crafty.c("disappearingBlock", { 	//block dissappears after a set amount of time
 			y: inputY,
 			w: inputW,
 			h: inputH,
-			disappearTime: deleteTime,
-			hiddenPlatform: Crafty.e("2D, DOM, platform, solid").attr({ x: inputX + 2, y:inputY + 1, h: 1, w: inputW - 4, visible: false})
+			disappearTime: deleteTime
 		});
 		return this;
 
@@ -234,7 +281,6 @@ Crafty.c("disappearingBlock", { 	//block dissappears after a set amount of time
 		//onHit can trigger and not just the platform onHit
 	},
 	disappear: function() {
-		this.hiddenPlatform.destroy();
 		this.destroy();
 		Crafty.audio.play('platformBreak', 1, .5);
 	}
@@ -331,7 +377,7 @@ function Spring(inputX, inputY, inputW, inputH) {
 
 Crafty.c("spring", { //sends you high in the air
 	init: function() {
-		this.requires("2D, DOM, spring, springSprite");
+		this.requires("2D, DOM, springSprite, solidTop");
 	},
 	spring: function(inputX, inputY, inputW, inputH) {
 		this.attr({ 
@@ -344,33 +390,28 @@ Crafty.c("spring", { //sends you high in the air
 	}
 });
 
-function Pit(startX, GROUNDLEVEL, width, pitNumber, fallNumber) {
-	scale(Crafty.e("pit").pit(startX, GROUNDLEVEL, width, pitNumber, fallNumber, blockSize), blockSize);
+function Pit(inputX, GROUNDLEVEL, width) {
+	scale(Crafty.e("pit").pit(inputX, GROUNDLEVEL, width), blockSize);
 }
 
-Crafty.c("pit", { //hit this and the level restarts, also has a fallCounter sign
+Crafty.c("pit", { //hit this and the level restarts
 	init: function() {
-		this.requires("2D, DOM, pit");	
+		this.requires("2D, DOM, Collision");	
 	},
-	pit: function(startX, GROUNDLEVEL, width, pitNumber, fallNumber, blockSize) {
+	pit: function(inputX, GROUNDLEVEL, width) {
 		this.attr({ 
-			x: startX - blockSize,
-			y: GROUNDLEVEL + blockSize,
-			w: width + 2 * blockSize,
+			x: inputX - 1,
+			y: GROUNDLEVEL + 1,
+			w: width + 2,
 			h: 1
 		});
-		this.pitNumber = pitNumber;
-		var pitString = fallNumber;
-		var signString = "sign";
-		var imageString = signString.concat(pitString);
-		Crafty.e("2D", "DOM", imageString)
-			.attr({ x: startX - blockSize,
-					y: GROUNDLEVEL - blockSize,
-					w: blockSize,
-					h: blockSize
-			});	
+		this.onHit("player", function(hit) {
+			Crafty.audio.play('falling', 1, .5);
+			hit[0].obj.death(this.x);
+		});
+
 		return this;
-	}
+	},
 });
 
 function Water(inputX, inputY, inputW, inputH) {
@@ -379,7 +420,7 @@ function Water(inputX, inputY, inputW, inputH) {
 
 Crafty.c("water", { //water, float in it, drown if you stay in too long
 	init: function() {
-		this.requires("2D, DOM, waterSprite, SpriteAnimation");
+		this.requires("2D, DOM, SpriteAnimation, waterSprite");
 		this.animate('waterMoving', 0, 11, 3); // works for widths up to 80 pixels (5 blocks)
 		this.animate('waterMoving', 100, -1);
 	},
@@ -440,23 +481,23 @@ Crafty.c("end", { // run into this and you win
 //			for
 //		Creatures
 
-function Player(inputX, inputY, mspeed, jspeed, fallAmounts) {
-	scale(Crafty.e("player").player(inputX, inputY, mspeed, jspeed, fallAmounts), blockSize);
+function Player(inputX, inputY, mspeed, jspeed) {
+	scale(Crafty.e("player").player(inputX, inputY, mspeed, jspeed), blockSize);
 }
 
 Crafty.c("player", {
 	init: function() {
 		var animationDuration = 500;
-		this.requires("2D, DOM, playerSprite, Gravity, Controls, Twoway, Collision, SpriteAnimation");
-		this.gravity('platform');
-		this.gravityConst(.3);
+		var gravityConstant = (.3 / 16) * blockSize;
+		this.requires("2D, DOM, Gravity, Controls, Twoway, Collision, SpriteAnimation, creature, playerSprite");
+		this.gravity('solidTop');
+		this.gravityConst(gravityConstant);
 		this.collision();
 		this.reel("walk_right", animationDuration, 4, 18, 3);
 		this.reel("walk_left", animationDuration, 1, 18, 3);
 		this.reel("stopped", animationDuration, 0, 18, 1);
-		
 	},
-	player: function(inputX, inputY, mspeed, jspeed, fallAmounts) {
+	player: function(inputX, inputY, mspeed, jspeed) {
 		this.attr({ 
 			x: inputX,
 			y: inputY,
@@ -480,33 +521,9 @@ Crafty.c("player", {
 				this._up = false;
 			}
 			this.timeout(function() {
-				hit[0].obj.hiddenPlatform.destroy();
+				//hit[0].obj.hiddenPlatform.destroy();
 				hit[0].obj.destroy();
 			}, hit[0].obj.disappearTime);
-		});
-		this.onHit("solid", function (hit) {
-			if(this.y < hit[0].obj.y) {		//if on top object all is cool
-			}
-			else if(this._up) { 			//if jumping up into it, bounce back down
-				this.y = hit[0].obj.y + hit[0].obj.h;
-				this._falling = true;
-				this._up = false;
-			}
-			else { 							//cannot run through object
-				if(this.x < hit[0].obj.x) {
-					this.x = hit[0].obj.x - 16;
-					this._x = hit[0].obj.x - 16;
-				}
-				if(this.x >= (hit[0].obj.x) ) {
-					this.x = (hit[0].obj.x + hit[0].obj.w); 
-					this._x = (hit[0].obj.x + hit[0].obj.w); 
-				}
-			}
-		});
-		this.onHit("pit", function(hit) {
-			Crafty.audio.play('falling', 1, .5);
-			this.death(this.x);
-			fallAmounts[hit[0].obj.pitNumber] = fallAmounts[hit[0].obj.pitNumber] + 1;
 		});
 		this.onHit("enemy", function(hit) {
 			Crafty.audio.play("splat", 1, .5);
@@ -529,35 +546,6 @@ Crafty.c("player", {
 				}
 			}
 		); 
-		this.onHit("movingPlatform", function(hit) {
-			if(hit[0].obj.yForward === 1) {		//platform is moving up
-				this.y = hit[0].obj.y - 15;
-				this._y = hit[0].obj.y - 15;
-			}
-			else {								//platform is moving down
-				this.y = hit[0].obj.y - 15;
-				this._y = hit[0].obj.y - 15;
-			}
-			if(hit[0].obj.xForward === 1) { 	//platform is moving right
-				this.x += hit[0].obj.xSpeed;
-				this._x += hit[0].obj.xSpeed;
-			}
-			else {								//platform is moving left
-				this.x -= hit[0].obj.xSpeed;
-				this._x -= hit[0].obj.xSpeed;
-			}
-
-		});
-		this.onHit("wall", function (hit) {
-			if(hit[0].obj.isLeft === 1) { 
-				this.x += hit[0].obj.w / 4;
-				this._x += hit[0].obj.w / 4;
-			}
-			else {
-				this.x -= hit[0].obj.w / 4;
-				this._x -= hit[0].obj.w / 4;
-			}
-		});
 		this.onHit("end", function(hit) {
 			if(hit[0].obj.currentState == 5) {
 				Crafty.audio.stop();
@@ -649,10 +637,9 @@ Crafty.c("player", {
 		return this;
 	},
 	death: function(inputX) {
-		this.y = 500;
-		this._y = 500;
+		this.y = 30 * blockSize;
 		this.disableControl();
-		var deathText = Crafty.e("text").text(inputX, 125, 100, 20, "You died", "000000", "14pt Arial");
+		Text(this.x / blockSize, 10, 6, 3, "You died", "#000", "14pt Arial");
 		this.timeout( function() {
 			Crafty.viewport.x = 0;
 			Crafty.scene("game");
@@ -667,7 +654,7 @@ function Fatso(inputX, inputY, lb, rb, speed) {
 Crafty.c("fatso", { 	//large enemy that walks back and forth
 	init: function() {
 		var animationDuration = 500;
-		this.requires("2D, DOM, fatsoSprite, enemy, SpriteAnimation");
+		this.requires("2D, DOM, SpriteAnimation, enemy, creature, fatsoSprite");
 		this.reel("faceRight", animationDuration, 0, 1, 3);
 		this.reel("faceLeft", animationDuration, 0, 0, 3);
 		var leftBound;

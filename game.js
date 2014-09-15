@@ -25,7 +25,6 @@ window.onload = function() {
 	var pHeight = gHeight * blockSize;
 	Crafty.init(pWidth, pHeight);
 
-	var fallAmounts = [0, 0, 0, 0];
 	var levelNumber = 0;
 
 
@@ -89,8 +88,7 @@ window.onload = function() {
 	Crafty.scene("loading", function() {
 		//load the level sprites before the level starts
 		Crafty.load([spritesLocation + "sprites.png", spritesLocation + "largesprites.png", spritesLocation + "cloudswithskyandhorizon.png"], function() {
-				fallAmounts = [0, 0, 0, 0];
-				Crafty.audio.play("backgroundMusic", -1, .75); //turned off during development 
+				//Crafty.audio.play("backgroundMusic", -1, .75); //turned off during development 
 				Crafty.scene("game");
 		});
 		Crafty.audio.add({ 
@@ -165,129 +163,126 @@ window.onload = function() {
 	});
 
 	function level_1() {
-		console.log('blocksize is ' + blockSize);
-		var MOVESPEED = 2.5;
-		var JUMPSPEED = 6;
+		var MOVESPEED = (2.5 / 16) * blockSize;
+		var JUMPSPEED = (6 / 16) * blockSize;
 		var GROUNDLEVEL = gHeight - 1;
 
 		//leftwall
-		Wall(-0.5, 0, 0.5, gHeight, 1, "black", blockSize);
+		Wall(-1, 0, 1, gHeight, "black");
 
 		//ground
 		Ground(0, GROUNDLEVEL, 8, 1); 
-		Ground(25, GROUNDLEVEL, 10, 1, blockSize);
-		Ground(35, GROUNDLEVEL, 8, 1, blockSize);
-		Ground(53, GROUNDLEVEL, 10, 1, blockSize);
+		Ground(25, GROUNDLEVEL, 10, 1);
+		Ground(35, GROUNDLEVEL, 8, 1);
+		Ground(53, GROUNDLEVEL, 10, 1);
 
-		Ground(106, 7, 0.5, blockSize);
+		Ground(106, 7, 0.5);
 
 		//platforms
-		Platform(45, GROUNDLEVEL - 4, 6, 0.5, blockSize);
-		Platform(44, GROUNDLEVEL - 8, 1, 0.5, blockSize);
-		Platform(42, GROUNDLEVEL - 12, 1, 0.5, blockSize);
-		Platform(46, GROUNDLEVEL - 15, 1, 0.5, blockSize);
-		Platform(51, GROUNDLEVEL - 8, 1, 0.5, blockSize);
+		Platform(45, GROUNDLEVEL - 4, 6, 0.5);
+		Platform(44, GROUNDLEVEL - 8, 1, 0.5);
+		Platform(42, GROUNDLEVEL - 12, 1, 0.5);
+		Platform(46, GROUNDLEVEL - 15, 1, 0.5);
+		Platform(51, GROUNDLEVEL - 8, 1, 0.5);
 
-		Platform(77, GROUNDLEVEL - 5, 6, 0.5, blockSize);
-		Platform(106, GROUNDLEVEL - 1, 6, 0.5, blockSize);
+		Platform(77, GROUNDLEVEL - 5, 6, 0.5);
+		Platform(106, GROUNDLEVEL - 1, 6, 0.5);
 
 		//thin platforms
-		ThinPlatform(65, GROUNDLEVEL - 5, 6, 0.5, blockSize);
-		ThinPlatform(65, GROUNDLEVEL - 2, 6, 0.5, blockSize);
+		ThinPlatform(65, GROUNDLEVEL - 5, 6, 0.5);
+		ThinPlatform(65, GROUNDLEVEL - 2, 6, 0.5);
 
 		//stairs
-		Platform(5, GROUNDLEVEL - 1, 3, 1, blockSize);
-		Platform(6, GROUNDLEVEL - 2, 2, 1, blockSize);
-		Platform(7, GROUNDLEVEL - 3, 1, 1, blockSize);
+		Platform(5, GROUNDLEVEL - 1, 3, 1);
+		Platform(6, GROUNDLEVEL - 2, 2, 1);
+		Platform(7, GROUNDLEVEL - 3, 1, 1);
 
-		Platform(40, GROUNDLEVEL - 1, 3, 1, blockSize);
-		Platform(41, GROUNDLEVEL - 2, 2, 1, blockSize);
-		Platform(42, GROUNDLEVEL - 3, 1, 1, blockSize);
+		Platform(40, GROUNDLEVEL - 1, 3, 1);
+		Platform(41, GROUNDLEVEL - 2, 2, 1);
+		Platform(42, GROUNDLEVEL - 3, 1, 1);
 
-		Platform(53, GROUNDLEVEL - 3, 1, 1, blockSize);
-		Platform(53, GROUNDLEVEL - 2, 2, 1, blockSize);
-		Platform(53, GROUNDLEVEL - 1, 3, 1, blockSize);
+		Platform(53, GROUNDLEVEL - 3, 1, 1);
+		Platform(53, GROUNDLEVEL - 2, 2, 1);
+		Platform(53, GROUNDLEVEL - 1, 3, 1);
 
 		//moving platforms
-		MovingPlatform(10, GROUNDLEVEL - 3, 3, 0.25, 10, 10, GROUNDLEVEL - 3, GROUNDLEVEL - 7, 0, 0.3, blockSize);
-		MovingPlatform(20, GROUNDLEVEL - 3, 3, 0.25, 20, 20, GROUNDLEVEL - 3, GROUNDLEVEL - 7, 0, 0.3, blockSize);
+		MovingPlatform(10, GROUNDLEVEL - 3, 3, 0.25, 10, 10, GROUNDLEVEL - 3, GROUNDLEVEL - 7, 0, 0.3);
+		MovingPlatform(20, GROUNDLEVEL - 3, 3, 0.25, 20, 20, GROUNDLEVEL - 3, GROUNDLEVEL - 7, 0, 0.3);
 
-		MovingPlatform(93, GROUNDLEVEL - 2, 3, 0.25, 93, 103, GROUNDLEVEL - 2, GROUNDLEVEL - 6, 0.5, 0.000000001, blockSize);
+		MovingPlatform(93, GROUNDLEVEL - 2, 3, 0.25, 93, 103, GROUNDLEVEL - 2, GROUNDLEVEL - 6, 0.5, 0.000000001);
 
 		//spring
-		Spring(16, GROUNDLEVEL - 4, 1, 0.5, blockSize);
-		Platform(16, GROUNDLEVEL - 3.75, 1, 0.5, blockSize);
+		Spring(16, GROUNDLEVEL - 4, 1, 0.5);
+		Platform(16, GROUNDLEVEL - 3.75, 1, 0.5);
 
 		//pits
-		Pit(-8, GROUNDLEVEL, 8, 0, fallAmounts[0], blockSize);
-		Pit(8, GROUNDLEVEL, 17, 0, fallAmounts[0], blockSize);
-		Pit(43, GROUNDLEVEL, 9, 1, fallAmounts[1], blockSize);
-		Pit(63, GROUNDLEVEL, 43, 2, fallAmounts[2], blockSize);
+		Pit(8, GROUNDLEVEL, 17);
+		Pit(43, GROUNDLEVEL, 9);
+		Pit(63, GROUNDLEVEL, 43);
 
 		//disappearing
-		DisappearingBlock(45, GROUNDLEVEL - 8, 1, 0.5, 300, blockSize);
-		DisappearingBlock(46, GROUNDLEVEL - 8, 1, 0.5, 300, blockSize);
-		DisappearingBlock(47, GROUNDLEVEL - 8, 1, 0.5, 300, blockSize);
-		DisappearingBlock(48, GROUNDLEVEL - 8, 1, 0.5, 300, blockSize);
-		DisappearingBlock(49, GROUNDLEVEL - 8, 1, 0.5, 300, blockSize);
-		DisappearingBlock(50, GROUNDLEVEL - 8, 1, 0.5, 300, blockSize);
+		DisappearingBlock(45, GROUNDLEVEL - 8, 1, 0.5, 300);
+		DisappearingBlock(46, GROUNDLEVEL - 8, 1, 0.5, 300);
+		DisappearingBlock(47, GROUNDLEVEL - 8, 1, 0.5, 300);
+		DisappearingBlock(48, GROUNDLEVEL - 8, 1, 0.5, 300);
+		DisappearingBlock(49, GROUNDLEVEL - 8, 1, 0.5, 300);
+		DisappearingBlock(50, GROUNDLEVEL - 8, 1, 0.5, 300);
 
-		DisappearingBlock(87, GROUNDLEVEL - 5, 1, 1, 200, blockSize);
-		DisappearingBlock(88, GROUNDLEVEL - 5, 1, 1, 200, blockSize);
-		DisappearingBlock(89, GROUNDLEVEL - 5, 1, 1, 200, blockSize);
-		DisappearingBlock(90, GROUNDLEVEL - 5, 1, 1, 200, blockSize);
-		DisappearingBlock(91, GROUNDLEVEL - 5, 1, 1, 200, blockSize);
-		DisappearingBlock(87, GROUNDLEVEL - 4, 1, 1, 200, blockSize);
-		DisappearingBlock(88, GROUNDLEVEL - 4, 1, 1, 200, blockSize);
-		DisappearingBlock(89, GROUNDLEVEL - 4, 1, 1, 200, blockSize);
-		DisappearingBlock(90, GROUNDLEVEL - 4, 1, 1, 200, blockSize);
-		DisappearingBlock(91, GROUNDLEVEL - 4, 1, 1, 200, blockSize);
-		DisappearingBlock(87, GROUNDLEVEL - 3, 1, 1, 200, blockSize);
-		DisappearingBlock(88, GROUNDLEVEL - 3, 1, 1, 200, blockSize);
-		DisappearingBlock(89, GROUNDLEVEL - 3, 1, 1, 200, blockSize);
-		DisappearingBlock(90, GROUNDLEVEL - 3, 1, 1, 200, blockSize);
-		DisappearingBlock(91, GROUNDLEVEL - 3, 1, 1, 200, blockSize);
-		DisappearingBlock(87, GROUNDLEVEL - 2, 1, 1, 200, blockSize);
-		DisappearingBlock(88, GROUNDLEVEL - 2, 1, 1, 200, blockSize);
-		DisappearingBlock(89, GROUNDLEVEL - 2, 1, 1, 200, blockSize);
-		DisappearingBlock(90, GROUNDLEVEL - 2, 1, 1, 200, blockSize);
-		DisappearingBlock(91, GROUNDLEVEL - 2, 1, 1, 200, blockSize);
-		DisappearingBlock(87, GROUNDLEVEL - 1, 1, 1, 200, blockSize);
-		DisappearingBlock(88, GROUNDLEVEL - 1, 1, 1, 200, blockSize);
-		DisappearingBlock(89, GROUNDLEVEL - 1, 1, 1, 200, blockSize);
-		DisappearingBlock(90, GROUNDLEVEL - 1, 1, 1, 200, blockSize);
-		DisappearingBlock(91, GROUNDLEVEL - 1, 1, 1, 200, blockSize);
+		DisappearingBlock(87, GROUNDLEVEL - 5, 1, 1, 200);
+		DisappearingBlock(88, GROUNDLEVEL - 5, 1, 1, 200);
+		DisappearingBlock(89, GROUNDLEVEL - 5, 1, 1, 200);
+		DisappearingBlock(90, GROUNDLEVEL - 5, 1, 1, 200);
+		DisappearingBlock(91, GROUNDLEVEL - 5, 1, 1, 200);
+		DisappearingBlock(87, GROUNDLEVEL - 4, 1, 1, 200);
+		DisappearingBlock(88, GROUNDLEVEL - 4, 1, 1, 200);
+		DisappearingBlock(89, GROUNDLEVEL - 4, 1, 1, 200);
+		DisappearingBlock(90, GROUNDLEVEL - 4, 1, 1, 200);
+		DisappearingBlock(91, GROUNDLEVEL - 4, 1, 1, 200);
+		DisappearingBlock(87, GROUNDLEVEL - 3, 1, 1, 200);
+		DisappearingBlock(88, GROUNDLEVEL - 3, 1, 1, 200);
+		DisappearingBlock(89, GROUNDLEVEL - 3, 1, 1, 200);
+		DisappearingBlock(90, GROUNDLEVEL - 3, 1, 1, 200);
+		DisappearingBlock(91, GROUNDLEVEL - 3, 1, 1, 200);
+		DisappearingBlock(87, GROUNDLEVEL - 2, 1, 1, 200);
+		DisappearingBlock(88, GROUNDLEVEL - 2, 1, 1, 200);
+		DisappearingBlock(89, GROUNDLEVEL - 2, 1, 1, 200);
+		DisappearingBlock(90, GROUNDLEVEL - 2, 1, 1, 200);
+		DisappearingBlock(91, GROUNDLEVEL - 2, 1, 1, 200);
+		DisappearingBlock(87, GROUNDLEVEL - 1, 1, 1, 200);
+		DisappearingBlock(88, GROUNDLEVEL - 1, 1, 1, 200);
+		DisappearingBlock(89, GROUNDLEVEL - 1, 1, 1, 200);
+		DisappearingBlock(90, GROUNDLEVEL - 1, 1, 1, 200);
+		DisappearingBlock(91, GROUNDLEVEL - 1, 1, 1, 200);
 		
 		// end
-		End(109, GROUNDLEVEL - 3, 2, 2, blockSize);
+		End(109, GROUNDLEVEL - 3, 2, 2);
 
 		//text
-		Text(3, 0.5, 6, 3, "Level 1", "#ffffff", "12pt Palatino", blockSize);
+		Text(3, 0.5, 6, 3, "Level 1", "#ffffff", "12pt Palatino");
 
 		//dialogue
 		Dialogue(100, 50, 300, 100, [5, "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Controls:", "WASD- Movement &nbsp &nbsp &nbsp 'F'-Pickup Items", "'P'-Pause Game &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 'B'- Mute Background Music", "", "&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp Press 'SPACEBAR' to start the game"], "#e2671f", "10pt Palatino");
 
 		//pineapple
-		Pineapple(21, GROUNDLEVEL - 9, 1, 1, blockSize);
-		Pineapple(46, GROUNDLEVEL - 16, 1, 1, blockSize);
-		Pineapple(48, GROUNDLEVEL - 5, 1, 1, blockSize);
-		Pineapple(69, GROUNDLEVEL - 6, 1, 1, blockSize);
-		Pineapple(89, GROUNDLEVEL - 3, 1, 1, blockSize);
+		Pineapple(21, GROUNDLEVEL - 9, 1, 1);
+		Pineapple(46, GROUNDLEVEL - 16, 1, 1);
+		Pineapple(48, GROUNDLEVEL - 5, 1, 1);
+		Pineapple(69, GROUNDLEVEL - 6, 1, 1);
+		Pineapple(89, GROUNDLEVEL - 3, 1, 1);
 
 		//fatso
-		Fatso(38, GROUNDLEVEL - 2, 27, 38, 0.5, blockSize);
-		Fatso(45, GROUNDLEVEL - 6, 45, 49, 0.2, blockSize);
-		Fatso(65, GROUNDLEVEL - 7, 65, 70, 0.3, blockSize);
+		Fatso(38, GROUNDLEVEL - 2, 27, 38, 0.5);
+		Fatso(45, GROUNDLEVEL - 6, 45, 49, 0.2);
+		Fatso(65, GROUNDLEVEL - 7, 65, 70, 0.3);
 
 		//player
-		Player(0, GROUNDLEVEL- 1, MOVESPEED, JUMPSPEED, fallAmounts, blockSize);
+		Player(10, GROUNDLEVEL- 12, MOVESPEED, JUMPSPEED);
 	}
 
 	function level_2(blockSize) {
-		var MOVESPEED = 2.5;
-		var JUMPSPEED = 6;
+		var MOVESPEED = (2.5 / 16) * blockSize;
+		var JUMPSPEED = (6 / 16) * blockSize;
 		var GROUNDLEVEL = gHeight - 1;
-		var BLOCKSIZE = blockSize;
 
 		//ground
 		Ground(0, GROUNDLEVEL, 10, 0.5);
@@ -331,8 +326,7 @@ window.onload = function() {
 		MovingPlatform(54, GROUNDLEVEL - 6, 3, 0.25, 54, 54, GROUNDLEVEL - 6, GROUNDLEVEL - 11, 0, 0.3);
 
 		//wall
-		Wall(33, GROUNDLEVEL- 7, 0.5, 5, 0, "black");
-		Wall(33, GROUNDLEVEL- 7, 0.5, 5, 1, "black");
+		Wall(33, GROUNDLEVEL- 7, 1, 5, "black");
 
 
 		//spring
@@ -376,7 +370,7 @@ window.onload = function() {
 		Fatso(100, GROUNDLEVEL - 14, 100, 102, 0.2);
 
 		//player
-		Player(0, GROUNDLEVEL - 1, MOVESPEED, JUMPSPEED, fallAmounts);
+		Player(0, GROUNDLEVEL - 1, MOVESPEED, JUMPSPEED);
 
 		//hammer weapon
 		Hammer(3, GROUNDLEVEL - 1);
