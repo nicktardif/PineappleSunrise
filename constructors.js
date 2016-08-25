@@ -235,7 +235,7 @@ Crafty.c("dialogueType", {
 
 		//removes the entire dialogue box when spacebar is pushed and game resumes
 		this.bind("KeyDown", function(e) {
-			if (e.key == Crafty.keys['SPACE']) {
+			if (e.key == Crafty.keys['SPACE'] || e.key == ' ') {
 				dialogueImage.destroy();
 				for(var j = 0; j < textArray[0]; j++) {
 					dialogueText[j].destroy();
