@@ -410,11 +410,13 @@ window.onload = function() {
 
 		
 		this.bind("KeyDown", function(e) {
-			if (e.key == Crafty.keys['1']) {
+      console.log(e.key);
+
+			if (e.key == Crafty.keys['1'] || e.key == '1') {
 				levelNumber = 1;
 				Crafty.scene("loading");
 			}
-			if (e.key == Crafty.keys['2']) {
+			if (e.key == Crafty.keys['2'] || e.key == '2') {
 				levelNumber = 2;
 				Crafty.scene("loading");
 			}
